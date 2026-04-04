@@ -1,0 +1,33 @@
+# ── Large data (not for git) ──────────────────
+data/raw/
+data/processed/
+data/optical/
+
+# ── Heavy output artifacts ────────────────────
+outputs/*.tif
+outputs/*.html
+
+# ── Python ────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+*.egg
+
+# ── OS / IDE / local config ───────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+.virtual_documents/
+
+# ── Jupyter ───────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Environment ───────────────────────────────
+.env
+*.log

@@ -1,0 +1,575 @@
+{
+  "thumb_size": 256,
+  "n_rows": 7,
+  "n_cols": 8,
+  "image_h": 1687,
+  "image_w": 2002,
+  "bounds": {
+    "south": 24.55,
+    "north": 24.85,
+    "west": 46.55,
+    "east": 46.95
+  },
+  "cells": [
+    {
+      "id": "0_0",
+      "row": 0,
+      "col": 0,
+      "lat": 24.82724,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 47.1
+    },
+    {
+      "id": "0_1",
+      "row": 0,
+      "col": 1,
+      "lat": 24.82724,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 44.7
+    },
+    {
+      "id": "0_2",
+      "row": 0,
+      "col": 2,
+      "lat": 24.82724,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 49.4
+    },
+    {
+      "id": "0_3",
+      "row": 0,
+      "col": 3,
+      "lat": 24.82724,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.4
+    },
+    {
+      "id": "0_4",
+      "row": 0,
+      "col": 4,
+      "lat": 24.82724,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.9
+    },
+    {
+      "id": "0_5",
+      "row": 0,
+      "col": 5,
+      "lat": 24.82724,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 52.1
+    },
+    {
+      "id": "0_6",
+      "row": 0,
+      "col": 6,
+      "lat": 24.82724,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.1
+    },
+    {
+      "id": "0_7",
+      "row": 0,
+      "col": 7,
+      "lat": 24.82724,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 44.4
+    },
+    {
+      "id": "1_0",
+      "row": 1,
+      "col": 0,
+      "lat": 24.78171,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 52.1
+    },
+    {
+      "id": "1_1",
+      "row": 1,
+      "col": 1,
+      "lat": 24.78171,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 45.7
+    },
+    {
+      "id": "1_2",
+      "row": 1,
+      "col": 2,
+      "lat": 24.78171,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 38.0
+    },
+    {
+      "id": "1_3",
+      "row": 1,
+      "col": 3,
+      "lat": 24.78171,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 40.2
+    },
+    {
+      "id": "1_4",
+      "row": 1,
+      "col": 4,
+      "lat": 24.78171,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 37.6
+    },
+    {
+      "id": "1_5",
+      "row": 1,
+      "col": 5,
+      "lat": 24.78171,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.5
+    },
+    {
+      "id": "1_6",
+      "row": 1,
+      "col": 6,
+      "lat": 24.78171,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 47.0
+    },
+    {
+      "id": "1_7",
+      "row": 1,
+      "col": 7,
+      "lat": 24.78171,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 22.0
+    },
+    {
+      "id": "2_0",
+      "row": 2,
+      "col": 0,
+      "lat": 24.73619,
+      "lng": 46.57557,
+      "class": 2,
+      "label": "New construction",
+      "change_pct": 48.3
+    },
+    {
+      "id": "2_1",
+      "row": 2,
+      "col": 1,
+      "lat": 24.73619,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 42.1
+    },
+    {
+      "id": "2_2",
+      "row": 2,
+      "col": 2,
+      "lat": 24.73619,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.3
+    },
+    {
+      "id": "2_3",
+      "row": 2,
+      "col": 3,
+      "lat": 24.73619,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 47.3
+    },
+    {
+      "id": "2_4",
+      "row": 2,
+      "col": 4,
+      "lat": 24.73619,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.4
+    },
+    {
+      "id": "2_5",
+      "row": 2,
+      "col": 5,
+      "lat": 24.73619,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 36.5
+    },
+    {
+      "id": "2_6",
+      "row": 2,
+      "col": 6,
+      "lat": 24.73619,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 37.3
+    },
+    {
+      "id": "2_7",
+      "row": 2,
+      "col": 7,
+      "lat": 24.73619,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 7.6
+    },
+    {
+      "id": "3_0",
+      "row": 3,
+      "col": 0,
+      "lat": 24.69066,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 37.0
+    },
+    {
+      "id": "3_1",
+      "row": 3,
+      "col": 1,
+      "lat": 24.69066,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.4
+    },
+    {
+      "id": "3_2",
+      "row": 3,
+      "col": 2,
+      "lat": 24.69066,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 40.5
+    },
+    {
+      "id": "3_3",
+      "row": 3,
+      "col": 3,
+      "lat": 24.69066,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 45.7
+    },
+    {
+      "id": "3_4",
+      "row": 3,
+      "col": 4,
+      "lat": 24.69066,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.2
+    },
+    {
+      "id": "3_5",
+      "row": 3,
+      "col": 5,
+      "lat": 24.69066,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.5
+    },
+    {
+      "id": "3_6",
+      "row": 3,
+      "col": 6,
+      "lat": 24.69066,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 49.7
+    },
+    {
+      "id": "3_7",
+      "row": 3,
+      "col": 7,
+      "lat": 24.69066,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 22.1
+    },
+    {
+      "id": "4_0",
+      "row": 4,
+      "col": 0,
+      "lat": 24.64514,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 35.5
+    },
+    {
+      "id": "4_1",
+      "row": 4,
+      "col": 1,
+      "lat": 24.64514,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 37.1
+    },
+    {
+      "id": "4_2",
+      "row": 4,
+      "col": 2,
+      "lat": 24.64514,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.1
+    },
+    {
+      "id": "4_3",
+      "row": 4,
+      "col": 3,
+      "lat": 24.64514,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 41.8
+    },
+    {
+      "id": "4_4",
+      "row": 4,
+      "col": 4,
+      "lat": 24.64514,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 49.8
+    },
+    {
+      "id": "4_5",
+      "row": 4,
+      "col": 5,
+      "lat": 24.64514,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 52.7
+    },
+    {
+      "id": "4_6",
+      "row": 4,
+      "col": 6,
+      "lat": 24.64514,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 51.0
+    },
+    {
+      "id": "4_7",
+      "row": 4,
+      "col": 7,
+      "lat": 24.64514,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 39.4
+    },
+    {
+      "id": "5_0",
+      "row": 5,
+      "col": 0,
+      "lat": 24.59961,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 33.4
+    },
+    {
+      "id": "5_1",
+      "row": 5,
+      "col": 1,
+      "lat": 24.59961,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 31.6
+    },
+    {
+      "id": "5_2",
+      "row": 5,
+      "col": 2,
+      "lat": 24.59961,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 40.4
+    },
+    {
+      "id": "5_3",
+      "row": 5,
+      "col": 3,
+      "lat": 24.59961,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 40.9
+    },
+    {
+      "id": "5_4",
+      "row": 5,
+      "col": 4,
+      "lat": 24.59961,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 50.1
+    },
+    {
+      "id": "5_5",
+      "row": 5,
+      "col": 5,
+      "lat": 24.59961,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 49.9
+    },
+    {
+      "id": "5_6",
+      "row": 5,
+      "col": 6,
+      "lat": 24.59961,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 51.7
+    },
+    {
+      "id": "5_7",
+      "row": 5,
+      "col": 7,
+      "lat": 24.59961,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 53.6
+    },
+    {
+      "id": "6_0",
+      "row": 6,
+      "col": 0,
+      "lat": 24.56343,
+      "lng": 46.57557,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 48.9
+    },
+    {
+      "id": "6_1",
+      "row": 6,
+      "col": 1,
+      "lat": 24.56343,
+      "lng": 46.62672,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 38.1
+    },
+    {
+      "id": "6_2",
+      "row": 6,
+      "col": 2,
+      "lat": 24.56343,
+      "lng": 46.67787,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 42.6
+    },
+    {
+      "id": "6_3",
+      "row": 6,
+      "col": 3,
+      "lat": 24.56343,
+      "lng": 46.72902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 46.6
+    },
+    {
+      "id": "6_4",
+      "row": 6,
+      "col": 4,
+      "lat": 24.56343,
+      "lng": 46.78017,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 44.2
+    },
+    {
+      "id": "6_5",
+      "row": 6,
+      "col": 5,
+      "lat": 24.56343,
+      "lng": 46.83132,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 52.8
+    },
+    {
+      "id": "6_6",
+      "row": 6,
+      "col": 6,
+      "lat": 24.56343,
+      "lng": 46.88247,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 47.4
+    },
+    {
+      "id": "6_7",
+      "row": 6,
+      "col": 7,
+      "lat": 24.56343,
+      "lng": 46.92902,
+      "class": 3,
+      "label": "Land clearing",
+      "change_pct": 43.2
+    }
+  ]
+}

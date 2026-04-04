@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyadh Change Explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* ── Header ─────────────────────────────────── */
+        .header {
+            background: #1a1a2e;
+            border-bottom: 1px solid #2a2a4a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            position: relative;
+        }
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+        .header-left .subtitle {
+            font-size: 12px;
+            color: #8888aa;
+            margin-top: 2px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ── Change toggle button ───────────────────── */
+        .toggle-btn {
+            background: #2a2a4a;
+            border: 1px solid #3a3a5a;
+            color: #ccc;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toggle-btn:hover { background: #3a3a5a; color: #fff; }
+        .toggle-btn.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: #fff;
+        }
+        .toggle-btn .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #666;
+            transition: background 0.2s;
+        }
+        .toggle-btn.active .dot { background: #fff; }
+
+        /* ── Map ────────────────────────────────────── */
+        #map {
+            width: 100%;
+            height: calc(100vh - 52px - 56px);
+        }
+
+        /* ── Time slider bar ────────────────────────── */
+        .time-bar {
+            background: #1a1a2e;
+            border-top: 1px solid #2a2a4a;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 1000;
+            position: relative;
+        }
+        .time-bar label {
+            font-size: 12px;
+            color: #8888aa;
+            margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .year-btn {
+            background: #2a2a4a;
+            border: 1px solid #3a3a5a;
+            color: #aaa;
+            padding: 8px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 80px;
+        }
+        .year-btn:hover { background: #3a3a5a; color: #fff; }
+        .year-btn.active {
+            background: #10b981;
+            border-color: #34d399;
+            color: #fff;
+        }
+        .time-bar .separator {
+            width: 40px;
+            height: 2px;
+            background: #3a3a5a;
+            border-radius: 1px;
+        }
+
+        /* ── Legend ──────────────────────────────────── */
+        .legend {
+            position: absolute;
+            top: 70px;
+            right: 16px;
+            background: rgba(20, 20, 40, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            z-index: 1002;
+            min-width: 180px;
+            display: none;
+        }
+        .legend.visible { display: block; }
+        .legend h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8888aa;
+            margin-bottom: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        .legend-swatch {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.15);
+            flex-shrink: 0;
+        }
+
+        /* ── Info panel (year label on map) ──────────── */
+        .year-label {
+            position: absolute;
+            top: 16px;
+            left: 56px;
+            background: rgba(16, 185, 129, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(52, 211, 153, 0.6);
+            border-radius: 8px;
+            padding: 8px 18px;
+            z-index: 1001;
+            font-size: 15px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: opacity 0.3s;
+        }
+
+        /* ── Popup styling ──────────────────────────── */
+        .change-popup {
+            min-width: 280px;
+        }
+        .change-popup h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #1a1a2e;
+        }
+        .change-popup .coords {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .change-popup .thumb-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .change-popup .thumb-col {
+            text-align: center;
+            flex: 1;
+        }
+        .change-popup .thumb-col img {
+            width: 128px;
+            height: 128px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .change-popup .thumb-col .thumb-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+        .change-popup .change-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* ── Leaflet overrides ──────────────────────── */
+        .leaflet-control-layers {
+            background: rgba(20, 20, 40, 0.92) !important;
+            border: 1px solid #3a3a5a !important;
+            border-radius: 6px !important;
+            color: #ccc !important;
+        }
+        .leaflet-control-layers label { color: #ccc !important; }
+        .leaflet-control-zoom a {
+            background: rgba(20, 20, 40, 0.92) !important;
+            color: #ccc !important;
+            border-color: #3a3a5a !important;
+        }
+        .leaflet-control-zoom a:hover { color: #fff !important; }
+
+        /* ── Mobile ─────────────────────────────────── */
+        @media (max-width: 640px) {
+            .header { padding: 8px 12px; }
+            .header-left h1 { font-size: 15px; }
+            .header-left .subtitle { font-size: 10px; }
+            .toggle-btn { padding: 6px 10px; font-size: 12px; }
+            .year-btn { padding: 6px 16px; font-size: 13px; min-width: 60px; }
+            .time-bar { padding: 8px 12px; gap: 4px; }
+            .time-bar label { display: none; }
+            .separator { width: 20px !important; }
+            .legend { bottom: 64px; right: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <h1>Riyadh Change Explorer</h1>
+        <div class="subtitle">Tracking urban development with satellite imagery (2020–2026)</div>
+    </div>
+    <div class="header-right">
+        <button class="toggle-btn" id="changeToggle" onclick="toggleChangeOverlay()">
+            <span class="dot"></span>
+            Show Changes
+        </button>
+    </div>
+</div>
+
+<!-- Map -->
+<div id="map">
+    <!-- Year label on map (inside map container for correct z-stacking) -->
+    <div class="year-label" id="yearLabel">Sentinel-2 — 2020</div>
+</div>
+
+<!-- Legend (shown when changes are active) -->
+<div class="legend" id="legend">
+    <h4>Change Type (2020 → 2026)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(76,175,80,0.65);"></div>
+        New construction
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(33,150,243,0.65);"></div>
+        Land clearing
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(244,67,54,0.65);"></div>
+        Vegetation change
+    </div>
+    <div class="legend-item" style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3a5a;">
+        <div class="legend-swatch" style="background: transparent; border: 1px dashed #666;"></div>
+        Stable (no change)
+    </div>
+</div>
+
+<!-- Time slider -->
+<div class="time-bar">
+    <label>Timeline</label>
+    <button class="year-btn active" data-year="2020" onclick="setYear('2020')">2020</button>
+    <div class="separator"></div>
+    <button class="year-btn" data-year="2023" onclick="setYear('2023')">2023</button>
+    <div class="separator"></div>
+    <button class="year-btn" data-year="2026" onclick="setYear('2026')">2026</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────
+let currentYear = '2020';
+let changeVisible = false;
+let opticalLayers = {};
+let changeLayer = null;
+let gridData = null;
+let bounds = null;
+let animating = false;
+
+// Badge colors for change classes
+const CLASS_COLORS = {
+    'New construction':  { bg: '#32b432', text: '#fff' },
+    'Land clearing':     { bg: '#1e64dc', text: '#fff' },
+    'Vegetation change': { bg: '#dc3232', text: '#fff' },
+    'Stable':            { bg: '#888',    text: '#fff' },
+};
+
+// ── Initialize map ─────────────────────────────────────
+const map = L.map('map', {
+    center: [24.7, 46.75],
+    zoom: 12,
+    zoomControl: true,
+});
+
+// Create a custom pane for the change overlay so it renders ABOVE optical layers
+map.createPane('changePane');
+map.getPane('changePane').style.zIndex = 450; // above overlayPane (400)
+map.getPane('changePane').style.pointerEvents = 'none'; // don't block clicks
+
+// Basemaps
+const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap',
+    maxZoom: 19,
+});
+const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; Esri',
+    maxZoom: 19,
+});
+
+osmBase.addTo(map);
+
+L.control.layers(
+    { 'OpenStreetMap': osmBase, 'Esri Satellite': esriSat },
+    {},
+    { position: 'topright' }
+).addTo(map);
+
+// ── Helpers: direct element opacity (bypass Leaflet batching) ──
+function setLayerOpacity(layer, val) {
+    const el = layer.getElement();
+    if (el) el.style.opacity = val;
+}
+
+// ── Load data ──────────────────────────────────────────
+async function init() {
+    // Load bounds
+    const boundsResp = await fetch('data/bounds.json');
+    bounds = await boundsResp.json();
+    const imgBounds = [[bounds.south, bounds.west], [bounds.north, bounds.east]];
+
+    // Create optical overlays — all start visible but only 2020 opaque
+    const years = ['2020', '2023', '2026'];
+    for (const year of years) {
+        const layer = L.imageOverlay(`data/optical_${year}.png`, imgBounds, {
+            opacity: year === '2020' ? 1 : 0,
+            interactive: false,
+        });
+        layer.addTo(map);
+        opticalLayers[year] = layer;
+    }
+
+    // After layers render, add CSS transitions for smooth crossfade
+    requestAnimationFrame(() => {
+        for (const layer of Object.values(opticalLayers)) {
+            const el = layer.getElement();
+            if (el) el.style.transition = 'opacity 0.4s ease-in-out';
+        }
+    });
+
+    // Create change overlay in custom pane (renders above optical layers)
+    changeLayer = L.imageOverlay('data/change_overlay.png', imgBounds, {
+        opacity: 0,
+        interactive: false,
+        pane: 'changePane',
+    });
+    changeLayer.addTo(map);
+    requestAnimationFrame(() => {
+        const el = changeLayer.getElement();
+        if (el) el.style.transition = 'opacity 0.3s ease-in-out';
+    });
+
+    // Load grid index for click interaction
+    const gridResp = await fetch('data/grid_index.json');
+    gridData = await gridResp.json();
+
+    // Set up click handler on map
+    map.on('click', handleMapClick);
+}
+
+// ── Year switching with CSS-transition crossfade ───────
+function setYear(year) {
+    if (year === currentYear) return;
+
+    // Brief dip to black between years to make the switch unmistakable
+    // Step 1: fade old out
+    for (const [yr, layer] of Object.entries(opticalLayers)) {
+        setLayerOpacity(layer, 0);
+    }
+
+    // Step 2: after a short pause, fade new in
+    setTimeout(() => {
+        setLayerOpacity(opticalLayers[year], 1);
+    }, 150);
+
+    // Update buttons
+    document.querySelectorAll('.year-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.year === year);
+    });
+
+    // Update label with pulse effect
+    const label = document.getElementById('yearLabel');
+    label.textContent = `Sentinel-2 — ${year}`;
+    label.style.opacity = '0';
+    setTimeout(() => { label.style.opacity = '1'; }, 100);
+
+    currentYear = year;
+}
+
+// ── Change overlay toggle ──────────────────────────────
+function toggleChangeOverlay() {
+    changeVisible = !changeVisible;
+    const btn = document.getElementById('changeToggle');
+    const legend = document.getElementById('legend');
+
+    setLayerOpacity(changeLayer, changeVisible ? 0.75 : 0);
+
+    if (changeVisible) {
+        btn.classList.add('active');
+        btn.innerHTML = '<span class="dot"></span> Hide Changes';
+        legend.classList.add('visible');
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<span class="dot"></span> Show Changes';
+        legend.classList.remove('visible');
+    }
+}
+
+// ── Click handler ──────────────────────────────────────
+function handleMapClick(e) {
+    if (!gridData || !bounds) return;
+
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+
+    // Check if click is within image bounds
+    if (lat < bounds.south || lat > bounds.north ||
+        lng < bounds.west || lng > bounds.east) return;
+
+    // Convert click to pixel coordinates in the image
+    const px_x = (lng - bounds.west) / (bounds.east - bounds.west) * gridData.image_w;
+    const px_y = (bounds.north - lat) / (bounds.north - bounds.south) * gridData.image_h;
+
+    // Find which grid cell this falls in
+    const col = Math.floor(px_x / gridData.thumb_size);
+    const row = Math.floor(px_y / gridData.thumb_size);
+
+    // Look for a cell with change data
+    const cell = gridData.cells.find(c => c.row === row && c.col === col);
+
+    if (cell) {
+        // Cell with detected change — show full popup with thumbnails
+        const colorInfo = CLASS_COLORS[cell.label] || CLASS_COLORS['Stable'];
+        const popupHtml = `
+            <div class="change-popup">
+                <h3>
+                    <span class="change-badge" style="background:${colorInfo.bg}; color:${colorInfo.text}">
+                        ${cell.label}
+                    </span>
+                </h3>
+                <div class="coords">${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E &nbsp;·&nbsp; ${cell.change_pct}% changed</div>
+                <div class="thumb-row">
+                    <div class="thumb-col">
+                        <img src="data/thumbs/2020_${cell.id}.jpg" alt="2020" onerror="this.style.display='none'" />
+                        <div class="thumb-label">2020 (Before)</div>
+                    </div>
+                    <div class="thumb-col">
+                        <img src="data/thumbs/2026_${cell.id}.jpg" alt="2026" onerror="this.style.display='none'" />
+                        <div class="thumb-label">2026 (After)</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        L.popup({ maxWidth: 320 })
+            .setLatLng(e.latlng)
+            .setContent(popupHtml)
+            .openOn(map);
+    } else {
+        // Stable / no-change area — show a simple info popup
+        L.popup({ maxWidth: 220 })
+            .setLatLng(e.latlng)
+            .setContent(`
+                <div class="change-popup">
+                    <h3>
+                        <span class="change-badge" style="background:#888; color:#fff">Stable</span>
+                    </h3>
+                    <div class="coords">${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E</div>
+                    <div style="font-size:12px; color:#666; margin-top:4px;">No significant change detected (2020–2026)</div>
+                </div>
+            `)
+            .openOn(map);
+    }
+}
+
+// ── Boot ───────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
