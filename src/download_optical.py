@@ -21,6 +21,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from sentinelhub import (
     SHConfig,
     BBox,
