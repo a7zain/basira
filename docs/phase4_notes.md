@@ -193,6 +193,15 @@ artifact, or genuine but unrepresentative vegetation patch. Options for next
 session: lower the pixel threshold, apply per-scene outlier rejection, or
 manually exclude this month.
 
+**Decision (2026-04-08 followup):** Parked until Phase 4.5. This spike only
+affects the Central Urban ROI time-series mean and linear trend; it does NOT
+affect the pixel-level greening map headline numbers (which compare 2020 vs
+2025 persistence, not individual monthly means). The correct fix when we
+revisit is a relative-coverage threshold — drop a ROI-month if its
+valid_pixel_count < 0.5 × median valid_pixel_count for that ROI — rather
+than raising the absolute 500-pixel minimum, which would be fragile across
+ROIs of different sizes.
+
 ---
 
 ## 9. Web-Ready Exports
