@@ -1,0 +1,50 @@
+{
+  "wadi_hanifa": {
+    "row_start": 407,
+    "row_stop": 1298,
+    "col_start": 147,
+    "col_stop": 492,
+    "utm_bounds": {
+      "x_min": 659937.5388273685,
+      "y_min": 2723790.8119727205,
+      "x_max": 666811.3346180359,
+      "y_max": 2741594.73183163
+    }
+  },
+  "king_salman_park": {
+    "row_start": 21,
+    "row_stop": 303,
+    "col_start": 0,
+    "col_stop": 335,
+    "utm_bounds": {
+      "x_min": 656674.762381635,
+      "y_min": 2743691.3899882915,
+      "x_max": 663685.8450194309,
+      "y_max": 2749311.2693290156
+    }
+  },
+  "northern_expansion": {
+    "row_start": 13,
+    "row_stop": 297,
+    "col_start": 489,
+    "col_stop": 992,
+    "utm_bounds": {
+      "x_min": 666784.5801453775,
+      "y_min": 2743809.8407024834,
+      "x_max": 676823.6906502529,
+      "y_max": 2749473.685894832
+    }
+  },
+  "central_urban": {
+    "row_start": 789,
+    "row_stop": 1071,
+    "col_start": 650,
+    "col_stop": 951,
+    "utm_bounds": {
+      "x_min": 670007.8455999522,
+      "y_min": 2728341.0184112536,
+      "x_max": 676010.5005733147,
+      "y_max": 2733954.5331204687
+    }
+  }
+}

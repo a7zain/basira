@@ -1,0 +1,141 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "wadi_hanifa",
+        "description": "Wadi Hanifa corridor \u2014 narrow NW-SE greenbelt, known greening and rehabilitation area."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              46.58,
+              24.62
+            ],
+            [
+              46.65,
+              24.62
+            ],
+            [
+              46.65,
+              24.78
+            ],
+            [
+              46.58,
+              24.78
+            ],
+            [
+              46.58,
+              24.62
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "king_salman_park",
+        "description": "King Salman Park / Royal Arts Complex \u2014 major construction zone on the NW edge of the AOI."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              46.55,
+              24.8
+            ],
+            [
+              46.62,
+              24.8
+            ],
+            [
+              46.62,
+              24.85
+            ],
+            [
+              46.55,
+              24.85
+            ],
+            [
+              46.55,
+              24.8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "northern_expansion",
+        "description": "Northern suburban expansion \u2014 new grading and infrastructure development north of central Riyadh."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              46.65,
+              24.8
+            ],
+            [
+              46.75,
+              24.8
+            ],
+            [
+              46.75,
+              24.85
+            ],
+            [
+              46.65,
+              24.85
+            ],
+            [
+              46.65,
+              24.8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "central_urban",
+        "description": "Central urban core \u2014 established dense city, expected to be stable (control baseline)."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              46.68,
+              24.66
+            ],
+            [
+              46.74,
+              24.66
+            ],
+            [
+              46.74,
+              24.71
+            ],
+            [
+              46.68,
+              24.71
+            ],
+            [
+              46.68,
+              24.66
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
