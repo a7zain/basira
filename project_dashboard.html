@@ -521,7 +521,7 @@ h1 span { color: var(--accent); }
     <div class="header-meta">
       <span><span class="dot dot-green"></span> Ahmed Zainaddin</span>
       <span><span class="dot dot-blue"></span> Started: March 2026</span>
-      <span><span class="dot dot-amber"></span> Last updated: April 4, 2026</span>
+      <span><span class="dot dot-amber"></span> Last updated: April 13, 2026</span>
     </div>
   </div>
 
@@ -537,10 +537,10 @@ h1 span { color: var(--accent); }
   <div class="progress-section">
     <div class="progress-label">
       <span>Overall Product Progress</span>
-      <strong>15%</strong>
+      <strong>22%</strong>
     </div>
     <div class="progress-bar">
-      <div class="progress-fill" style="width: 15%"></div>
+      <div class="progress-fill" style="width: 22%"></div>
     </div>
   </div>
 
@@ -632,18 +632,20 @@ h1 span { color: var(--accent); }
       <span class="phase-status status-done">COMPLETE</span>
     </div>
 
-    <div class="phase phase-active">
+    <div class="phase phase-done">
       <div class="phase-icon">4</div>
       <div class="phase-body">
-        <h3>Monthly Temporal Resolution</h3>
-        <p>Expand from 3 time points to monthly coverage. Automated pipeline to pull Sentinel-2 scenes for each month from 2020 to present. ML-powered cloud removal. Time-series analysis showing change velocity and trends, not just snapshots.</p>
+        <h3>Monthly Temporal Resolution + Web Integration</h3>
+        <p>76 monthly Sentinel-2 scenes (Jan 2020 – Apr 2026). NDVI time series, greening map, 4 ROIs. Phase 4.5a wired greening overlay, ROI polygons with popups, and Sentinel-2 RGB basemap into the Leaflet web app (live on GitHub Pages).</p>
         <div class="deliverables">
-          <span class="deliverable">monthly_pipeline.py</span>
-          <span class="deliverable">cloud_masking.py</span>
-          <span class="deliverable">time_series_analysis.py</span>
+          <span class="deliverable">phase4_download.py</span>
+          <span class="deliverable">phase4_ndvi_timeseries.py</span>
+          <span class="deliverable">phase4_green_map.py</span>
+          <span class="deliverable">phase4_export_web.py</span>
+          <span class="deliverable">webapp/index.html</span>
         </div>
       </div>
-      <span class="phase-status status-active">NEXT UP</span>
+      <span class="phase-status status-done">COMPLETE</span>
     </div>
 
     <div class="phase phase-pending">

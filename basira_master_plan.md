@@ -1,5 +1,5 @@
 # Basira (بصيرة) — Master Plan
-**Last updated:** April 4, 2026  
+**Last updated:** April 13, 2026  
 **Author:** Ahmed Zainaddin  
 
 ---
@@ -41,7 +41,7 @@ It starts as software. It becomes a company.
 | Sentinel-2 optical download | ✅ Done | 2020, 2023, 2026 via Sentinel Hub API |
 | Optical change detection | ✅ Done | K-means k=4, cross-sensor validation 58.4% |
 | Google Maps validation | ✅ Done | King Salman Park, northern expansion confirmed |
-| Interactive web app | ✅ Done | Leaflet.js, timeline, change overlay, popups |
+| Interactive web app | ✅ Done | Leaflet.js, timeline, change overlay, popups. Phase 4.5a (greening map, ROIs, RGB basemap) shipped April 13 |
 | GitHub repo | ✅ Done | a7zain/sar-change-detection |
 | Professional deliverables | ✅ Done | README, technical PDF, dashboard HTML |
 
@@ -72,11 +72,12 @@ Web access                           Export reports (PDF)             Historical
 
 ## Roadmap
 
-### Phase 4: Monthly Temporal Resolution (NEXT)
-- Automate Sentinel-2 download for every month, Jan 2020 to present
-- ML cloud masking for clean monthly composites
-- Time-series change analysis: when did each pixel change?
-- NDVI vegetation index using NIR band
+### Phase 4: Monthly Temporal Resolution (COMPLETE)
+- [x] Automate Sentinel-2 download for every month, Jan 2020 to present
+- [ ] ML cloud masking for clean monthly composites
+- [x] Time-series change analysis: when did each pixel change?
+- [x] NDVI vegetation index using NIR band
+- [x] Web integration: greening map, ROI popups, RGB basemap (Phase 4.5a, April 13)
 - **Goal:** Riyadh has a complete monthly change history
 
 ### Phase 5: Multi-City Expansion

@@ -9,14 +9,21 @@ session end. Keep lean — only what must persist.
 
 **Name:** Basira (بصيرة) — "insight" in Arabic
 **Type:** Satellite-based change monitoring platform for Saudi Arabia
-**Stage:** Phase 4 complete (monthly temporal resolution); Phase 4.5 next
+**Stage:** Phase 4 complete; Phase 4.5a complete (web integration); Phase 4.5b (time-series chart) deferred pending user feedback
 **Repo:** github.com/a7zain/sar-change-detection
 **Local path:** /Users/a7zain/sar-change-detection
 **Conda env:** sarsat (`/opt/anaconda3/envs/sarsat/bin/python`)
 
 ---
 
-## Current state (as of April 8, 2026)
+> **Claude Code guardrail:** Every Claude Code prompt must start with "Work
+> directly on the main working tree. Do NOT create a git worktree under
+> `.claude/worktrees/`." Worktree drift silently broke sessions on April 8
+> and April 13.
+
+---
+
+## Current state (as of April 13, 2026)
 
 ### What works
 - SAR pipeline: Sentinel-1 download → GCP correction → UTM → Lee filter →
@@ -27,12 +34,14 @@ session end. Keep lean — only what must persist.
 - Pixel-level greening map (NDVI > 0.2 persistence, 2020 vs 2025)
 - Web-ready exports in webapp/data/phase4/ (green map, RGB, time series JSON)
 - Interactive Leaflet web app deployed via GitHub Pages
+- **Web-visible greening map:** Phase 4 greening overlay, ROI polygons with
+  popups, and Sentinel-2 RGB basemap live in the web app (Phase 4.5a, commit
+  `d9f83d3`)
 
 ### Known limitations
 - 10 of 76 monthly scenes have partial coverage (diagonal nodata strip)
 - 20m resolution (Sentinel Hub free tier)
 - Only Riyadh covered
-- Web app not yet wired to Phase 4 outputs
 - No radiometric calibration to sigma-naught (relative change only)
 
 ### Open questions
@@ -64,7 +73,7 @@ session end. Keep lean — only what must persist.
 
 ## Immediate priorities
 
-1. **Phase 4.5:** Wire Phase 4 outputs into Leaflet web app
+1. **Phase 4.5b:** Time-series chart on ROI click (deferred pending user feedback)
 2. **Phase 5:** Multi-city expansion (Jeddah, Mecca, NEOM, Dammam)
 3. Show prototype to 3 non-engineers, capture feedback
 4. SpaceUp Competition 2026 application status

@@ -208,7 +208,7 @@ ROIs of different sizes.
 
 Script: `src/phase4_export_web.py`
 
-Files staged in `webapp/data/phase4/` (not yet wired into the web app):
+Files staged in `webapp/data/phase4/`:
 
 | File | Size | Description |
 |------|------|-------------|
@@ -219,7 +219,22 @@ Files staged in `webapp/data/phase4/` (not yet wired into the web app):
 | ndvi_timeseries.json | 17.8 KB | Per-ROI time series, NaN skipped |
 | rois.geojson | 2.7 KB | ROI polygons (WGS84) |
 
-Wiring these into `webapp/index.html` is Phase 4.5.
+Wired into the web app as of Phase 4.5a (commit `d9f83d3`).
+
+### Phase 4.5a Integration (April 13, 2026)
+
+Three overlays added to `webapp/index.html`:
+
+1. **Greening map** (`green_map.png`) — `L.imageOverlay` on custom pane
+   `greenPane` (z-index 450). Toggleable via layer control.
+2. **ROI polygons** (`rois.geojson`) — `L.geoJSON` on custom pane `roiPane`
+   (z-index 460). Styled outlines with click popups showing ROI name and stats.
+3. **Sentinel-2 latest RGB** (`latest_rgb.png`) — `L.imageOverlay` on custom
+   pane `rgbPane` (z-index 440). Toggleable basemap context layer.
+
+Custom panes ensure correct z-ordering (RGB < greening < ROIs < popups).
+A legend control (bottom-right) shows color keys for stable/new/lost green
+and ROI outlines.
 
 ---
 
