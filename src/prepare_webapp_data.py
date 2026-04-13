@@ -22,6 +22,7 @@ from PIL import Image
 
 OPTICAL_DIR = "data/optical"
 CHANGE_TIF  = "outputs/optical_change_2020_2026.tif"
+GREEN_TIF   = "outputs/phase4_green_map.tif"
 WEBAPP_DATA = "webapp/data"
 THUMB_DIR   = f"{WEBAPP_DATA}/thumbs"
 
@@ -47,6 +48,15 @@ CHANGE_LABELS = {
     2: "New construction",
     3: "Land clearing",
     255: "No data",
+}
+
+# Green map class mapping (from phase4_green_map.py):
+# 0 = Other, 1 = Stable green, 2 = New green, 3 = Lost green
+GREEN_LABELS = {
+    0: "other",
+    1: "stable_green",
+    2: "new_green",
+    3: "lost_green",
 }
 
 # Thumbnail grid: divide the image into tiles for click popups
@@ -147,8 +157,8 @@ def generate_thumbnails(bounds):
     """
     Generate before/after thumbnail crops for click interaction.
     Divides the image into a grid and saves each cell as a small PNG.
-    Also generates a JSON index mapping grid cells to geo coordinates
-    and change class.
+    Also generates a JSON index mapping grid cells to geo coordinates,
+    change class, and per-cell category breakdowns.
     """
     os.makedirs(THUMB_DIR, exist_ok=True)
 
@@ -163,6 +173,20 @@ def generate_thumbnails(bounds):
     # Load change map
     with rasterio.open(CHANGE_TIF) as src:
         change = src.read(1)
+
+    # Load green map (same shape, direct row/col indexing)
+    with rasterio.open(GREEN_TIF) as src:
+        green = src.read(1)
+    assert green.shape == change.shape, (
+        f"Green map shape {green.shape} != change map shape {change.shape}"
+    )
+
+    # Build desert mask for masked stats
+    desert = make_desert_mask()
+    if desert.shape != (h, w):
+        desert_img = Image.fromarray(desert.astype(np.uint8) * 255, "L")
+        desert_img = desert_img.resize((w, h), Image.NEAREST)
+        desert = np.array(desert_img) > 127
 
     # Grid dimensions
     n_rows = (h + THUMB_SIZE - 1) // THUMB_SIZE
@@ -186,47 +210,95 @@ def generate_thumbnails(bounds):
             y1 = min(y0 + THUMB_SIZE, h)
             x1 = min(x0 + THUMB_SIZE, w)
 
-            # Check if this cell has any change
+            cell_id = f"{r}_{c}"
+
+            # --- Cell slices ---
             cell_change = change[y0:y1, x0:x1]
+            cell_green = green[y0:y1, x0:x1]
+            cell_desert = desert[y0:y1, x0:x1]
+
+            # Valid pixels (exclude nodata=255 in change map)
+            valid = cell_change != 255
+            n_valid = int(valid.sum())
+            if n_valid == 0:
+                continue  # skip fully-nodata cells
+
+            # --- Change breakdown (unmasked) ---
             change_mask = (cell_change > 0) & (cell_change < 255)
-            n_changed = change_mask.sum()
-            cell_total = cell_change.size
+            n_changed = int(change_mask.sum())
+            change_pct = round(100 * n_changed / n_valid, 1)
 
-            if n_changed < 10:
-                continue  # skip mostly-stable cells
+            # Per-class counts
+            n_stable = int((cell_change[valid] == 0).sum())
+            n_veg = int((cell_change[valid] == 1).sum())
+            n_constr = int((cell_change[valid] == 2).sum())
+            n_clear = int((cell_change[valid] == 3).sum())
 
-            # Dominant change class in this cell
+            change_breakdown = {
+                "new_construction": round(100 * n_constr / n_valid, 1),
+                "land_clearing": round(100 * n_clear / n_valid, 1),
+                "vegetation_change": round(100 * n_veg / n_valid, 1),
+                "stable": round(100 * n_stable / n_valid, 1),
+            }
+
+            # --- Change breakdown (desert-masked) ---
+            # Desert mask suppresses false-positive changes in sandy areas:
+            # pixels flagged as desert AND classified as changed → treat as stable.
+            # Denominator stays the same (all valid pixels), only the numerator shrinks.
+            desert_false_positives = cell_desert & change_mask
+            n_changed_masked = n_changed - int(desert_false_positives.sum())
+            change_pct_masked = round(100 * n_changed_masked / n_valid, 1) if n_valid > 0 else 0.0
+
+            # --- Vegetation breakdown ---
+            n_stable_green = int((cell_green[valid] == 1).sum())
+            n_new_green = int((cell_green[valid] == 2).sum())
+            n_lost_green = int((cell_green[valid] == 3).sum())
+            n_other_green = int((cell_green[valid] == 0).sum())
+
+            vegetation_breakdown = {
+                "stable_green": round(100 * n_stable_green / n_valid, 1),
+                "new_green": round(100 * n_new_green / n_valid, 1),
+                "lost_green": round(100 * n_lost_green / n_valid, 1),
+                "other": round(100 * n_other_green / n_valid, 1),
+            }
+
+            # --- Dominant class (legacy) ---
             changed_vals = cell_change[change_mask]
-            vals, counts = np.unique(changed_vals, return_counts=True)
-            dominant_class = int(vals[counts.argmax()])
-            change_pct = 100 * n_changed / cell_total
+            if changed_vals.size > 0:
+                vals, counts = np.unique(changed_vals, return_counts=True)
+                dominant_class = int(vals[counts.argmax()])
+            else:
+                dominant_class = 0  # stable
 
             # Center coordinates (geo)
             cx_px = (x0 + x1) / 2
             cy_px = (y0 + y1) / 2
-            # pixel to geo: transform * (col, row)
             cx_geo = transform.c + cx_px * transform.a
             cy_geo = transform.f + cy_px * transform.e
 
-            # Save thumbnails
-            cell_id = f"{r}_{c}"
-            for year in ["2020", "2026"]:
-                crop = imgs[year][y0:y1, x0:x1]
-                pil = Image.fromarray(crop, "RGB")
-                pil_resized = pil.resize((THUMB_SIZE, THUMB_SIZE),
-                                         Image.LANCZOS)
-                pil_resized.save(f"{THUMB_DIR}/{year}_{cell_id}.jpg",
-                                 quality=80)
-            saved += 1
+            # Save thumbnails (only for cells with some change)
+            if n_changed >= 10:
+                for year in ["2020", "2026"]:
+                    crop = imgs[year][y0:y1, x0:x1]
+                    pil = Image.fromarray(crop, "RGB")
+                    pil_resized = pil.resize((THUMB_SIZE, THUMB_SIZE),
+                                             Image.LANCZOS)
+                    pil_resized.save(f"{THUMB_DIR}/{year}_{cell_id}.jpg",
+                                     quality=80)
+                saved += 1
 
             grid_index["cells"].append({
                 "id": cell_id,
                 "row": r, "col": c,
                 "lat": round(cy_geo, 5),
                 "lng": round(cx_geo, 5),
+                "valid_pixels": n_valid,
+                "change_breakdown": change_breakdown,
+                "vegetation_breakdown": vegetation_breakdown,
                 "class": dominant_class,
                 "label": CHANGE_LABELS.get(dominant_class, "Unknown"),
-                "change_pct": round(change_pct, 1),
+                "change_pct": change_pct,
+                "change_pct_masked": change_pct_masked,
             })
 
     # Save grid index
@@ -235,6 +307,23 @@ def generate_thumbnails(bounds):
         json.dump(grid_index, f, indent=2)
     print(f"  Saved: {idx_path} ({len(grid_index['cells'])} cells)")
     print(f"  Thumbnails: {saved * 2} images in {THUMB_DIR}/")
+
+    # --- AOI-wide summary ---
+    total_cells = len(grid_index["cells"])
+    total_valid = sum(c["valid_pixels"] for c in grid_index["cells"])
+    weighted_change = sum(
+        c["change_pct"] * c["valid_pixels"] for c in grid_index["cells"]
+    )
+    weighted_masked = sum(
+        c["change_pct_masked"] * c["valid_pixels"] for c in grid_index["cells"]
+    )
+    aoi_change = weighted_change / total_valid if total_valid else 0
+    aoi_masked = weighted_masked / total_valid if total_valid else 0
+    print(f"\n  AOI summary:")
+    print(f"    Total cells: {total_cells}")
+    print(f"    Total valid pixels: {total_valid:,}")
+    print(f"    AOI change_pct (unmasked): {aoi_change:.1f}%")
+    print(f"    AOI change_pct_masked:     {aoi_masked:.1f}%")
 
 
 def main():

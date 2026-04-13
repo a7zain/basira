@@ -17,9 +17,23 @@
       "col": 0,
       "lat": 24.82724,
       "lng": 46.57557,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 17.2,
+        "land_clearing": 22.7,
+        "vegetation_change": 7.2,
+        "stable": 52.9
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.5,
+        "new_green": 0.5,
+        "lost_green": 0.1,
+        "other": 98.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 47.1
+      "change_pct": 47.1,
+      "change_pct_masked": 7.9
     },
     {
       "id": "0_1",
@@ -27,9 +41,23 @@
       "col": 1,
       "lat": 24.82724,
       "lng": 46.62672,
+      "valid_pixels": 65490,
+      "change_breakdown": {
+        "new_construction": 10.8,
+        "land_clearing": 26.6,
+        "vegetation_change": 7.3,
+        "stable": 55.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.5,
+        "new_green": 0.6,
+        "lost_green": 0.4,
+        "other": 97.5
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 44.7
+      "change_pct": 44.7,
+      "change_pct_masked": 16.6
     },
     {
       "id": "0_2",
@@ -37,9 +65,23 @@
       "col": 2,
       "lat": 24.82724,
       "lng": 46.67787,
+      "valid_pixels": 65510,
+      "change_breakdown": {
+        "new_construction": 16.5,
+        "land_clearing": 24.3,
+        "vegetation_change": 8.7,
+        "stable": 50.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.0,
+        "new_green": 0.5,
+        "lost_green": 0.3,
+        "other": 98.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 49.4
+      "change_pct": 49.5,
+      "change_pct_masked": 13.5
     },
     {
       "id": "0_3",
@@ -47,9 +89,23 @@
       "col": 3,
       "lat": 24.82724,
       "lng": 46.72902,
+      "valid_pixels": 65434,
+      "change_breakdown": {
+        "new_construction": 14.1,
+        "land_clearing": 23.9,
+        "vegetation_change": 5.4,
+        "stable": 56.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 4.1,
+        "new_green": 1.7,
+        "lost_green": 0.5,
+        "other": 93.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.4
+      "change_pct": 43.5,
+      "change_pct_masked": 19.0
     },
     {
       "id": "0_4",
@@ -57,9 +113,23 @@
       "col": 4,
       "lat": 24.82724,
       "lng": 46.78017,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 9.4,
+        "land_clearing": 29.4,
+        "vegetation_change": 3.0,
+        "stable": 58.1
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.0,
+        "new_green": 0.4,
+        "lost_green": 0.7,
+        "other": 97.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.9
+      "change_pct": 41.9,
+      "change_pct_masked": 18.0
     },
     {
       "id": "0_5",
@@ -67,9 +137,23 @@
       "col": 5,
       "lat": 24.82724,
       "lng": 46.83132,
+      "valid_pixels": 65521,
+      "change_breakdown": {
+        "new_construction": 11.8,
+        "land_clearing": 34.8,
+        "vegetation_change": 5.5,
+        "stable": 47.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.5,
+        "new_green": 0.8,
+        "lost_green": 0.3,
+        "other": 98.4
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 52.1
+      "change_pct": 52.2,
+      "change_pct_masked": 16.6
     },
     {
       "id": "0_6",
@@ -77,9 +161,23 @@
       "col": 6,
       "lat": 24.82724,
       "lng": 46.88247,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 13.0,
+        "land_clearing": 26.7,
+        "vegetation_change": 3.3,
+        "stable": 56.9
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.2,
+        "new_green": 0.2,
+        "lost_green": 0.1,
+        "other": 99.5
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.1
+      "change_pct": 43.1,
+      "change_pct_masked": 10.0
     },
     {
       "id": "0_7",
@@ -87,9 +185,23 @@
       "col": 7,
       "lat": 24.82724,
       "lng": 46.92902,
+      "valid_pixels": 53760,
+      "change_breakdown": {
+        "new_construction": 9.1,
+        "land_clearing": 31.8,
+        "vegetation_change": 3.5,
+        "stable": 55.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.0,
+        "new_green": 0.0,
+        "lost_green": 0.0,
+        "other": 100.0
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 44.4
+      "change_pct": 44.4,
+      "change_pct_masked": 3.8
     },
     {
       "id": "1_0",
@@ -97,9 +209,23 @@
       "col": 0,
       "lat": 24.78171,
       "lng": 46.57557,
+      "valid_pixels": 65333,
+      "change_breakdown": {
+        "new_construction": 17.9,
+        "land_clearing": 22.7,
+        "vegetation_change": 11.7,
+        "stable": 47.7
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.4,
+        "new_green": 2.0,
+        "lost_green": 0.2,
+        "other": 96.5
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 52.1
+      "change_pct": 52.3,
+      "change_pct_masked": 12.7
     },
     {
       "id": "1_1",
@@ -107,9 +233,23 @@
       "col": 1,
       "lat": 24.78171,
       "lng": 46.62672,
+      "valid_pixels": 65368,
+      "change_breakdown": {
+        "new_construction": 14.0,
+        "land_clearing": 23.1,
+        "vegetation_change": 8.7,
+        "stable": 54.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.9,
+        "new_green": 1.1,
+        "lost_green": 0.9,
+        "other": 96.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 45.7
+      "change_pct": 45.8,
+      "change_pct_masked": 19.2
     },
     {
       "id": "1_2",
@@ -117,9 +257,23 @@
       "col": 2,
       "lat": 24.78171,
       "lng": 46.67787,
+      "valid_pixels": 65535,
+      "change_breakdown": {
+        "new_construction": 9.8,
+        "land_clearing": 24.3,
+        "vegetation_change": 3.9,
+        "stable": 62.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.6,
+        "new_green": 0.9,
+        "lost_green": 0.6,
+        "other": 95.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 38.0
+      "change_pct": 38.0,
+      "change_pct_masked": 20.0
     },
     {
       "id": "1_3",
@@ -127,9 +281,23 @@
       "col": 3,
       "lat": 24.78171,
       "lng": 46.72902,
+      "valid_pixels": 65524,
+      "change_breakdown": {
+        "new_construction": 10.7,
+        "land_clearing": 25.7,
+        "vegetation_change": 3.8,
+        "stable": 59.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.5,
+        "new_green": 1.3,
+        "lost_green": 0.6,
+        "other": 94.6
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 40.2
+      "change_pct": 40.2,
+      "change_pct_masked": 22.3
     },
     {
       "id": "1_4",
@@ -137,9 +305,23 @@
       "col": 4,
       "lat": 24.78171,
       "lng": 46.78017,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 6.6,
+        "land_clearing": 27.2,
+        "vegetation_change": 3.8,
+        "stable": 62.4
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.8,
+        "new_green": 0.7,
+        "lost_green": 0.2,
+        "other": 97.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 37.6
+      "change_pct": 37.6,
+      "change_pct_masked": 18.2
     },
     {
       "id": "1_5",
@@ -147,9 +329,23 @@
       "col": 5,
       "lat": 24.78171,
       "lng": 46.83132,
+      "valid_pixels": 65512,
+      "change_breakdown": {
+        "new_construction": 7.9,
+        "land_clearing": 30.2,
+        "vegetation_change": 5.3,
+        "stable": 56.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.9,
+        "new_green": 0.5,
+        "lost_green": 0.5,
+        "other": 98.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.5
+      "change_pct": 43.5,
+      "change_pct_masked": 15.1
     },
     {
       "id": "1_6",
@@ -157,9 +353,23 @@
       "col": 6,
       "lat": 24.78171,
       "lng": 46.88247,
+      "valid_pixels": 65526,
+      "change_breakdown": {
+        "new_construction": 7.8,
+        "land_clearing": 34.6,
+        "vegetation_change": 4.6,
+        "stable": 53.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.9,
+        "new_green": 0.7,
+        "lost_green": 0.2,
+        "other": 98.3
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 47.0
+      "change_pct": 47.0,
+      "change_pct_masked": 9.8
     },
     {
       "id": "1_7",
@@ -167,9 +377,23 @@
       "col": 7,
       "lat": 24.78171,
       "lng": 46.92902,
+      "valid_pixels": 53760,
+      "change_breakdown": {
+        "new_construction": 4.4,
+        "land_clearing": 14.2,
+        "vegetation_change": 3.5,
+        "stable": 78.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.0,
+        "new_green": 0.1,
+        "lost_green": 0.0,
+        "other": 99.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 22.0
+      "change_pct": 22.0,
+      "change_pct_masked": 6.0
     },
     {
       "id": "2_0",
@@ -177,9 +401,23 @@
       "col": 0,
       "lat": 24.73619,
       "lng": 46.57557,
+      "valid_pixels": 65440,
+      "change_breakdown": {
+        "new_construction": 21.3,
+        "land_clearing": 20.7,
+        "vegetation_change": 6.5,
+        "stable": 51.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 10.0,
+        "new_green": 1.9,
+        "lost_green": 2.4,
+        "other": 85.7
+      },
       "class": 2,
       "label": "New construction",
-      "change_pct": 48.3
+      "change_pct": 48.4,
+      "change_pct_masked": 28.6
     },
     {
       "id": "2_1",
@@ -187,9 +425,23 @@
       "col": 1,
       "lat": 24.73619,
       "lng": 46.62672,
+      "valid_pixels": 65469,
+      "change_breakdown": {
+        "new_construction": 13.4,
+        "land_clearing": 24.2,
+        "vegetation_change": 4.6,
+        "stable": 57.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 4.7,
+        "new_green": 1.3,
+        "lost_green": 1.3,
+        "other": 92.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 42.1
+      "change_pct": 42.2,
+      "change_pct_masked": 22.1
     },
     {
       "id": "2_2",
@@ -197,9 +449,23 @@
       "col": 2,
       "lat": 24.73619,
       "lng": 46.67787,
+      "valid_pixels": 65518,
+      "change_breakdown": {
+        "new_construction": 11.9,
+        "land_clearing": 23.5,
+        "vegetation_change": 5.9,
+        "stable": 58.7
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.6,
+        "new_green": 1.3,
+        "lost_green": 1.3,
+        "other": 93.8
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.3
+      "change_pct": 41.3,
+      "change_pct_masked": 21.6
     },
     {
       "id": "2_3",
@@ -207,9 +473,23 @@
       "col": 3,
       "lat": 24.73619,
       "lng": 46.72902,
+      "valid_pixels": 65533,
+      "change_breakdown": {
+        "new_construction": 19.4,
+        "land_clearing": 21.4,
+        "vegetation_change": 6.5,
+        "stable": 52.7
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.4,
+        "new_green": 1.5,
+        "lost_green": 0.9,
+        "other": 94.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 47.3
+      "change_pct": 47.3,
+      "change_pct_masked": 17.4
     },
     {
       "id": "2_4",
@@ -217,9 +497,23 @@
       "col": 4,
       "lat": 24.73619,
       "lng": 46.78017,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 8.1,
+        "land_clearing": 29.0,
+        "vegetation_change": 4.4,
+        "stable": 58.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.5,
+        "new_green": 0.7,
+        "lost_green": 0.5,
+        "other": 96.3
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.4
+      "change_pct": 41.4,
+      "change_pct_masked": 23.3
     },
     {
       "id": "2_5",
@@ -227,9 +521,23 @@
       "col": 5,
       "lat": 24.73619,
       "lng": 46.83132,
+      "valid_pixels": 65530,
+      "change_breakdown": {
+        "new_construction": 7.7,
+        "land_clearing": 26.4,
+        "vegetation_change": 2.4,
+        "stable": 63.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.1,
+        "new_green": 0.4,
+        "lost_green": 0.3,
+        "other": 98.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 36.5
+      "change_pct": 36.5,
+      "change_pct_masked": 18.3
     },
     {
       "id": "2_6",
@@ -237,9 +545,23 @@
       "col": 6,
       "lat": 24.73619,
       "lng": 46.88247,
+      "valid_pixels": 65508,
+      "change_breakdown": {
+        "new_construction": 5.9,
+        "land_clearing": 27.5,
+        "vegetation_change": 4.0,
+        "stable": 62.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.1,
+        "new_green": 0.5,
+        "lost_green": 0.2,
+        "other": 98.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 37.3
+      "change_pct": 37.4,
+      "change_pct_masked": 10.2
     },
     {
       "id": "2_7",
@@ -247,9 +569,23 @@
       "col": 7,
       "lat": 24.73619,
       "lng": 46.92902,
+      "valid_pixels": 53760,
+      "change_breakdown": {
+        "new_construction": 0.7,
+        "land_clearing": 6.6,
+        "vegetation_change": 0.3,
+        "stable": 92.4
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.0,
+        "new_green": 0.0,
+        "lost_green": 0.0,
+        "other": 100.0
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 7.6
+      "change_pct": 7.6,
+      "change_pct_masked": 3.2
     },
     {
       "id": "3_0",
@@ -257,9 +593,23 @@
       "col": 0,
       "lat": 24.69066,
       "lng": 46.57557,
+      "valid_pixels": 65484,
+      "change_breakdown": {
+        "new_construction": 14.8,
+        "land_clearing": 17.3,
+        "vegetation_change": 4.9,
+        "stable": 63.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.5,
+        "new_green": 1.0,
+        "lost_green": 1.3,
+        "other": 94.3
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 37.0
+      "change_pct": 37.0,
+      "change_pct_masked": 12.9
     },
     {
       "id": "3_1",
@@ -267,9 +617,23 @@
       "col": 1,
       "lat": 24.69066,
       "lng": 46.62672,
+      "valid_pixels": 65495,
+      "change_breakdown": {
+        "new_construction": 14.3,
+        "land_clearing": 24.8,
+        "vegetation_change": 4.4,
+        "stable": 56.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 11.6,
+        "new_green": 1.3,
+        "lost_green": 2.3,
+        "other": 84.8
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.4
+      "change_pct": 43.4,
+      "change_pct_masked": 27.0
     },
     {
       "id": "3_2",
@@ -277,9 +641,23 @@
       "col": 2,
       "lat": 24.69066,
       "lng": 46.67787,
+      "valid_pixels": 65506,
+      "change_breakdown": {
+        "new_construction": 8.7,
+        "land_clearing": 27.7,
+        "vegetation_change": 4.2,
+        "stable": 59.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 5.7,
+        "new_green": 0.6,
+        "lost_green": 1.1,
+        "other": 92.6
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 40.5
+      "change_pct": 40.5,
+      "change_pct_masked": 26.5
     },
     {
       "id": "3_3",
@@ -287,9 +665,23 @@
       "col": 3,
       "lat": 24.69066,
       "lng": 46.72902,
+      "valid_pixels": 65530,
+      "change_breakdown": {
+        "new_construction": 17.0,
+        "land_clearing": 24.8,
+        "vegetation_change": 3.9,
+        "stable": 54.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 4.0,
+        "new_green": 0.6,
+        "lost_green": 1.6,
+        "other": 93.8
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 45.7
+      "change_pct": 45.7,
+      "change_pct_masked": 26.5
     },
     {
       "id": "3_4",
@@ -297,9 +689,23 @@
       "col": 4,
       "lat": 24.69066,
       "lng": 46.78017,
+      "valid_pixels": 65533,
+      "change_breakdown": {
+        "new_construction": 7.0,
+        "land_clearing": 29.8,
+        "vegetation_change": 4.3,
+        "stable": 58.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.0,
+        "new_green": 0.7,
+        "lost_green": 0.6,
+        "other": 95.6
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.2
+      "change_pct": 41.2,
+      "change_pct_masked": 23.1
     },
     {
       "id": "3_5",
@@ -307,9 +713,23 @@
       "col": 5,
       "lat": 24.69066,
       "lng": 46.83132,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 7.3,
+        "land_clearing": 31.1,
+        "vegetation_change": 5.1,
+        "stable": 56.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.3,
+        "new_green": 0.7,
+        "lost_green": 0.3,
+        "other": 97.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.5
+      "change_pct": 43.5,
+      "change_pct_masked": 21.8
     },
     {
       "id": "3_6",
@@ -317,9 +737,23 @@
       "col": 6,
       "lat": 24.69066,
       "lng": 46.88247,
+      "valid_pixels": 65484,
+      "change_breakdown": {
+        "new_construction": 2.3,
+        "land_clearing": 39.1,
+        "vegetation_change": 8.3,
+        "stable": 50.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.0,
+        "new_green": 0.6,
+        "lost_green": 0.5,
+        "other": 97.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 49.7
+      "change_pct": 49.8,
+      "change_pct_masked": 11.5
     },
     {
       "id": "3_7",
@@ -327,9 +761,23 @@
       "col": 7,
       "lat": 24.69066,
       "lng": 46.92902,
+      "valid_pixels": 53760,
+      "change_breakdown": {
+        "new_construction": 1.7,
+        "land_clearing": 17.9,
+        "vegetation_change": 2.5,
+        "stable": 77.9
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.2,
+        "new_green": 0.1,
+        "lost_green": 0.1,
+        "other": 99.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 22.1
+      "change_pct": 22.1,
+      "change_pct_masked": 3.9
     },
     {
       "id": "4_0",
@@ -337,9 +785,23 @@
       "col": 0,
       "lat": 24.64514,
       "lng": 46.57557,
+      "valid_pixels": 65395,
+      "change_breakdown": {
+        "new_construction": 6.0,
+        "land_clearing": 25.1,
+        "vegetation_change": 4.5,
+        "stable": 64.4
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.7,
+        "new_green": 0.8,
+        "lost_green": 0.3,
+        "other": 96.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 35.5
+      "change_pct": 35.6,
+      "change_pct_masked": 15.9
     },
     {
       "id": "4_1",
@@ -347,9 +809,23 @@
       "col": 1,
       "lat": 24.64514,
       "lng": 46.62672,
+      "valid_pixels": 65129,
+      "change_breakdown": {
+        "new_construction": 5.9,
+        "land_clearing": 25.0,
+        "vegetation_change": 6.5,
+        "stable": 62.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 10.8,
+        "new_green": 1.6,
+        "lost_green": 1.4,
+        "other": 86.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 37.1
+      "change_pct": 37.4,
+      "change_pct_masked": 26.8
     },
     {
       "id": "4_2",
@@ -357,9 +833,23 @@
       "col": 2,
       "lat": 24.64514,
       "lng": 46.67787,
+      "valid_pixels": 65506,
+      "change_breakdown": {
+        "new_construction": 10.9,
+        "land_clearing": 26.8,
+        "vegetation_change": 3.4,
+        "stable": 58.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 8.6,
+        "new_green": 0.7,
+        "lost_green": 1.9,
+        "other": 88.8
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.1
+      "change_pct": 41.2,
+      "change_pct_masked": 27.2
     },
     {
       "id": "4_3",
@@ -367,9 +857,23 @@
       "col": 3,
       "lat": 24.64514,
       "lng": 46.72902,
+      "valid_pixels": 65523,
+      "change_breakdown": {
+        "new_construction": 7.1,
+        "land_clearing": 30.8,
+        "vegetation_change": 3.9,
+        "stable": 58.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.8,
+        "new_green": 0.7,
+        "lost_green": 0.4,
+        "other": 95.0
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 41.8
+      "change_pct": 41.8,
+      "change_pct_masked": 28.6
     },
     {
       "id": "4_4",
@@ -377,9 +881,23 @@
       "col": 4,
       "lat": 24.64514,
       "lng": 46.78017,
+      "valid_pixels": 65534,
+      "change_breakdown": {
+        "new_construction": 8.1,
+        "land_clearing": 33.1,
+        "vegetation_change": 8.7,
+        "stable": 50.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.7,
+        "new_green": 0.6,
+        "lost_green": 0.3,
+        "other": 98.4
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 49.8
+      "change_pct": 49.8,
+      "change_pct_masked": 25.1
     },
     {
       "id": "4_5",
@@ -387,9 +905,23 @@
       "col": 5,
       "lat": 24.64514,
       "lng": 46.83132,
+      "valid_pixels": 65536,
+      "change_breakdown": {
+        "new_construction": 5.6,
+        "land_clearing": 36.7,
+        "vegetation_change": 10.3,
+        "stable": 47.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.3,
+        "new_green": 0.2,
+        "lost_green": 0.1,
+        "other": 99.4
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 52.7
+      "change_pct": 52.7,
+      "change_pct_masked": 25.9
     },
     {
       "id": "4_6",
@@ -397,9 +929,23 @@
       "col": 6,
       "lat": 24.64514,
       "lng": 46.88247,
+      "valid_pixels": 65529,
+      "change_breakdown": {
+        "new_construction": 6.4,
+        "land_clearing": 34.8,
+        "vegetation_change": 9.8,
+        "stable": 49.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.5,
+        "new_green": 0.4,
+        "lost_green": 0.5,
+        "other": 98.6
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 51.0
+      "change_pct": 51.0,
+      "change_pct_masked": 16.1
     },
     {
       "id": "4_7",
@@ -407,9 +953,23 @@
       "col": 7,
       "lat": 24.64514,
       "lng": 46.92902,
+      "valid_pixels": 53760,
+      "change_breakdown": {
+        "new_construction": 1.8,
+        "land_clearing": 35.3,
+        "vegetation_change": 2.4,
+        "stable": 60.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.2,
+        "new_green": 0.1,
+        "lost_green": 0.9,
+        "other": 98.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 39.4
+      "change_pct": 39.4,
+      "change_pct_masked": 4.0
     },
     {
       "id": "5_0",
@@ -417,9 +977,23 @@
       "col": 0,
       "lat": 24.59961,
       "lng": 46.57557,
+      "valid_pixels": 65503,
+      "change_breakdown": {
+        "new_construction": 6.5,
+        "land_clearing": 23.6,
+        "vegetation_change": 3.3,
+        "stable": 66.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.7,
+        "new_green": 0.4,
+        "lost_green": 0.4,
+        "other": 96.5
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 33.4
+      "change_pct": 33.4,
+      "change_pct_masked": 17.3
     },
     {
       "id": "5_1",
@@ -427,9 +1001,23 @@
       "col": 1,
       "lat": 24.59961,
       "lng": 46.62672,
+      "valid_pixels": 65383,
+      "change_breakdown": {
+        "new_construction": 11.8,
+        "land_clearing": 17.4,
+        "vegetation_change": 2.4,
+        "stable": 68.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.4,
+        "new_green": 0.5,
+        "lost_green": 0.9,
+        "other": 96.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 31.6
+      "change_pct": 31.7,
+      "change_pct_masked": 15.9
     },
     {
       "id": "5_2",
@@ -437,9 +1025,23 @@
       "col": 2,
       "lat": 24.59961,
       "lng": 46.67787,
+      "valid_pixels": 65483,
+      "change_breakdown": {
+        "new_construction": 8.6,
+        "land_clearing": 28.3,
+        "vegetation_change": 3.6,
+        "stable": 59.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 6.3,
+        "new_green": 0.5,
+        "lost_green": 1.4,
+        "other": 91.8
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 40.4
+      "change_pct": 40.4,
+      "change_pct_masked": 25.0
     },
     {
       "id": "5_3",
@@ -447,9 +1049,23 @@
       "col": 3,
       "lat": 24.59961,
       "lng": 46.72902,
+      "valid_pixels": 65437,
+      "change_breakdown": {
+        "new_construction": 7.5,
+        "land_clearing": 28.9,
+        "vegetation_change": 4.5,
+        "stable": 59.0
+      },
+      "vegetation_breakdown": {
+        "stable_green": 3.4,
+        "new_green": 0.6,
+        "lost_green": 1.1,
+        "other": 94.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 40.9
+      "change_pct": 41.0,
+      "change_pct_masked": 26.6
     },
     {
       "id": "5_4",
@@ -457,9 +1073,23 @@
       "col": 4,
       "lat": 24.59961,
       "lng": 46.78017,
+      "valid_pixels": 65533,
+      "change_breakdown": {
+        "new_construction": 9.8,
+        "land_clearing": 29.7,
+        "vegetation_change": 10.6,
+        "stable": 49.9
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.3,
+        "new_green": 0.5,
+        "lost_green": 0.4,
+        "other": 97.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 50.1
+      "change_pct": 50.1,
+      "change_pct_masked": 21.3
     },
     {
       "id": "5_5",
@@ -467,9 +1097,23 @@
       "col": 5,
       "lat": 24.59961,
       "lng": 46.83132,
+      "valid_pixels": 65528,
+      "change_breakdown": {
+        "new_construction": 6.6,
+        "land_clearing": 32.3,
+        "vegetation_change": 11.0,
+        "stable": 50.1
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.4,
+        "new_green": 0.2,
+        "lost_green": 0.2,
+        "other": 99.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 49.9
+      "change_pct": 49.9,
+      "change_pct_masked": 19.2
     },
     {
       "id": "5_6",
@@ -477,9 +1121,23 @@
       "col": 6,
       "lat": 24.59961,
       "lng": 46.88247,
+      "valid_pixels": 65522,
+      "change_breakdown": {
+        "new_construction": 9.3,
+        "land_clearing": 31.4,
+        "vegetation_change": 11.0,
+        "stable": 48.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.3,
+        "new_green": 0.2,
+        "lost_green": 0.1,
+        "other": 99.5
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 51.7
+      "change_pct": 51.7,
+      "change_pct_masked": 15.2
     },
     {
       "id": "5_7",
@@ -487,9 +1145,23 @@
       "col": 7,
       "lat": 24.59961,
       "lng": 46.92902,
+      "valid_pixels": 53701,
+      "change_breakdown": {
+        "new_construction": 7.2,
+        "land_clearing": 41.9,
+        "vegetation_change": 4.6,
+        "stable": 46.4
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.4,
+        "new_green": 0.1,
+        "lost_green": 3.1,
+        "other": 96.3
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 53.6
+      "change_pct": 53.6,
+      "change_pct_masked": 11.7
     },
     {
       "id": "6_0",
@@ -497,9 +1169,23 @@
       "col": 0,
       "lat": 24.56343,
       "lng": 46.57557,
+      "valid_pixels": 38650,
+      "change_breakdown": {
+        "new_construction": 10.5,
+        "land_clearing": 30.6,
+        "vegetation_change": 7.9,
+        "stable": 51.1
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.1,
+        "new_green": 0.5,
+        "lost_green": 0.2,
+        "other": 98.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 48.9
+      "change_pct": 48.9,
+      "change_pct_masked": 13.8
     },
     {
       "id": "6_1",
@@ -507,9 +1193,23 @@
       "col": 1,
       "lat": 24.56343,
       "lng": 46.62672,
+      "valid_pixels": 38611,
+      "change_breakdown": {
+        "new_construction": 7.8,
+        "land_clearing": 25.3,
+        "vegetation_change": 5.1,
+        "stable": 61.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.3,
+        "new_green": 0.4,
+        "lost_green": 0.2,
+        "other": 98.1
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 38.1
+      "change_pct": 38.2,
+      "change_pct_masked": 15.6
     },
     {
       "id": "6_2",
@@ -517,9 +1217,23 @@
       "col": 2,
       "lat": 24.56343,
       "lng": 46.67787,
+      "valid_pixels": 38409,
+      "change_breakdown": {
+        "new_construction": 7.0,
+        "land_clearing": 31.2,
+        "vegetation_change": 4.6,
+        "stable": 57.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.6,
+        "new_green": 0.5,
+        "lost_green": 0.3,
+        "other": 97.7
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 42.6
+      "change_pct": 42.8,
+      "change_pct_masked": 19.4
     },
     {
       "id": "6_3",
@@ -527,9 +1241,23 @@
       "col": 3,
       "lat": 24.56343,
       "lng": 46.72902,
+      "valid_pixels": 38630,
+      "change_breakdown": {
+        "new_construction": 8.4,
+        "land_clearing": 29.7,
+        "vegetation_change": 8.6,
+        "stable": 53.3
+      },
+      "vegetation_breakdown": {
+        "stable_green": 5.2,
+        "new_green": 0.8,
+        "lost_green": 2.1,
+        "other": 91.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 46.6
+      "change_pct": 46.7,
+      "change_pct_masked": 26.3
     },
     {
       "id": "6_4",
@@ -537,9 +1265,23 @@
       "col": 4,
       "lat": 24.56343,
       "lng": 46.78017,
+      "valid_pixels": 38656,
+      "change_breakdown": {
+        "new_construction": 6.9,
+        "land_clearing": 31.0,
+        "vegetation_change": 6.3,
+        "stable": 55.8
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.0,
+        "new_green": 0.6,
+        "lost_green": 0.2,
+        "other": 98.2
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 44.2
+      "change_pct": 44.2,
+      "change_pct_masked": 14.2
     },
     {
       "id": "6_5",
@@ -547,9 +1289,23 @@
       "col": 5,
       "lat": 24.56343,
       "lng": 46.83132,
+      "valid_pixels": 38655,
+      "change_breakdown": {
+        "new_construction": 12.6,
+        "land_clearing": 31.7,
+        "vegetation_change": 8.5,
+        "stable": 47.2
+      },
+      "vegetation_breakdown": {
+        "stable_green": 0.4,
+        "new_green": 0.3,
+        "lost_green": 0.2,
+        "other": 99.0
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 52.8
+      "change_pct": 52.8,
+      "change_pct_masked": 13.0
     },
     {
       "id": "6_6",
@@ -557,9 +1313,23 @@
       "col": 6,
       "lat": 24.56343,
       "lng": 46.88247,
+      "valid_pixels": 38648,
+      "change_breakdown": {
+        "new_construction": 7.5,
+        "land_clearing": 33.7,
+        "vegetation_change": 6.1,
+        "stable": 52.6
+      },
+      "vegetation_breakdown": {
+        "stable_green": 2.8,
+        "new_green": 0.5,
+        "lost_green": 0.3,
+        "other": 96.4
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 47.4
+      "change_pct": 47.4,
+      "change_pct_masked": 20.3
     },
     {
       "id": "6_7",
@@ -567,9 +1337,23 @@
       "col": 7,
       "lat": 24.56343,
       "lng": 46.92902,
+      "valid_pixels": 31503,
+      "change_breakdown": {
+        "new_construction": 1.4,
+        "land_clearing": 35.7,
+        "vegetation_change": 6.5,
+        "stable": 56.5
+      },
+      "vegetation_breakdown": {
+        "stable_green": 1.6,
+        "new_green": 1.1,
+        "lost_green": 0.4,
+        "other": 96.9
+      },
       "class": 3,
       "label": "Land clearing",
-      "change_pct": 43.2
+      "change_pct": 43.5,
+      "change_pct_masked": 5.7
     }
   ]
 }
