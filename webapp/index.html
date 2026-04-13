@@ -225,6 +225,27 @@
             color: #fff;
         }
 
+        /* ── Green map legend ───────────────────────── */
+        .green-legend {
+            position: absolute;
+            bottom: 70px;
+            left: 16px;
+            background: rgba(20, 20, 40, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            z-index: 1002;
+            min-width: 180px;
+        }
+        .green-legend h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8888aa;
+            margin-bottom: 8px;
+        }
+
         /* ── Leaflet overrides ──────────────────────── */
         .leaflet-control-layers {
             background: rgba(20, 20, 40, 0.92) !important;
@@ -251,6 +272,19 @@
             .time-bar label { display: none; }
             .separator { width: 20px !important; }
             .legend { bottom: 64px; right: 8px; }
+            .green-legend { bottom: 64px; left: 8px; }
+        }
+
+        /* ── ROI popup table ───────────────────────── */
+        .roi-popup { min-width: 220px; }
+        .roi-popup h3 { font-size: 14px; margin: 0 0 4px; color: #1a1a2e; }
+        .roi-popup .roi-desc { font-size: 11px; color: #666; margin: 0 0 8px; }
+        .roi-popup table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .roi-popup td { padding: 3px 6px; }
+        .roi-popup tr + tr { border-top: 1px solid #eee; }
+        .roi-popup .swatch {
+            display: inline-block; width: 10px; height: 10px;
+            border-radius: 2px; margin-right: 4px; vertical-align: middle;
         }
     </style>
 </head>
@@ -294,6 +328,23 @@
     <div class="legend-item" style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3a5a;">
         <div class="legend-swatch" style="background: transparent; border: 1px dashed #666;"></div>
         Stable (no change)
+    </div>
+</div>
+
+<!-- Green map legend (visible by default, toggled with layer) -->
+<div class="green-legend" id="greenLegend">
+    <h4>Vegetation (2020 → 2025)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(0,128,0,0.78);"></div>
+        Stable green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(50,255,0,0.86);"></div>
+        New green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(255,25,25,0.86);"></div>
+        Lost green
     </div>
 </div>
 
@@ -350,7 +401,7 @@ const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/service
 
 osmBase.addTo(map);
 
-L.control.layers(
+const layersControl = L.control.layers(
     { 'OpenStreetMap': osmBase, 'Esri Satellite': esriSat },
     {},
     { position: 'topright' }
@@ -406,6 +457,103 @@ async function init() {
 
     // Set up click handler on map
     map.on('click', handleMapClick);
+    // ── Phase 4 layers ──────────────────────────────────
+
+    // Custom panes for z-ordering: optical(400) < green(440) < ROI(445) < change(450)
+    map.createPane('greenPane');
+    map.getPane('greenPane').style.zIndex = 440;
+    map.getPane('greenPane').style.pointerEvents = 'none';
+
+    map.createPane('roiPane');
+    map.getPane('roiPane').style.zIndex = 445;
+
+    // 1. Green map overlay (default ON)
+    const gmBoundsResp = await fetch('data/phase4/green_map_bounds.json');
+    const gmBounds = await gmBoundsResp.json();
+    const gmImgBounds = [[gmBounds.south, gmBounds.west], [gmBounds.north, gmBounds.east]];
+
+    const greenMapLayer = L.imageOverlay('data/phase4/green_map.png', gmImgBounds, {
+        opacity: 0.9,
+        pane: 'greenPane',
+    });
+    greenMapLayer.addTo(map);
+
+    // 2. ROI GeoJSON layer with clickable popups
+    const ROI_STATS = {
+        wadi_hanifa:        { label: 'Wadi Hanifa',       stable: 8.519, new_g: 1.600, lost: 1.977, ratio: 0.81 },
+        king_salman_park:   { label: 'King Salman Park',  stable: 0.280, new_g: 0.222, lost: 0.058, ratio: 3.82 },
+        northern_expansion: { label: 'Northern Expansion', stable: 1.589, new_g: 0.602, lost: 0.279, ratio: 2.15 },
+        central_urban:      { label: 'Central Urban',      stable: 1.586, new_g: 0.184, lost: 0.486, ratio: 0.38 },
+    };
+
+    const roiResp = await fetch('data/phase4/rois.geojson');
+    const roiData = await roiResp.json();
+
+    const roiLayer = L.geoJSON(roiData, {
+        pane: 'roiPane',
+        style: {
+            color: '#ffcc00',
+            weight: 2,
+            fillOpacity: 0.05,
+            fillColor: '#ffcc00',
+        },
+        onEachFeature: function (feature, layer) {
+            const name = feature.properties.name;
+            const s = ROI_STATS[name];
+            if (!s) return;
+            layer.bindPopup(`
+                <div class="roi-popup">
+                    <h3>${s.label}</h3>
+                    <p class="roi-desc">${feature.properties.description}</p>
+                    <table>
+                        <tr>
+                            <td><span class="swatch" style="background:#008000;"></span>Stable green</td>
+                            <td style="text-align:right;">${s.stable} km²</td>
+                        </tr>
+                        <tr>
+                            <td><span class="swatch" style="background:#32ff00;"></span>New green</td>
+                            <td style="text-align:right;">${s.new_g} km²</td>
+                        </tr>
+                        <tr>
+                            <td><span class="swatch" style="background:#ff1919;"></span>Lost green</td>
+                            <td style="text-align:right;">${s.lost} km²</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">New / Lost</td>
+                            <td style="text-align:right; font-weight:700;">${s.ratio}</td>
+                        </tr>
+                    </table>
+                </div>
+            `);
+        },
+    });
+    roiLayer.addTo(map);
+
+    // 3. Sentinel-2 RGB (latest) overlay
+    const rgbBoundsResp = await fetch('data/phase4/latest_rgb_bounds.json');
+    const rgbBounds = await rgbBoundsResp.json();
+    const rgbImgBounds = [[rgbBounds.south, rgbBounds.west], [rgbBounds.north, rgbBounds.east]];
+
+    const latestRgbLayer = L.imageOverlay('data/phase4/latest_rgb.png', rgbImgBounds, {
+        opacity: 1,
+    });
+
+    // Add Phase 4 layers to the layers control
+    layersControl.addOverlay(greenMapLayer, 'Vegetation Change (2020→2025)');
+    layersControl.addOverlay(roiLayer, 'Regions of Interest');
+    layersControl.addOverlay(latestRgbLayer, 'Sentinel-2 RGB (latest)');
+
+    // Toggle green legend when green map layer is added/removed
+    map.on('overlayadd', function (e) {
+        if (e.layer === greenMapLayer) {
+            document.getElementById('greenLegend').style.display = 'block';
+        }
+    });
+    map.on('overlayremove', function (e) {
+        if (e.layer === greenMapLayer) {
+            document.getElementById('greenLegend').style.display = 'none';
+        }
+    });
 }
 
 // ── Year switching with CSS-transition crossfade ───────
@@ -523,7 +671,7 @@ function handleMapClick(e) {
 }
 
 // ── Boot ───────────────────────────────────────────────
-init();
+init().catch(err => console.error('init() failed:', err));
 </script>
 </body>
 </html>

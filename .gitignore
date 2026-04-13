@@ -1,34 +1,31 @@
-# ── Large data (not for git) ──────────────────
-data/raw/
-data/processed/
-data/optical/
 
-# ── Heavy output artifacts ────────────────────
-outputs/*.tif
-outputs/*.html
-
-# ── Python ────────────────────────────────────
 __pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-.eggs/
-*.egg
-
-# ── OS / IDE / local config ───────────────────
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-*.swo
 .claude/
-.virtual_documents/
-
-# ── Jupyter ───────────────────────────────────
-.ipynb_checkpoints/
-
-# ── Environment ───────────────────────────────
+.DS_Store
+.eggs/
 .env
 .env.save
+.env*
+.idea/
+.ipynb_checkpoints/
+.virtual_documents/
+.vscode/
+*.egg
+*.egg-info/
 *.log
+*.pyc
+*.pyo
+*.swo
+*.swp
+# ── Environment ───────────────────────────────
+# ── Heavy output artifacts ────────────────────
+# ── Jupyter ───────────────────────────────────
+# ── Large data (not for git) ──────────────────
+# ── OS / IDE / local config ───────────────────
+# ── Python ────────────────────────────────────
+data/optical/
+data/processed/
+data/raw/
+outputs/*.html
+outputs/*.tif
+Thumbs.db
