@@ -238,7 +238,112 @@ and ROI outlines.
 
 ---
 
-## 10. Phase 5 Considerations
+## 11. Phase 4.5c — Cell Breakdowns + Visible Grid
+
+### Desert Mask Applied to Stats (not just overlay)
+
+Prior to Phase 4.5c, `src/prepare_webapp_data.py` applied the desert mask only
+to the change overlay PNG — suppressing false-positive change pixels in the
+visual output. But `grid_index.json` stats were computed from the **raw**
+classification without the mask, producing inflated `change_pct` values.
+
+**Fix:** For each grid cell, pixels flagged as desert AND classified as changed
+are suppressed (treated as stable) for the masked stats. The denominator stays
+constant (all valid pixels). This is a numerator-only correction.
+
+**AOI-wide result:**
+- `change_pct` (unmasked): **42.6%**
+- `change_pct_masked` (desert-masked): **17.8%**
+- Drop: **-24.8 percentage points**
+
+The inflated raw number was the primary cause of tester feedback that "the
+percentage of change seems overcalculated."
+
+### New grid_index.json Schema
+
+Each of the 56 cells (7 rows x 8 cols, no cells skipped) now includes:
+
+```json
+{
+  "id": "3_4",
+  "row": 3, "col": 4,
+  "lat": 24.712, "lng": 46.734,
+  "valid_pixels": 65536,
+  "change_breakdown": {
+    "new_construction": 12.3,
+    "land_clearing": 28.7,
+    "vegetation_change": 5.1,
+    "stable": 53.9
+  },
+  "vegetation_breakdown": {
+    "stable_green": 3.2,
+    "new_green": 1.1,
+    "lost_green": 0.8,
+    "other": 94.9
+  },
+  "class": 3,
+  "label": "Land clearing",
+  "change_pct": 46.1,
+  "change_pct_masked": 21.3
+}
+```
+
+- `change_breakdown`: from `outputs/optical_change_2020_2026.tif` (classes 0-3)
+- `vegetation_breakdown`: from `outputs/phase4_green_map.tif` (classes 0-3),
+  indexed by direct row/col (same 1687x2002 shape, no reprojection needed)
+- All percentages are of valid pixels (nodata=255 excluded)
+- Legacy fields (`class`, `label`, `change_pct`) retained for backward compatibility
+
+### Grid Layer Architecture
+
+Leaflet pane z-ordering (updated for Phase 4.5c):
+
+```
+optical (default)  <  greenPane (440)  <  roiPane (445)  <  gridPane (446)  <  changePane (450)
+```
+
+- **gridPane (z-index 446):** Contains 56 `L.rectangle` instances in an
+  `L.layerGroup`. Sits above ROI polygons so grid clicks take priority.
+- **Fill opacity ramp:** `change_pct_masked` 0%->0 opacity, 5%->0.10,
+  linear to 50%+->0.30 (capped). Color: `#ff8800` (orange).
+- **Stroke:** weight 1, `#ff8800`, opacity 0.4. Hover: weight 2, opacity 0.8.
+- **Toggle:** Grid layer is added/removed by the "Show Changes" button
+  alongside the existing change overlay PNG.
+
+Click on a rectangle fires `buildCellPopup(cell)`, which generates the
+breakdown popup HTML. `L.DomEvent.stopPropagation` prevents the click from
+reaching the ROI layer below.
+
+### ROI Cross-Reference
+
+Each cell popup checks if the cell centroid falls inside any ROI polygon using
+a ray-casting point-in-polygon algorithm (library-free, implemented in JS).
+If so, the popup footer shows "Part of ROI: {name}".
+
+Handles both Polygon and MultiPolygon GeoJSON geometries.
+
+### Known Label Limitation
+
+The K-means "Land clearing" class (from `outputs/optical_change_2020_2026.tif`)
+is assigned heuristically based on spectral change direction. It conflates:
+- Genuine demolition / land clearing
+- Seasonal vegetation loss
+- Illumination / shadow differences between acquisition dates
+- Construction-site staging and grading
+
+This is why the desert mask was necessary (sandy areas classified as "land
+clearing" due to speckle). Real change-type attribution would require:
+- Monthly time-series classification (track change trajectory, not just
+  start vs. end)
+- Higher spatial resolution (10m or better)
+- Multi-source validation (SAR + optical fusion)
+
+Planned for Phase 5+. For now, the label should be changed to "Surface change
+/ clearing" to avoid implying certainty about the change mechanism.
+
+---
+
+## 12. Phase 5 Considerations
 
 - **Disk savings:** uint16 with scale factor 10000 instead of float32 → ~50% reduction
 - **Cloud masking:** Riyadh is trivial (desert). Jeddah/Mecca have real clouds — need SCL-based masking or multi-scene compositing

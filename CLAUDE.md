@@ -9,7 +9,7 @@ session end. Keep lean — only what must persist.
 
 **Name:** Basira (بصيرة) — "insight" in Arabic
 **Type:** Satellite-based change monitoring platform for Saudi Arabia
-**Stage:** Phase 4 complete; Phase 4.5a complete (web integration); Phase 4.5b (time-series chart) deferred pending user feedback
+**Stage:** Phase 4 complete; Phase 4.5a complete (web integration); Phase 4.5c complete (cell breakdowns + grid layer); Phase 4.5b (time-series chart) deferred
 **Repo:** github.com/a7zain/sar-change-detection
 **Local path:** /Users/a7zain/sar-change-detection
 **Conda env:** sarsat (`/opt/anaconda3/envs/sarsat/bin/python`)
@@ -20,6 +20,10 @@ session end. Keep lean — only what must persist.
 > directly on the main working tree. Do NOT create a git worktree under
 > `.claude/worktrees/`." Worktree drift silently broke sessions on April 8
 > and April 13.
+
+> **Git status guardrail:** After every Claude Code step, run `git status` to
+> confirm what's actually staged. Two sessions have shipped "done" messages
+> while changes sat uncommitted on disk.
 
 ---
 
@@ -37,12 +41,20 @@ session end. Keep lean — only what must persist.
 - **Web-visible greening map:** Phase 4 greening overlay, ROI polygons with
   popups, and Sentinel-2 RGB basemap live in the web app (Phase 4.5a, commit
   `d9f83d3`)
+- **Phase 4.5c visible grid + breakdowns:** 56-cell clickable grid layer
+  (gridPane, z-index 446) with per-cell change/vegetation breakdowns,
+  desert-masked stats (AOI: 42.6% raw -> 17.8% masked), ROI cross-reference
+  via ray-casting PIP, wired to "Show Changes" toggle
 
 ### Known limitations
 - 10 of 76 monthly scenes have partial coverage (diagonal nodata strip)
 - 20m resolution (Sentinel Hub free tier)
 - Only Riyadh covered
 - No radiometric calibration to sigma-naught (relative change only)
+- K-means "Land clearing" label is a heuristic for surface darkening /
+  vegetation loss / disturbance — not all detected pixels are genuine
+  demolition. Real attribution requires monthly time-series classification
+  (Phase 5+).
 
 ### Open questions
 - 2022_07 Central Urban NDVI spike: partial-coverage artifact now filtered
@@ -73,9 +85,11 @@ session end. Keep lean — only what must persist.
 
 ## Immediate priorities
 
-1. **Phase 4.5b:** Time-series chart on ROI click (deferred pending user feedback)
-2. **Phase 5:** Multi-city expansion (Jeddah, Mecca, NEOM, Dammam)
-3. Show prototype to 3 non-engineers, capture feedback
+1. **Phase 4.5c follow-up:** Relabel "Land clearing" -> "Surface change /
+   clearing" in popup + legend (5-min credibility fix)
+2. **Decide next phase:** Phase 4.5b (time-series chart on ROI click) vs
+   Phase 5 (Jeddah multi-city) vs zoom UX polish
+3. Re-test with the 4 original testers using the updated site
 4. SpaceUp Competition 2026 application status
 5. MSc applications (GMU/Edinburgh/Glasgow)
 6. SARsatX outreach
