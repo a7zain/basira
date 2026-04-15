@@ -277,6 +277,26 @@
             .green-legend { bottom: 64px; left: 8px; }
         }
 
+        /* ── Side-by-side slider override ────────────── */
+        .leaflet-sbs-range {
+            -webkit-appearance: none;
+            height: 100%;
+            cursor: col-resize;
+        }
+        .leaflet-sbs-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 4px;
+            height: 100%;
+            background: #10b981;
+            cursor: col-resize;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .leaflet-sbs-divider {
+            background: #10b981;
+            width: 3px;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
         /* ── ROI popup table ───────────────────────── */
         .roi-popup { min-width: 220px; }
         .roi-popup h3 { font-size: 14px; margin: 0 0 4px; color: #1a1a2e; }
@@ -309,7 +329,7 @@
 <!-- Map -->
 <div id="map">
     <!-- Year label on map (inside map container for correct z-stacking) -->
-    <div class="year-label" id="yearLabel">Sentinel-2 — 2020</div>
+    <div class="year-label" id="yearLabel">Sentinel-2 — 2026</div>
 </div>
 
 <!-- Legend (shown when changes are active) -->
@@ -353,21 +373,19 @@
     </div>
 </div>
 
-<!-- Time slider -->
+<!-- Compare bar -->
 <div class="time-bar">
-    <label>Timeline</label>
-    <button class="year-btn active" data-year="2020" onclick="setYear('2020')">2020</button>
-    <div class="separator"></div>
-    <button class="year-btn" data-year="2023" onclick="setYear('2023')">2023</button>
-    <div class="separator"></div>
-    <button class="year-btn" data-year="2026" onclick="setYear('2026')">2026</button>
+    <label>View</label>
+    <button class="year-btn" id="compareToggle" onclick="toggleCompare()">Compare 2020 vs 2026</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-side-by-side@2.2.0/leaflet-side-by-side.min.js"></script>
 <script>
 // ── State ──────────────────────────────────────────────
-let currentYear = '2020';
+let currentYear = '2026';
 let changeVisible = false;
+let compareActive = false;
 let opticalLayers = {};
 let changeLayer = null;
 let gridLayer = null;   // L.layerGroup of cell rectangles
@@ -377,6 +395,9 @@ let animating = false;
 let roiGeoData = null;  // cached for point-in-polygon lookup
 let ndviIndex = {};     // roi_name -> [{date, mean_ndvi, anomaly}, ...]
 let activeRoiChart = null; // current Chart.js instance (destroyed on popup close)
+let sideBySideControl = null;
+let sbsLeft = null;   // 2020 layer for side-by-side
+let sbsRight = null;  // 2026 layer for side-by-side
 
 // Badge colors for change classes
 const CLASS_COLORS = {
@@ -479,23 +500,30 @@ async function init() {
     bounds = await boundsResp.json();
     const imgBounds = [[bounds.south, bounds.west], [bounds.north, bounds.east]];
 
-    // Create optical overlays — all start visible but only 2020 opaque
+    // Create optical overlays for each year
     const years = ['2020', '2023', '2026'];
     for (const year of years) {
         const layer = L.imageOverlay(`data/optical_${year}.png`, imgBounds, {
-            opacity: year === '2020' ? 1 : 0,
+            opacity: year === '2026' ? 1 : 0,
             interactive: false,
         });
         layer.addTo(map);
         opticalLayers[year] = layer;
     }
 
-    // After layers render, add CSS transitions for smooth crossfade
-    requestAnimationFrame(() => {
-        for (const layer of Object.values(opticalLayers)) {
-            const el = layer.getElement();
-            if (el) el.style.transition = 'opacity 0.4s ease-in-out';
-        }
+    // Create dedicated panes for side-by-side layers (must be separate from opticalLayers)
+    map.createPane('sbsLeftPane');
+    map.getPane('sbsLeftPane').style.zIndex = 401;
+    map.createPane('sbsRightPane');
+    map.getPane('sbsRightPane').style.zIndex = 402;
+
+    sbsLeft = L.imageOverlay('data/optical_2020.png', imgBounds, {
+        interactive: false,
+        pane: 'sbsLeftPane',
+    });
+    sbsRight = L.imageOverlay('data/optical_2026.png', imgBounds, {
+        interactive: false,
+        pane: 'sbsRightPane',
     });
 
     // Create change overlay in custom pane (renders above optical layers)
@@ -759,33 +787,42 @@ async function init() {
     });
 }
 
-// ── Year switching with CSS-transition crossfade ───────
-function setYear(year) {
-    if (year === currentYear) return;
-
-    // Brief dip to black between years to make the switch unmistakable
-    // Step 1: fade old out
-    for (const [yr, layer] of Object.entries(opticalLayers)) {
-        setLayerOpacity(layer, 0);
-    }
-
-    // Step 2: after a short pause, fade new in
-    setTimeout(() => {
-        setLayerOpacity(opticalLayers[year], 1);
-    }, 150);
-
-    // Update buttons
-    document.querySelectorAll('.year-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.year === year);
-    });
-
-    // Update label with pulse effect
+// ── Compare toggle (side-by-side slider) ─────────────
+function toggleCompare() {
+    compareActive = !compareActive;
+    const btn = document.getElementById('compareToggle');
     const label = document.getElementById('yearLabel');
-    label.textContent = `Sentinel-2 — ${year}`;
-    label.style.opacity = '0';
-    setTimeout(() => { label.style.opacity = '1'; }, 100);
 
-    currentYear = year;
+    if (compareActive) {
+        // Hide all standard optical layers
+        for (const layer of Object.values(opticalLayers)) {
+            setLayerOpacity(layer, 0);
+        }
+
+        // Add side-by-side layers and control
+        sbsLeft.addTo(map);
+        sbsRight.addTo(map);
+        sideBySideControl = L.control.sideBySide(sbsLeft, sbsRight).addTo(map);
+
+        btn.classList.add('active');
+        btn.textContent = 'Single view';
+        label.textContent = '← 2020  |  2026 →';
+    } else {
+        // Remove side-by-side
+        if (sideBySideControl) {
+            sideBySideControl.remove();
+            sideBySideControl = null;
+        }
+        map.removeLayer(sbsLeft);
+        map.removeLayer(sbsRight);
+
+        // Restore 2026 optical layer
+        setLayerOpacity(opticalLayers['2026'], 1);
+
+        btn.classList.remove('active');
+        btn.textContent = 'Compare 2020 vs 2026';
+        label.textContent = 'Sentinel-2 — 2026';
+    }
 }
 
 // ── Change overlay toggle ──────────────────────────────
