@@ -373,6 +373,27 @@
     </div>
 </div>
 
+<!-- Pixel evolution legend (hidden by default, toggled with layer) -->
+<div class="green-legend" id="pixelClassLegend" style="display: none; bottom: 200px;">
+    <h4>Pixel Evolution (2020 → 2026)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(10,110,61,0.78);"></div>
+        Established vegetation
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(158,201,119,0.78);"></div>
+        Sparse / suburban green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(138,138,138,0.70);"></div>
+        Stable built-up
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(198,40,40,0.90);"></div>
+        Vegetation loss ⚠
+    </div>
+</div>
+
 <!-- Compare bar -->
 <div class="time-bar">
     <label>View</label>
@@ -769,8 +790,23 @@ async function init() {
         opacity: 1,
     });
 
+    // 5. Pixel evolution overlay (76-month K-means classification)
+    map.createPane('pixelClassPane');
+    map.getPane('pixelClassPane').style.zIndex = 442;
+    map.getPane('pixelClassPane').style.pointerEvents = 'none';
+
+    const pcBoundsResp = await fetch('data/phase4/pixel_classes_bounds.json');
+    const pcBounds = await pcBoundsResp.json();
+    const pcImgBounds = [[pcBounds.south, pcBounds.west], [pcBounds.north, pcBounds.east]];
+
+    const pixelClassLayer = L.imageOverlay('data/phase4/pixel_classes.png', pcImgBounds, {
+        opacity: 0.9,
+        pane: 'pixelClassPane',
+    });
+
     // Add Phase 4 layers to the layers control
     layersControl.addOverlay(greenMapLayer, 'Vegetation Change (2020→2025)');
+    layersControl.addOverlay(pixelClassLayer, 'Pixel evolution (76-month)');
     layersControl.addOverlay(roiLayer, 'Regions of Interest');
     layersControl.addOverlay(latestRgbLayer, 'Sentinel-2 RGB (latest)');
 
@@ -779,10 +815,16 @@ async function init() {
         if (e.layer === greenMapLayer) {
             document.getElementById('greenLegend').style.display = 'block';
         }
+        if (e.layer === pixelClassLayer) {
+            document.getElementById('pixelClassLegend').style.display = 'block';
+        }
     });
     map.on('overlayremove', function (e) {
         if (e.layer === greenMapLayer) {
             document.getElementById('greenLegend').style.display = 'none';
+        }
+        if (e.layer === pixelClassLayer) {
+            document.getElementById('pixelClassLegend').style.display = 'none';
         }
     });
 }
