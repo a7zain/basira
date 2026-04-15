@@ -1,0 +1,117 @@
+{
+  "computed_at": "2026-04-15T12:45:26.567802+00:00",
+  "n_cells_analyzed": 56,
+  "score_threshold": "top 10",
+  "hotspots": [
+    {
+      "rank": 1,
+      "cell_id": "2_0",
+      "lat": 24.73619,
+      "lng": 46.57557,
+      "score": 74.6,
+      "veg_loss_pct": 3.7,
+      "change_pct_masked": 28.6,
+      "dominant_change_category": "New construction",
+      "reason": "High vegetation loss (3.7%) + significant surface change"
+    },
+    {
+      "rank": 2,
+      "cell_id": "4_1",
+      "lat": 24.64514,
+      "lng": 46.62672,
+      "score": 69.7,
+      "veg_loss_pct": 2.4,
+      "change_pct_masked": 26.8,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (2.4%) + significant surface change + recent NDVI anomaly in ROI"
+    },
+    {
+      "rank": 3,
+      "cell_id": "3_1",
+      "lat": 24.69066,
+      "lng": 46.62672,
+      "score": 68.4,
+      "veg_loss_pct": 2.3,
+      "change_pct_masked": 27.0,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (2.3%) + significant surface change + recent NDVI anomaly in ROI"
+    },
+    {
+      "rank": 4,
+      "cell_id": "5_7",
+      "lat": 24.59961,
+      "lng": 46.92902,
+      "score": 63.4,
+      "veg_loss_pct": 5.4,
+      "change_pct_masked": 11.7,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "High vegetation loss (5.4%) + moderate surface change"
+    },
+    {
+      "rank": 5,
+      "cell_id": "3_3",
+      "lat": 24.69066,
+      "lng": 46.72902,
+      "score": 60.4,
+      "veg_loss_pct": 1.5,
+      "change_pct_masked": 26.5,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (1.5%) + significant surface change + recent NDVI anomaly in ROI"
+    },
+    {
+      "rank": 6,
+      "cell_id": "4_2",
+      "lat": 24.64514,
+      "lng": 46.67787,
+      "score": 59.7,
+      "veg_loss_pct": 2.4,
+      "change_pct_masked": 27.2,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (2.4%) + significant surface change"
+    },
+    {
+      "rank": 7,
+      "cell_id": "6_3",
+      "lat": 24.56343,
+      "lng": 46.72902,
+      "score": 53.4,
+      "veg_loss_pct": 1.8,
+      "change_pct_masked": 26.3,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (1.8%) + significant surface change"
+    },
+    {
+      "rank": 8,
+      "cell_id": "5_2",
+      "lat": 24.59961,
+      "lng": 46.67787,
+      "score": 50.9,
+      "veg_loss_pct": 1.8,
+      "change_pct_masked": 25.0,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (1.8%) + significant surface change"
+    },
+    {
+      "rank": 9,
+      "cell_id": "2_1",
+      "lat": 24.73619,
+      "lng": 46.62672,
+      "score": 50.8,
+      "veg_loss_pct": 1.2,
+      "change_pct_masked": 22.1,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Moderate vegetation loss (1.2%) + significant surface change + recent NDVI anomaly in ROI"
+    },
+    {
+      "rank": 10,
+      "cell_id": "5_3",
+      "lat": 24.59961,
+      "lng": 46.72902,
+      "score": 45.7,
+      "veg_loss_pct": 1.0,
+      "change_pct_masked": 26.6,
+      "dominant_change_category": "Surface change / clearing",
+      "reason": "Significant surface change"
+    }
+  ]
+}
