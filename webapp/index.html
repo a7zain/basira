@@ -414,7 +414,8 @@ let gridData = null;
 let bounds = null;
 let animating = false;
 let roiGeoData = null;  // cached for point-in-polygon lookup
-let ndviIndex = {};     // roi_name -> [{date, mean_ndvi, anomaly}, ...]
+let ndviIndex = {};     // roi_name -> [{date, mean_ndvi, anomaly, ...}, ...]
+let ndviRoiMeta = {};   // roi_name -> {n_anomalies, climatology}
 let activeRoiChart = null; // current Chart.js instance (destroyed on popup close)
 let sideBySideControl = null;
 let sbsLeft = null;   // 2020 layer for side-by-side
@@ -568,6 +569,10 @@ async function init() {
     const ndviRaw = await ndviResp.json();
     for (const roi of ndviRaw) {
         ndviIndex[roi.roi_name] = roi.data;
+        ndviRoiMeta[roi.roi_name] = {
+            n_anomalies: roi.n_anomalies || 0,
+            climatology: roi.climatology || [],
+        };
     }
 
     // ── Phase 4 layers ──────────────────────────────────
@@ -641,6 +646,7 @@ async function init() {
                     </table>
                     <div style="margin-top:8px;padding-top:6px;border-top:1px solid #eee;">
                         <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">NDVI Time Series (Jan 2020 – Mar 2026)</div>
+                        <div id="anomaly-summary-${name}" style="font-size:12px;color:#555;margin-bottom:6px;"></div>
                         <canvas id="${chartId}" width="320" height="180" style="width:320px;height:180px;"></canvas>
                     </div>
                     <button id="${zoomId}" style="margin-top:8px;width:100%;padding:6px 0;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;">Zoom to ROI</button>
@@ -659,9 +665,30 @@ async function init() {
                 const canvas = document.getElementById(chartId);
                 const series = ndviIndex[name];
                 if (!canvas || !series) return;
+
+                // Populate anomaly summary line
+                const roiMeta = ndviRoiMeta[name];
+                const summaryEl = document.getElementById('anomaly-summary-' + name);
+                if (summaryEl && roiMeta) {
+                    if (roiMeta.n_anomalies > 0) {
+                        summaryEl.innerHTML = '<strong>' + roiMeta.n_anomalies + '</strong> anomalous months detected';
+                    } else {
+                        summaryEl.textContent = 'No anomalies detected';
+                    }
+                }
+
                 const isSuspect = (d) => name === 'central_urban' && d === '2022-07-15';
-                const pointColors = series.map(p => isSuspect(p.date) ? '#f59e0b' : '#10b981');
-                const pointRadii = series.map(p => isSuspect(p.date) ? 5 : 2);
+                const pointColors = series.map(p => {
+                    if (isSuspect(p.date)) return '#f59e0b';
+                    if (p.is_anomaly && p.anomaly_direction === 'positive') return '#2e7d32';
+                    if (p.is_anomaly && p.anomaly_direction === 'negative') return '#f59e0b';
+                    return '#10b981';
+                });
+                const pointRadii = series.map(p => {
+                    if (isSuspect(p.date)) return 5;
+                    if (p.is_anomaly) return 6;
+                    return 2;
+                });
                 const segmentBorder = (ctx) => {
                     const i = ctx.p0DataIndex;
                     const j = ctx.p1DataIndex;
@@ -697,11 +724,16 @@ async function init() {
                                     },
                                     label: function (item) {
                                         const val = 'NDVI: ' + item.raw.toFixed(3);
-                                        const date = series[item.dataIndex].date;
-                                        if (isSuspect(date)) {
+                                        const pt = series[item.dataIndex];
+                                        if (isSuspect(pt.date)) {
                                             return [val, 'Partial scene coverage — value unreliable'];
                                         }
-                                        return val;
+                                        const lines = [val];
+                                        if (pt.is_anomaly) {
+                                            const sign = pt.anomaly_zscore > 0 ? '+' : '';
+                                            lines.push('Anomaly: ' + sign + pt.anomaly_zscore.toFixed(2) + ' std');
+                                        }
+                                        return lines;
                                     },
                                 },
                             },
