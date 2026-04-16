@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyadh Change Explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* ── Header ─────────────────────────────────── */
+        .header {
+            background: #1a1a2e;
+            border-bottom: 1px solid #2a2a4a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            position: relative;
+        }
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+        .header-left .subtitle {
+            font-size: 12px;
+            color: #8888aa;
+            margin-top: 2px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ── Change toggle button ───────────────────── */
+        .toggle-btn {
+            background: #2a2a4a;
+            border: 1px solid #3a3a5a;
+            color: #ccc;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toggle-btn:hover { background: #3a3a5a; color: #fff; }
+        .toggle-btn.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: #fff;
+        }
+        .toggle-btn .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #666;
+            transition: background 0.2s;
+        }
+        .toggle-btn.active .dot { background: #fff; }
+
+        /* ── Map ────────────────────────────────────── */
+        #map {
+            width: 100%;
+            height: calc(100vh - 52px - 56px);
+        }
+
+        /* ── Time slider bar ────────────────────────── */
+        .time-bar {
+            background: #1a1a2e;
+            border-top: 1px solid #2a2a4a;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 1000;
+            position: relative;
+        }
+        .time-bar label {
+            font-size: 12px;
+            color: #8888aa;
+            margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .year-btn {
+            background: #2a2a4a;
+            border: 1px solid #3a3a5a;
+            color: #aaa;
+            padding: 8px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 80px;
+        }
+        .year-btn:hover { background: #3a3a5a; color: #fff; }
+        .year-btn.active {
+            background: #10b981;
+            border-color: #34d399;
+            color: #fff;
+        }
+        .time-bar .separator {
+            width: 40px;
+            height: 2px;
+            background: #3a3a5a;
+            border-radius: 1px;
+        }
+
+        /* ── Legend ──────────────────────────────────── */
+        .legend {
+            position: absolute;
+            top: 70px;
+            right: 16px;
+            background: rgba(20, 20, 40, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            z-index: 1002;
+            min-width: 180px;
+            display: none;
+        }
+        .legend.visible { display: block; }
+        .legend h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8888aa;
+            margin-bottom: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        .legend-swatch {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.15);
+            flex-shrink: 0;
+        }
+
+        /* ── Info panel (year label on map) ──────────── */
+        .year-label {
+            position: absolute;
+            top: 16px;
+            left: 56px;
+            background: rgba(16, 185, 129, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(52, 211, 153, 0.6);
+            border-radius: 8px;
+            padding: 8px 18px;
+            z-index: 1001;
+            font-size: 15px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: opacity 0.3s;
+        }
+
+        /* ── Popup styling ──────────────────────────── */
+        .change-popup {
+            min-width: 280px;
+        }
+        .change-popup h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #1a1a2e;
+        }
+        .change-popup .coords {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .change-popup .thumb-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .change-popup .thumb-col {
+            text-align: center;
+            flex: 1;
+        }
+        .change-popup .thumb-col img {
+            width: 128px;
+            height: 128px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .change-popup .thumb-col .thumb-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+        .change-popup .change-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* ── Green map legend ───────────────────────── */
+        .green-legend {
+            position: absolute;
+            bottom: 70px;
+            left: 16px;
+            background: rgba(20, 20, 40, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            z-index: 1002;
+            min-width: 180px;
+        }
+        .green-legend h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8888aa;
+            margin-bottom: 8px;
+        }
+
+        /* ── Leaflet overrides ──────────────────────── */
+        .leaflet-control-layers {
+            background: rgba(20, 20, 40, 0.92) !important;
+            border: 1px solid #3a3a5a !important;
+            border-radius: 6px !important;
+            color: #ccc !important;
+        }
+        .leaflet-control-layers label { color: #ccc !important; }
+        .leaflet-control-zoom a {
+            background: rgba(20, 20, 40, 0.92) !important;
+            color: #ccc !important;
+            border-color: #3a3a5a !important;
+        }
+        .leaflet-control-zoom a:hover { color: #fff !important; }
+
+        /* ── Mobile ─────────────────────────────────── */
+        @media (max-width: 640px) {
+            .header { padding: 8px 12px; }
+            .header-left h1 { font-size: 15px; }
+            .header-left .subtitle { font-size: 10px; }
+            .toggle-btn { padding: 6px 10px; font-size: 12px; }
+            .year-btn { padding: 6px 16px; font-size: 13px; min-width: 60px; }
+            .time-bar { padding: 8px 12px; gap: 4px; }
+            .time-bar label { display: none; }
+            .separator { width: 20px !important; }
+            .legend { bottom: 64px; right: 8px; }
+            .green-legend { bottom: 64px; left: 8px; }
+        }
+
+        /* ── Hotspot panel ──────────────────────────── */
+        .hotspot-panel {
+            position: absolute;
+            bottom: 70px;
+            right: 16px;
+            background: rgba(20, 20, 40, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 0;
+            z-index: 1002;
+            min-width: 260px;
+            max-width: 320px;
+            max-height: 340px;
+            display: none;
+        }
+        .hotspot-panel.visible { display: block; }
+        .hotspot-panel-header {
+            padding: 10px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #3a3a5a;
+        }
+        .hotspot-panel-header h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8888aa;
+            margin: 0;
+        }
+        .hotspot-panel-header .chevron {
+            font-size: 10px;
+            color: #8888aa;
+            transition: transform 0.2s;
+        }
+        .hotspot-panel-header .chevron.collapsed { transform: rotate(-90deg); }
+        .hotspot-panel-body {
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+        .hotspot-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid rgba(58, 58, 90, 0.3);
+        }
+        .hotspot-row:hover { background: rgba(255, 255, 255, 0.05); }
+        .hotspot-rank {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f44336;
+            min-width: 18px;
+            text-align: center;
+        }
+        .hotspot-score {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff8800;
+            min-width: 32px;
+        }
+        .hotspot-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .hotspot-cell-id {
+            font-size: 11px;
+            color: #ccc;
+            font-weight: 600;
+        }
+        .hotspot-reason {
+            font-size: 10px;
+            color: #8888aa;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hotspot-onset {
+            font-size: 9px;
+            color: #666688;
+            margin-top: 1px;
+        }
+
+        /* ── Side-by-side slider override ────────────── */
+        .leaflet-sbs-range {
+            -webkit-appearance: none;
+            height: 100%;
+            cursor: col-resize;
+        }
+        .leaflet-sbs-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 4px;
+            height: 100%;
+            background: #10b981;
+            cursor: col-resize;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .leaflet-sbs-divider {
+            background: #10b981;
+            width: 3px;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ── Cell action button in popup ─────────────── */
+        .cell-action-btn {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 6px 0;
+            border: 1px solid #7c3aed;
+            background: #f5f3ff;
+            color: #6d28d9;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .cell-action-btn:hover { background: #ede9fe; }
+
+        /* ── ROI popup table ───────────────────────── */
+        .roi-popup { min-width: 220px; }
+        .roi-popup h3 { font-size: 14px; margin: 0 0 4px; color: #1a1a2e; }
+        .roi-popup .roi-desc { font-size: 11px; color: #666; margin: 0 0 8px; }
+        .roi-popup table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .roi-popup td { padding: 3px 6px; }
+        .roi-popup tr + tr { border-top: 1px solid #eee; }
+        .roi-popup .swatch {
+            display: inline-block; width: 10px; height: 10px;
+            border-radius: 2px; margin-right: 4px; vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <h1>Riyadh Change Explorer</h1>
+        <div class="subtitle">Tracking urban development with satellite imagery (2020–2026)</div>
+    </div>
+    <div class="header-right">
+        <button class="toggle-btn" id="changeToggle" onclick="toggleChangeOverlay()">
+            <span class="dot"></span>
+            Show Changes
+        </button>
+    </div>
+</div>
+
+<!-- Map -->
+<div id="map">
+    <!-- Year label on map (inside map container for correct z-stacking) -->
+    <div class="year-label" id="yearLabel">Sentinel-2 — 2026</div>
+</div>
+
+<!-- Legend (shown when changes are active) -->
+<div class="legend" id="legend">
+    <h4>Change Type (2020 → 2026)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(76,175,80,0.65);"></div>
+        New construction
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(33,150,243,0.65);"></div>
+        Surface change / clearing
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(244,67,54,0.65);"></div>
+        Vegetation change
+    </div>
+    <div class="legend-item" style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3a5a;">
+        <div class="legend-swatch" style="background: transparent; border: 1px dashed #666;"></div>
+        Stable (no change)
+    </div>
+    <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3a5a; font-size: 10px; color: #6666aa;">
+        Click a cell for breakdown
+    </div>
+</div>
+
+<!-- Green map legend (visible by default, toggled with layer) -->
+<div class="green-legend" id="greenLegend">
+    <h4>Vegetation (2020 → 2025)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(0,128,0,0.78);"></div>
+        Stable green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(50,255,0,0.86);"></div>
+        New green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(255,25,25,0.86);"></div>
+        Lost green
+    </div>
+</div>
+
+<!-- Pixel evolution legend (hidden by default, toggled with layer) -->
+<div class="green-legend" id="pixelClassLegend" style="display: none; bottom: 200px;">
+    <h4>Pixel Evolution (2020 → 2026)</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(10,110,61,0.78);"></div>
+        Established vegetation
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(158,201,119,0.78);"></div>
+        Sparse / suburban green
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(138,138,138,0.70);"></div>
+        Stable built-up
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(198,40,40,0.90);"></div>
+        Vegetation loss ⚠
+    </div>
+</div>
+
+<!-- Confidence legend (hidden by default, toggled with layer) -->
+<div class="green-legend" id="confidenceLegend" style="display: none; bottom: 70px; right: 260px; left: auto;">
+    <h4>Data Confidence</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: transparent; border: 1px solid #555;"></div>
+        Solid: full 76-month coverage
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(60,60,60,0.55);"></div>
+        Hazed: fewer scenes available
+    </div>
+    <div style="font-size: 10px; color: #6666aa; margin-top: 6px; line-height: 1.4;">
+        Lower confidence regions had partial<br>Sentinel-2 coverage during 2020–2026.
+    </div>
+</div>
+
+<!-- Hotspot panel -->
+<div class="hotspot-panel" id="hotspotPanel">
+    <div class="hotspot-panel-header" onclick="toggleHotspotPanel()">
+        <h4>Active Hotspots (Top 10)</h4>
+        <span class="chevron" id="hotspotChevron">▼</span>
+    </div>
+    <div class="hotspot-panel-body" id="hotspotBody"></div>
+</div>
+
+<!-- Compare bar -->
+<div class="time-bar">
+    <label>View</label>
+    <button class="year-btn" id="compareToggle" onclick="toggleCompare()">Compare 2020 vs 2026</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-side-by-side@2.2.0/leaflet-side-by-side.min.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────
+let currentYear = '2026';
+let changeVisible = false;
+let compareActive = false;
+let opticalLayers = {};
+let changeLayer = null;
+let gridLayer = null;   // L.layerGroup of cell rectangles
+let gridData = null;
+let bounds = null;
+let animating = false;
+let roiGeoData = null;  // cached for point-in-polygon lookup
+let ndviIndex = {};     // roi_name -> [{date, mean_ndvi, anomaly, ...}, ...]
+let ndviRoiMeta = {};   // roi_name -> {n_anomalies, climatology}
+let activeRoiChart = null; // current Chart.js instance (destroyed on popup close)
+let activeCellChart = null; // Chart.js instance for cell popup charts
+let cellTimeseriesIndex = {}; // cell_id -> [{date, mean_ndvi}, ...]
+let sideBySideControl = null;
+let sbsLeft = null;   // 2020 layer for side-by-side
+let sbsRight = null;  // 2026 layer for side-by-side
+let hotspotData = null;
+let hotspotBorderLayer = null;
+let pixelClassLayer = null;
+let cellVegLoss = {};   // cell_id -> {veg_loss_pct, veg_loss_count}
+
+// Badge colors for change classes
+const CLASS_COLORS = {
+    'New construction':  { bg: '#32b432', text: '#fff' },
+    'Surface change / clearing': { bg: '#1e64dc', text: '#fff' },
+    'Vegetation change': { bg: '#dc3232', text: '#fff' },
+    'Stable':            { bg: '#888',    text: '#fff' },
+};
+
+// Colors for breakdown categories
+const BREAKDOWN_COLORS = {
+    new_construction:  '#4CAF50',
+    land_clearing:     '#2196F3',
+    vegetation_change: '#F44336',
+    stable:            '#bbb',
+};
+const BREAKDOWN_LABELS = {
+    new_construction:  'New construction',
+    land_clearing:     'Surface change / clearing',
+    vegetation_change: 'Vegetation change',
+    stable:            'Stable',
+};
+const VEG_COLORS = {
+    stable_green: '#008000',
+    new_green:    '#32ff00',
+    lost_green:   '#ff1919',
+};
+const VEG_LABELS = {
+    stable_green: 'Stable green',
+    new_green:    'New green',
+    lost_green:   'Lost green',
+};
+
+// ── Initialize map ─────────────────────────────────────
+const map = L.map('map', {
+    center: [24.7, 46.75],
+    zoom: 12,
+    minZoom: 10,
+    maxZoom: 18,
+    zoomControl: true,
+});
+
+// Create a custom pane for the change overlay so it renders ABOVE optical layers
+map.createPane('changePane');
+map.getPane('changePane').style.zIndex = 450; // above overlayPane (400)
+map.getPane('changePane').style.pointerEvents = 'none'; // don't block clicks
+
+// Grid cell pane: above ROI (445), below change overlay (450)
+map.createPane('gridPane');
+map.getPane('gridPane').style.zIndex = 446;
+
+// Basemaps
+const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap',
+    maxZoom: 19,
+});
+const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; Esri',
+    maxZoom: 19,
+});
+
+osmBase.addTo(map);
+
+const layersControl = L.control.layers(
+    { 'OpenStreetMap': osmBase, 'Esri Satellite': esriSat },
+    {},
+    { position: 'topright' }
+).addTo(map);
+
+// ── "Fit to Riyadh" home button control ───────────────────────
+const HomeControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function () {
+        const btn = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        btn.innerHTML = '<a href="#" title="Fit to Riyadh" role="button" aria-label="Fit to Riyadh" style="font-size:18px;line-height:30px;width:30px;height:30px;display:block;text-align:center;text-decoration:none;color:#333;background:#fff;">⌂</a>';
+        L.DomEvent.disableClickPropagation(btn);
+        btn.querySelector('a').addEventListener('click', function (e) {
+            e.preventDefault();
+            if (bounds) {
+                map.fitBounds([[bounds.south, bounds.west], [bounds.north, bounds.east]]);
+            } else {
+                map.setView([24.7, 46.75], 12);
+            }
+        });
+        return btn;
+    },
+});
+map.addControl(new HomeControl());
+
+// ── Helpers: direct element opacity (bypass Leaflet batching) ──
+function setLayerOpacity(layer, val) {
+    const el = layer.getElement();
+    if (el) el.style.opacity = val;
+}
+
+// ── Load data ──────────────────────────────────────────
+async function init() {
+    // Load bounds
+    const boundsResp = await fetch('data/bounds.json');
+    bounds = await boundsResp.json();
+    const imgBounds = [[bounds.south, bounds.west], [bounds.north, bounds.east]];
+
+    // Create optical overlays for each year
+    const years = ['2020', '2023', '2026'];
+    for (const year of years) {
+        const layer = L.imageOverlay(`data/optical_${year}.png`, imgBounds, {
+            opacity: year === '2026' ? 1 : 0,
+            interactive: false,
+        });
+        layer.addTo(map);
+        opticalLayers[year] = layer;
+    }
+
+    // Create dedicated panes for side-by-side layers (must be separate from opticalLayers)
+    map.createPane('sbsLeftPane');
+    map.getPane('sbsLeftPane').style.zIndex = 401;
+    map.createPane('sbsRightPane');
+    map.getPane('sbsRightPane').style.zIndex = 402;
+
+    sbsLeft = L.imageOverlay('data/optical_2020.png', imgBounds, {
+        interactive: false,
+        pane: 'sbsLeftPane',
+    });
+    sbsRight = L.imageOverlay('data/optical_2026.png', imgBounds, {
+        interactive: false,
+        pane: 'sbsRightPane',
+    });
+
+    // Create change overlay in custom pane (renders above optical layers)
+    changeLayer = L.imageOverlay('data/change_overlay.png', imgBounds, {
+        opacity: 0,
+        interactive: false,
+        pane: 'changePane',
+    });
+    changeLayer.addTo(map);
+    requestAnimationFrame(() => {
+        const el = changeLayer.getElement();
+        if (el) el.style.transition = 'opacity 0.3s ease-in-out';
+    });
+
+    // Load grid index for click interaction
+    const gridResp = await fetch('data/grid_index.json');
+    gridData = await gridResp.json();
+
+    // Load NDVI time-series and index by ROI name
+    const ndviResp = await fetch('data/phase4/ndvi_timeseries.json');
+    const ndviRaw = await ndviResp.json();
+    for (const roi of ndviRaw) {
+        ndviIndex[roi.roi_name] = roi.data;
+        ndviRoiMeta[roi.roi_name] = {
+            n_anomalies: roi.n_anomalies || 0,
+            climatology: roi.climatology || [],
+        };
+    }
+
+    // ── Phase 4 layers ──────────────────────────────────
+
+    // Custom panes for z-ordering: optical(400) < green(440) < ROI(445) < change(450)
+    map.createPane('greenPane');
+    map.getPane('greenPane').style.zIndex = 440;
+    map.getPane('greenPane').style.pointerEvents = 'none';
+
+    map.createPane('roiPane');
+    map.getPane('roiPane').style.zIndex = 445;
+
+    // 1. Green map overlay (default ON)
+    const gmBoundsResp = await fetch('data/phase4/green_map_bounds.json');
+    const gmBounds = await gmBoundsResp.json();
+    const gmImgBounds = [[gmBounds.south, gmBounds.west], [gmBounds.north, gmBounds.east]];
+
+    const greenMapLayer = L.imageOverlay('data/phase4/green_map.png', gmImgBounds, {
+        opacity: 0.9,
+        pane: 'greenPane',
+    });
+    greenMapLayer.addTo(map);
+
+    // 2. ROI GeoJSON layer with clickable popups
+    const ROI_STATS = {
+        wadi_hanifa:        { label: 'Wadi Hanifa',       stable: 8.519, new_g: 1.600, lost: 1.977, ratio: 0.81 },
+        king_salman_park:   { label: 'King Salman Park',  stable: 0.280, new_g: 0.222, lost: 0.058, ratio: 3.82 },
+        northern_expansion: { label: 'Northern Expansion', stable: 1.589, new_g: 0.602, lost: 0.279, ratio: 2.15 },
+        central_urban:      { label: 'Central Urban',      stable: 1.586, new_g: 0.184, lost: 0.486, ratio: 0.38 },
+    };
+
+    const roiResp = await fetch('data/phase4/rois.geojson');
+    const roiData = await roiResp.json();
+    roiGeoData = roiData; // cache for point-in-polygon in cell popups
+
+    const roiLayer = L.geoJSON(roiData, {
+        pane: 'roiPane',
+        style: {
+            color: '#ffcc00',
+            weight: 2,
+            fillOpacity: 0.05,
+            fillColor: '#ffcc00',
+        },
+        onEachFeature: function (feature, layer) {
+            const name = feature.properties.name;
+            const s = ROI_STATS[name];
+            if (!s) return;
+            const chartId = 'chart-' + name;
+            const zoomId = 'roi-zoom-' + name;
+            layer.bindPopup(`
+                <div class="roi-popup" style="min-width:340px;">
+                    <h3>${s.label}</h3>
+                    <p class="roi-desc">${feature.properties.description}</p>
+                    <table>
+                        <tr>
+                            <td><span class="swatch" style="background:#008000;"></span>Stable green</td>
+                            <td style="text-align:right;">${s.stable} km²</td>
+                        </tr>
+                        <tr>
+                            <td><span class="swatch" style="background:#32ff00;"></span>New green</td>
+                            <td style="text-align:right;">${s.new_g} km²</td>
+                        </tr>
+                        <tr>
+                            <td><span class="swatch" style="background:#ff1919;"></span>Lost green</td>
+                            <td style="text-align:right;">${s.lost} km²</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">New / Lost</td>
+                            <td style="text-align:right; font-weight:700;">${s.ratio}</td>
+                        </tr>
+                    </table>
+                    <div style="margin-top:8px;padding-top:6px;border-top:1px solid #eee;">
+                        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">NDVI Time Series (Jan 2020 – Mar 2026)</div>
+                        <div id="anomaly-summary-${name}" style="font-size:12px;color:#555;margin-bottom:6px;"></div>
+                        <canvas id="${chartId}" width="320" height="180" style="width:320px;height:180px;"></canvas>
+                    </div>
+                    <button id="${zoomId}" style="margin-top:8px;width:100%;padding:6px 0;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;">Zoom to ROI</button>
+                </div>
+            `, { maxWidth: 380, minWidth: 340 });
+            layer.on('popupopen', function () {
+                // Wire zoom button
+                const zoomBtn = document.getElementById(zoomId);
+                if (zoomBtn) {
+                    zoomBtn.addEventListener('click', function () {
+                        map.closePopup();
+                        map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+                    });
+                }
+                // Create NDVI chart
+                const canvas = document.getElementById(chartId);
+                const series = ndviIndex[name];
+                if (!canvas || !series) return;
+
+                // Populate anomaly summary line
+                const roiMeta = ndviRoiMeta[name];
+                const summaryEl = document.getElementById('anomaly-summary-' + name);
+                if (summaryEl && roiMeta) {
+                    if (roiMeta.n_anomalies > 0) {
+                        summaryEl.innerHTML = '<strong>' + roiMeta.n_anomalies + '</strong> anomalous months detected';
+                    } else {
+                        summaryEl.textContent = 'No anomalies detected';
+                    }
+                }
+
+                const isSuspect = (d) => name === 'central_urban' && d === '2022-07-15';
+                const pointColors = series.map(p => {
+                    if (isSuspect(p.date)) return '#f59e0b';
+                    if (p.is_anomaly && p.anomaly_direction === 'positive') return '#2e7d32';
+                    if (p.is_anomaly && p.anomaly_direction === 'negative') return '#f59e0b';
+                    return '#10b981';
+                });
+                const pointRadii = series.map(p => {
+                    if (isSuspect(p.date)) return 5;
+                    if (p.is_anomaly) return 6;
+                    return 2;
+                });
+                const segmentBorder = (ctx) => {
+                    const i = ctx.p0DataIndex;
+                    const j = ctx.p1DataIndex;
+                    if (isSuspect(series[i].date) || isSuspect(series[j].date)) return [4, 4];
+                    return undefined;
+                };
+                activeRoiChart = new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: series.map(p => p.date),
+                        datasets: [{
+                            data: series.map(p => p.mean_ndvi),
+                            borderColor: '#10b981',
+                            borderWidth: 1.5,
+                            pointBackgroundColor: pointColors,
+                            pointBorderColor: pointColors,
+                            pointRadius: pointRadii,
+                            pointHoverRadius: 5,
+                            fill: false,
+                            tension: 0.1,
+                            segment: { borderDash: segmentBorder },
+                        }],
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: function (items) {
+                                        const d = new Date(items[0].label);
+                                        return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                                    },
+                                    label: function (item) {
+                                        const val = 'NDVI: ' + item.raw.toFixed(3);
+                                        const pt = series[item.dataIndex];
+                                        if (isSuspect(pt.date)) {
+                                            return [val, 'Partial scene coverage — value unreliable'];
+                                        }
+                                        const lines = [val];
+                                        if (pt.is_anomaly) {
+                                            const sign = pt.anomaly_zscore > 0 ? '+' : '';
+                                            lines.push('Anomaly: ' + sign + pt.anomaly_zscore.toFixed(2) + ' std');
+                                        }
+                                        return lines;
+                                    },
+                                },
+                            },
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'year', tooltipFormat: 'MMM yyyy' },
+                                ticks: { font: { size: 10 }, color: '#888' },
+                                grid: { color: 'rgba(0,0,0,0.06)' },
+                            },
+                            y: {
+                                min: 0.04,
+                                max: 0.22,
+                                ticks: { font: { size: 10 }, color: '#888', callback: v => v.toFixed(2) },
+                                grid: { color: 'rgba(0,0,0,0.06)' },
+                            },
+                        },
+                    },
+                });
+            });
+            layer.on('popupclose', function () {
+                if (activeRoiChart) {
+                    activeRoiChart.destroy();
+                    activeRoiChart = null;
+                }
+            });
+        },
+    });
+    roiLayer.addTo(map);
+
+    // 3. Grid cell rectangles (clickable, styled by change intensity)
+    gridLayer = L.layerGroup();
+    const cellW = (bounds.east - bounds.west) / gridData.n_cols;
+    const cellH = (bounds.north - bounds.south) / gridData.n_rows;
+
+    for (const cell of gridData.cells) {
+        const west  = bounds.west + cell.col * cellW;
+        const east  = west + cellW;
+        const north = bounds.north - cell.row * cellH;
+        const south = north - cellH;
+
+        // Fill opacity ramp: 0%→0, 5%→0.10, 25%→0.25, 50%+→0.30
+        const pct = cell.change_pct_masked || 0;
+        let fillOp = 0;
+        if (pct >= 50) fillOp = 0.30;
+        else if (pct > 0) fillOp = Math.min(0.30, 0.10 + (pct / 50) * 0.20);
+
+        const rect = L.rectangle([[south, west], [north, east]], {
+            pane: 'gridPane',
+            color: '#ff8800',
+            weight: 1,
+            opacity: 0.4,
+            fillColor: '#ff8800',
+            fillOpacity: fillOp,
+        });
+
+        // Hover highlight
+        rect.on('mouseover', function () {
+            this.setStyle({ weight: 2, opacity: 0.8 });
+        });
+        rect.on('mouseout', function () {
+            this.setStyle({ weight: 1, opacity: 0.4 });
+        });
+
+        // Click → breakdown popup
+        rect.on('click', function (e) {
+            L.DomEvent.stopPropagation(e);
+            const popupHtml = buildCellPopup(cell);
+            L.popup({ maxWidth: 340 })
+                .setLatLng(e.latlng)
+                .setContent(popupHtml)
+                .openOn(map);
+        });
+
+        gridLayer.addLayer(rect);
+    }
+    // Grid starts hidden — toggled with "Show Changes"
+
+    // 4. Sentinel-2 RGB (latest) overlay
+    const rgbBoundsResp = await fetch('data/phase4/latest_rgb_bounds.json');
+    const rgbBounds = await rgbBoundsResp.json();
+    const rgbImgBounds = [[rgbBounds.south, rgbBounds.west], [rgbBounds.north, rgbBounds.east]];
+
+    const latestRgbLayer = L.imageOverlay('data/phase4/latest_rgb.png', rgbImgBounds, {
+        opacity: 1,
+    });
+
+    // 5. Pixel evolution overlay (76-month K-means classification)
+    map.createPane('pixelClassPane');
+    map.getPane('pixelClassPane').style.zIndex = 442;
+    map.getPane('pixelClassPane').style.pointerEvents = 'none';
+
+    const pcBoundsResp = await fetch('data/phase4/pixel_classes_bounds.json');
+    const pcBounds = await pcBoundsResp.json();
+    const pcImgBounds = [[pcBounds.south, pcBounds.west], [pcBounds.north, pcBounds.east]];
+
+    pixelClassLayer = L.imageOverlay('data/phase4/pixel_classes.png', pcImgBounds, {
+        opacity: 0.9,
+        pane: 'pixelClassPane',
+    });
+
+    // Add Phase 4 layers to the layers control
+    layersControl.addOverlay(greenMapLayer, 'Vegetation Change (2020→2025)');
+    layersControl.addOverlay(pixelClassLayer, 'Pixel evolution (76-month)');
+    layersControl.addOverlay(roiLayer, 'Regions of Interest');
+    layersControl.addOverlay(latestRgbLayer, 'Sentinel-2 RGB (latest)');
+
+    // Toggle green legend when green map layer is added/removed
+    map.on('overlayadd', function (e) {
+        if (e.layer === greenMapLayer) {
+            document.getElementById('greenLegend').style.display = 'block';
+        }
+        if (e.layer === pixelClassLayer) {
+            document.getElementById('pixelClassLegend').style.display = 'block';
+        }
+    });
+    map.on('overlayremove', function (e) {
+        if (e.layer === greenMapLayer) {
+            document.getElementById('greenLegend').style.display = 'none';
+        }
+        if (e.layer === pixelClassLayer) {
+            document.getElementById('pixelClassLegend').style.display = 'none';
+        }
+        if (e.layer === confidenceLayer) {
+            document.getElementById('confidenceLegend').style.display = 'none';
+        }
+    });
+
+    // 6a. Confidence (coverage quality) overlay
+    map.createPane('confidencePane');
+    map.getPane('confidencePane').style.zIndex = 443;
+    map.getPane('confidencePane').style.pointerEvents = 'none';
+
+    const covBoundsResp = await fetch('data/phase4/coverage_mask_bounds.json');
+    const covBounds = await covBoundsResp.json();
+    const covImgBounds = [[covBounds.south, covBounds.west], [covBounds.north, covBounds.east]];
+
+    const confidenceLayer = L.imageOverlay('data/phase4/coverage_mask.png', covImgBounds, {
+        opacity: 0.9,
+        pane: 'confidencePane',
+    });
+    layersControl.addOverlay(confidenceLayer, 'Data quality (confidence)');
+
+    map.on('overlayadd', function (e) {
+        if (e.layer === confidenceLayer) {
+            document.getElementById('confidenceLegend').style.display = 'block';
+        }
+    });
+
+    // 6b. Load per-cell veg loss data
+    try {
+        const vlResp = await fetch('data/phase4/cell_veg_loss.json');
+        cellVegLoss = await vlResp.json();
+    } catch (e) {
+        console.warn('cell_veg_loss.json not found');
+    }
+
+    // 6c. Load per-cell NDVI time series (all 56 cells)
+    try {
+        const ctResp = await fetch('data/phase4/cell_timeseries.json');
+        cellTimeseriesIndex = await ctResp.json();
+    } catch (e) {
+        console.warn('cell_timeseries.json not found');
+    }
+
+    // 7. Hotspots layer and panel
+    try {
+        const hsResp = await fetch('data/phase4/hotspots.json');
+        hotspotData = await hsResp.json();
+    } catch (e) {
+        console.warn('hotspots.json not found, skipping hotspot panel');
+    }
+
+    if (hotspotData && hotspotData.hotspots && hotspotData.hotspots.length > 0) {
+        // Create hotspot border pane (above pixelClass 442, below ROI 445)
+        map.createPane('hotspotPane');
+        map.getPane('hotspotPane').style.zIndex = 444;
+        map.getPane('hotspotPane').style.pointerEvents = 'none';
+
+        hotspotBorderLayer = L.layerGroup();
+        const hotspotIds = new Set(hotspotData.hotspots.map(h => h.cell_id));
+
+        for (const hs of hotspotData.hotspots) {
+            const [r, c] = hs.cell_id.split('_').map(Number);
+            const west  = bounds.west + c * cellW;
+            const east  = west + cellW;
+            const north = bounds.north - r * cellH;
+            const south = north - cellH;
+
+            L.rectangle([[south, west], [north, east]], {
+                pane: 'hotspotPane',
+                color: '#f44336',
+                weight: 2,
+                opacity: 0.8,
+                fill: false,
+            }).addTo(hotspotBorderLayer);
+        }
+        hotspotBorderLayer.addTo(map);
+
+        // Populate panel rows
+        const body = document.getElementById('hotspotBody');
+        for (const hs of hotspotData.hotspots) {
+            const row = document.createElement('div');
+            row.className = 'hotspot-row';
+            const onsetLine = hs.est_onset
+                ? `Onset: ${new Date(hs.est_onset + '-15').toLocaleDateString('en-US', {month:'short', year:'numeric'})} · \u0394NDVI: ${hs.delta_ndvi >= 0 ? '+' : ''}${hs.delta_ndvi}`
+                : 'No sustained drop detected';
+            row.innerHTML = `
+                <span class="hotspot-rank">#${hs.rank}</span>
+                <span class="hotspot-score">${hs.score}</span>
+                <div class="hotspot-info">
+                    <div class="hotspot-cell-id">Cell ${hs.cell_id}</div>
+                    <div class="hotspot-reason" title="${hs.reason}">${hs.reason}</div>
+                    <div class="hotspot-onset">${onsetLine}</div>
+                </div>
+            `;
+            row.addEventListener('click', function () {
+                // Find the matching grid cell data for the popup
+                const cell = gridData.cells.find(c => c.id === hs.cell_id);
+                map.flyTo([hs.lat, hs.lng], 14, { duration: 0.8 });
+                if (cell) {
+                    setTimeout(() => {
+                        const popupHtml = buildCellPopup(cell);
+                        L.popup({ maxWidth: 340 })
+                            .setLatLng([hs.lat, hs.lng])
+                            .setContent(popupHtml)
+                            .openOn(map);
+                    }, 900);
+                }
+            });
+            body.appendChild(row);
+        }
+
+        document.getElementById('hotspotPanel').classList.add('visible');
+    }
+}
+
+// ── Hotspot panel toggle ─────────────────────────────
+function toggleHotspotPanel() {
+    const body = document.getElementById('hotspotBody');
+    const chevron = document.getElementById('hotspotChevron');
+    if (body.style.display === 'none') {
+        body.style.display = '';
+        chevron.classList.remove('collapsed');
+    } else {
+        body.style.display = 'none';
+        chevron.classList.add('collapsed');
+    }
+}
+
+// ── Cell popup handlers: drill-in + chart ─────────────
+map.on('popupopen', function (e) {
+    const container = e.popup.getElement();
+    if (!container) return;
+
+    // Drill-in button handler
+    const btn = container.querySelector('.cell-action-btn');
+    if (btn) {
+        btn.addEventListener('click', function () {
+            const cellId = this.id.replace('cell-drill-', '');
+            if (pixelClassLayer && !map.hasLayer(pixelClassLayer)) {
+                map.addLayer(pixelClassLayer);
+                document.getElementById('pixelClassLegend').style.display = 'block';
+            }
+            const statEl = document.getElementById('cell-veg-stat-' + cellId);
+            const vl = cellVegLoss[cellId];
+            if (statEl && vl) {
+                statEl.style.display = 'block';
+                statEl.innerHTML = `Vegetation loss pixels: <strong>${vl.veg_loss_pct}%</strong> (${vl.veg_loss_count.toLocaleString()} pixels)`;
+            } else if (statEl) {
+                statEl.style.display = 'block';
+                statEl.textContent = 'Vegetation loss: no data for this cell';
+            }
+            this.disabled = true;
+            this.style.opacity = '0.5';
+            this.textContent = 'Pixel evolution active';
+        });
+    }
+
+    // Cell NDVI chart
+    const cellCanvas = container.querySelector('[id^="cell-chart-"]');
+    if (cellCanvas) {
+        const cellId = cellCanvas.id.replace('cell-chart-', '');
+        const series = cellTimeseriesIndex[cellId];
+        if (!series || series.length === 0) {
+            cellCanvas.style.display = 'none';
+            return;
+        }
+
+        if (activeCellChart) {
+            activeCellChart.destroy();
+            activeCellChart = null;
+        }
+
+        // Check if this cell is a hotspot with onset
+        let onsetDate = null;
+        if (hotspotData && hotspotData.hotspots) {
+            const hs = hotspotData.hotspots.find(h => h.cell_id === cellId);
+            if (hs && hs.est_onset) {
+                onsetDate = hs.est_onset + '-15';
+            }
+        }
+
+        const pointColors = series.map(p =>
+            onsetDate && p.date === onsetDate ? '#f44336' : '#10b981'
+        );
+        const pointRadii = series.map(p =>
+            onsetDate && p.date === onsetDate ? 5 : 2
+        );
+
+        activeCellChart = new Chart(cellCanvas, {
+            type: 'line',
+            data: {
+                labels: series.map(p => p.date),
+                datasets: [{
+                    data: series.map(p => p.mean_ndvi),
+                    borderColor: '#10b981',
+                    borderWidth: 1.5,
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: pointColors,
+                    pointRadius: pointRadii,
+                    pointHoverRadius: 5,
+                    fill: false,
+                    tension: 0.1,
+                }],
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function (items) {
+                                const d = new Date(items[0].label);
+                                return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                            },
+                            label: function (item) {
+                                const val = 'NDVI: ' + item.raw.toFixed(3);
+                                const pt = series[item.dataIndex];
+                                if (onsetDate && pt.date === onsetDate) {
+                                    const d = new Date(onsetDate);
+                                    return [val, 'Onset: ' + d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })];
+                                }
+                                return val;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'year', tooltipFormat: 'MMM yyyy' },
+                        ticks: { font: { size: 10 }, color: '#888' },
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                    },
+                    y: {
+                        ticks: { font: { size: 10 }, color: '#888', callback: v => v.toFixed(2) },
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                    },
+                },
+            },
+        });
+    }
+});
+
+map.on('popupclose', function () {
+    if (activeCellChart) {
+        activeCellChart.destroy();
+        activeCellChart = null;
+    }
+});
+
+// ── Compare toggle (side-by-side slider) ─────────────
+function toggleCompare() {
+    compareActive = !compareActive;
+    const btn = document.getElementById('compareToggle');
+    const label = document.getElementById('yearLabel');
+
+    if (compareActive) {
+        // Hide all standard optical layers
+        for (const layer of Object.values(opticalLayers)) {
+            setLayerOpacity(layer, 0);
+        }
+
+        // Add side-by-side layers and control
+        sbsLeft.addTo(map);
+        sbsRight.addTo(map);
+        sideBySideControl = L.control.sideBySide(sbsLeft, sbsRight).addTo(map);
+
+        btn.classList.add('active');
+        btn.textContent = 'Single view';
+        label.textContent = '← 2020  |  2026 →';
+    } else {
+        // Remove side-by-side
+        if (sideBySideControl) {
+            sideBySideControl.remove();
+            sideBySideControl = null;
+        }
+        map.removeLayer(sbsLeft);
+        map.removeLayer(sbsRight);
+
+        // Restore 2026 optical layer
+        setLayerOpacity(opticalLayers['2026'], 1);
+
+        btn.classList.remove('active');
+        btn.textContent = 'Compare 2020 vs 2026';
+        label.textContent = 'Sentinel-2 — 2026';
+    }
+}
+
+// ── Change overlay toggle ──────────────────────────────
+function toggleChangeOverlay() {
+    changeVisible = !changeVisible;
+    const btn = document.getElementById('changeToggle');
+    const legend = document.getElementById('legend');
+
+    setLayerOpacity(changeLayer, changeVisible ? 0.75 : 0);
+
+    // Toggle grid cell layer
+    if (gridLayer) {
+        if (changeVisible) {
+            map.addLayer(gridLayer);
+        } else {
+            map.removeLayer(gridLayer);
+        }
+    }
+
+    if (changeVisible) {
+        btn.classList.add('active');
+        btn.innerHTML = '<span class="dot"></span> Hide Changes';
+        legend.classList.add('visible');
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<span class="dot"></span> Show Changes';
+        legend.classList.remove('visible');
+    }
+}
+
+// ── Point-in-polygon (ray casting) ────────────────────
+function pointInPolygon(lat, lng, coords) {
+    // coords is a GeoJSON ring: [[lng,lat], ...]
+    let inside = false;
+    for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
+        const yi = coords[i][1], xi = coords[i][0];
+        const yj = coords[j][1], xj = coords[j][0];
+        if ((yi > lat) !== (yj > lat) &&
+            lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+function findContainingROI(lat, lng) {
+    if (!roiGeoData) return null;
+    const ROI_LABELS = {
+        wadi_hanifa: 'Wadi Hanifa',
+        king_salman_park: 'King Salman Park',
+        northern_expansion: 'Northern Expansion',
+        central_urban: 'Central Urban',
+    };
+    for (const feature of roiGeoData.features) {
+        const geom = feature.geometry;
+        const rings = geom.type === 'MultiPolygon'
+            ? geom.coordinates.flat()
+            : geom.coordinates;
+        for (const ring of rings) {
+            if (pointInPolygon(lat, lng, ring)) {
+                const name = feature.properties.name;
+                return { name, label: ROI_LABELS[name] || name };
+            }
+        }
+    }
+    return null;
+}
+
+// ── Build cell popup HTML ─────────────────────────────
+function buildCellPopup(cell) {
+    // Change breakdown list (sorted descending, skip 0%, stable last)
+    const changeOrder = ['new_construction', 'land_clearing', 'vegetation_change', 'stable'];
+    const bd = cell.change_breakdown || {};
+    const changeEntries = changeOrder
+        .filter(k => k !== 'stable' && (bd[k] || 0) > 0)
+        .sort((a, b) => (bd[b] || 0) - (bd[a] || 0));
+    if ((bd.stable || 0) > 0) changeEntries.push('stable');
+
+    const breakdownHtml = changeEntries.map(k => {
+        const pct = bd[k] || 0;
+        const color = BREAKDOWN_COLORS[k];
+        const label = BREAKDOWN_LABELS[k];
+        const barWidth = Math.max(pct * 0.6, 2);
+        return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></span>
+            <span style="font-size:12px;color:#333;width:110px;">${label}</span>
+            <span style="display:inline-block;height:6px;border-radius:3px;background:${color};width:${barWidth}px;opacity:0.7;"></span>
+            <span style="font-size:12px;font-weight:600;color:#333;">${pct}%</span>
+        </div>`;
+    }).join('');
+
+    // Vegetation section (only if any green category > 0.5%)
+    const veg = cell.vegetation_breakdown || {};
+    const hasVeg = (veg.stable_green || 0) > 0.5 ||
+                   (veg.new_green || 0) > 0.5 ||
+                   (veg.lost_green || 0) > 0.5;
+    let vegHtml = '';
+    if (hasVeg) {
+        const vegKeys = ['stable_green', 'new_green', 'lost_green'];
+        const vegItems = vegKeys
+            .filter(k => (veg[k] || 0) > 0.1)
+            .map(k => {
+                const pct = veg[k] || 0;
+                return `<span style="display:inline-flex;align-items:center;gap:3px;margin-right:10px;">
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${VEG_COLORS[k]};"></span>
+                    <span style="font-size:11px;color:#333;">${VEG_LABELS[k]}</span>
+                    <span style="font-size:11px;font-weight:600;color:#333;">${pct}%</span>
+                </span>`;
+            }).join('');
+        vegHtml = `
+            <div style="margin-top:8px;padding-top:6px;border-top:1px solid #eee;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">Vegetation</div>
+                <div style="display:flex;flex-wrap:wrap;">${vegItems}</div>
+            </div>`;
+    }
+
+    // Thumbnails (only for cells that had enough change to generate them)
+    const hasThumbs = (cell.change_pct || 0) >= 0.2;
+    const thumbHtml = hasThumbs ? `
+        <div class="thumb-row" style="margin-top:8px;">
+            <div class="thumb-col">
+                <img src="data/thumbs/2020_${cell.id}.jpg" alt="2020" onerror="this.parentElement.style.display='none'" />
+                <div class="thumb-label">2020</div>
+            </div>
+            <div class="thumb-col">
+                <img src="data/thumbs/2026_${cell.id}.jpg" alt="2026" onerror="this.parentElement.style.display='none'" />
+                <div class="thumb-label">2026</div>
+            </div>
+        </div>` : '';
+
+    // ROI cross-reference
+    const roi = findContainingROI(cell.lat, cell.lng);
+    const roiHtml = roi
+        ? `<div style="font-size:11px;color:#666;margin-top:4px;">Part of ROI: <strong>${roi.label}</strong></div>`
+        : '';
+
+    return `
+        <div class="change-popup">
+            <div style="font-size:15px;font-weight:700;color:#1a1a2e;margin-bottom:2px;">
+                Change in this area: ${cell.change_pct_masked}%
+            </div>
+            <div style="font-size:10px;color:#999;margin-bottom:8px;">
+                (raw, before desert filter: ${cell.change_pct}%)
+            </div>
+            <div style="margin-bottom:4px;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">What changed</div>
+                ${breakdownHtml}
+            </div>
+            ${vegHtml}
+            ${thumbHtml}
+            <button class="cell-action-btn" id="cell-drill-${cell.id}">
+                Show pixel evolution in this cell
+            </button>
+            <div id="cell-veg-stat-${cell.id}" style="font-size:11px;color:#6d28d9;margin-top:4px;display:none;"></div>
+            <div style="margin-top:8px;padding-top:6px;border-top:1px solid #eee;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">NDVI Time Series</div>
+                <canvas id="cell-chart-${cell.id}" width="300" height="160" style="width:300px;height:160px;"></canvas>
+            </div>
+            <div style="font-size:10px;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #eee;">
+                Cell ${cell.id} · ${(cell.valid_pixels || 0).toLocaleString()} valid pixels
+                ${roiHtml}
+            </div>
+        </div>
+    `;
+}
+
+// ── Boot ───────────────────────────────────────────────
+init().catch(err => console.error('init() failed:', err));
+</script>
+</body>
+</html>
