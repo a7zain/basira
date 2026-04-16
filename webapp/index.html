@@ -380,6 +380,23 @@
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
         }
 
+        /* ── Cell action button in popup ─────────────── */
+        .cell-action-btn {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 6px 0;
+            border: 1px solid #7c3aed;
+            background: #f5f3ff;
+            color: #6d28d9;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .cell-action-btn:hover { background: #ede9fe; }
+
         /* ── ROI popup table ───────────────────────── */
         .roi-popup { min-width: 220px; }
         .roi-popup h3 { font-size: 14px; margin: 0 0 4px; color: #1a1a2e; }
@@ -477,6 +494,22 @@
     </div>
 </div>
 
+<!-- Confidence legend (hidden by default, toggled with layer) -->
+<div class="green-legend" id="confidenceLegend" style="display: none; bottom: 70px; right: 260px; left: auto;">
+    <h4>Data Confidence</h4>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: transparent; border: 1px solid #555;"></div>
+        Solid: full 76-month coverage
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: rgba(60,60,60,0.55);"></div>
+        Hazed: fewer scenes available
+    </div>
+    <div style="font-size: 10px; color: #6666aa; margin-top: 6px; line-height: 1.4;">
+        Lower confidence regions had partial<br>Sentinel-2 coverage during 2020–2026.
+    </div>
+</div>
+
 <!-- Hotspot panel -->
 <div class="hotspot-panel" id="hotspotPanel">
     <div class="hotspot-panel-header" onclick="toggleHotspotPanel()">
@@ -514,6 +547,8 @@ let sbsLeft = null;   // 2020 layer for side-by-side
 let sbsRight = null;  // 2026 layer for side-by-side
 let hotspotData = null;
 let hotspotBorderLayer = null;
+let pixelClassLayer = null;
+let cellVegLoss = {};   // cell_id -> {veg_loss_pct, veg_loss_count}
 
 // Badge colors for change classes
 const CLASS_COLORS = {
@@ -925,7 +960,7 @@ async function init() {
     const pcBounds = await pcBoundsResp.json();
     const pcImgBounds = [[pcBounds.south, pcBounds.west], [pcBounds.north, pcBounds.east]];
 
-    const pixelClassLayer = L.imageOverlay('data/phase4/pixel_classes.png', pcImgBounds, {
+    pixelClassLayer = L.imageOverlay('data/phase4/pixel_classes.png', pcImgBounds, {
         opacity: 0.9,
         pane: 'pixelClassPane',
     });
@@ -952,9 +987,41 @@ async function init() {
         if (e.layer === pixelClassLayer) {
             document.getElementById('pixelClassLegend').style.display = 'none';
         }
+        if (e.layer === confidenceLayer) {
+            document.getElementById('confidenceLegend').style.display = 'none';
+        }
     });
 
-    // 6. Hotspots layer and panel
+    // 6a. Confidence (coverage quality) overlay
+    map.createPane('confidencePane');
+    map.getPane('confidencePane').style.zIndex = 443;
+    map.getPane('confidencePane').style.pointerEvents = 'none';
+
+    const covBoundsResp = await fetch('data/phase4/coverage_mask_bounds.json');
+    const covBounds = await covBoundsResp.json();
+    const covImgBounds = [[covBounds.south, covBounds.west], [covBounds.north, covBounds.east]];
+
+    const confidenceLayer = L.imageOverlay('data/phase4/coverage_mask.png', covImgBounds, {
+        opacity: 0.9,
+        pane: 'confidencePane',
+    });
+    layersControl.addOverlay(confidenceLayer, 'Data quality (confidence)');
+
+    map.on('overlayadd', function (e) {
+        if (e.layer === confidenceLayer) {
+            document.getElementById('confidenceLegend').style.display = 'block';
+        }
+    });
+
+    // 6b. Load per-cell veg loss data
+    try {
+        const vlResp = await fetch('data/phase4/cell_veg_loss.json');
+        cellVegLoss = await vlResp.json();
+    } catch (e) {
+        console.warn('cell_veg_loss.json not found');
+    }
+
+    // 7. Hotspots layer and panel
     try {
         const hsResp = await fetch('data/phase4/hotspots.json');
         hotspotData = await hsResp.json();
@@ -1034,6 +1101,36 @@ function toggleHotspotPanel() {
         chevron.classList.add('collapsed');
     }
 }
+
+// ── Cell drill-in: show pixel evolution layer + veg stats ─
+map.on('popupopen', function (e) {
+    const container = e.popup.getElement();
+    if (!container) return;
+    const btn = container.querySelector('.cell-action-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        const cellId = this.id.replace('cell-drill-', '');
+        // Turn on pixel evolution layer if not already visible
+        if (pixelClassLayer && !map.hasLayer(pixelClassLayer)) {
+            map.addLayer(pixelClassLayer);
+            document.getElementById('pixelClassLegend').style.display = 'block';
+        }
+        // Show veg loss stat
+        const statEl = document.getElementById('cell-veg-stat-' + cellId);
+        const vl = cellVegLoss[cellId];
+        if (statEl && vl) {
+            statEl.style.display = 'block';
+            statEl.innerHTML = `Vegetation loss pixels: <strong>${vl.veg_loss_pct}%</strong> (${vl.veg_loss_count.toLocaleString()} pixels)`;
+        } else if (statEl) {
+            statEl.style.display = 'block';
+            statEl.textContent = 'Vegetation loss: no data for this cell';
+        }
+        // Disable button after click
+        this.disabled = true;
+        this.style.opacity = '0.5';
+        this.textContent = 'Pixel evolution active';
+    });
+});
 
 // ── Compare toggle (side-by-side slider) ─────────────
 function toggleCompare() {
@@ -1221,6 +1318,10 @@ function buildCellPopup(cell) {
             </div>
             ${vegHtml}
             ${thumbHtml}
+            <button class="cell-action-btn" id="cell-drill-${cell.id}">
+                Show pixel evolution in this cell
+            </button>
+            <div id="cell-veg-stat-${cell.id}" style="font-size:11px;color:#6d28d9;margin-top:4px;display:none;"></div>
             <div style="font-size:10px;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #eee;">
                 Cell ${cell.id} · ${(cell.valid_pixels || 0).toLocaleString()} valid pixels
                 ${roiHtml}

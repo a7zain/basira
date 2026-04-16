@@ -221,6 +221,21 @@ def main():
               f"{r['reason']}")
 
     print(f"\n  Score range: {top10[0]['score']:.1f} - {top10[-1]['score']:.1f}")
+
+    # ── Save per-cell veg loss stats (all 56 cells) ──────
+    cell_veg_loss = {}
+    for cs in cell_scores:
+        cell = cs["cell"]
+        cell_veg_loss[cell["id"]] = {
+            "veg_loss_pct": round(cs["veg_loss_pct"], 2),
+            "veg_loss_count": cs["veg_loss_count"],
+        }
+
+    veg_loss_path = os.path.join(os.path.dirname(OUT_PATH), "cell_veg_loss.json")
+    with open(veg_loss_path, "w") as f:
+        json.dump(cell_veg_loss, f, indent=2)
+    print(f"  Saved: {veg_loss_path} ({len(cell_veg_loss)} cells)")
+
     print("=" * 50)
 
 
