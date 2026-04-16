@@ -343,6 +343,129 @@ Planned for Phase 5+. For now, the label should be changed to "Surface change
 
 ---
 
+## 13. Phase 4.6 — Before/After Slider (commit c6118b1)
+
+Added `leaflet-side-by-side@2.2.0` to `webapp/dashboard.html`. Left pane shows
+the 2020 Sentinel-2 RGB, right pane shows 2026. Both rendered as `L.imageOverlay`
+on custom panes (`sbsLeftPane` z-401, `sbsRightPane` z-402) so the slider divider
+renders correctly above the basemap. A dedicated "Before/After" toggle button
+shows/hides the comparison; the toggle disables the normal basemap and swaps in
+the two timed overlays.
+
+---
+
+## 14. Phase 4.7 — Pixel-Level Time-Series Classification (commit deb983c)
+
+Script: `src/phase4_pixel_classify.py` + `src/phase4_export_pixel_classes.py`
+
+K-Means (k=5) on 5 per-pixel temporal features extracted from the 76-month NDVI
+cube: mean, linear slope, seasonal amplitude (annual std), first-half mean
+(months 1–38), second-half mean (months 39–76). Processing chunked at 200 rows
+to avoid loading the full ~970 MB float32 cube. Runtime ~156 s. Output:
+`outputs/phase4_pixel_classes.tif` (uint8, 0=nodata, 1–5=clusters).
+
+Cluster interpretation: 63% stable desert, 18% sparse/suburban green, 15%
+stable built-up, 2.7% established vegetation, 0.9% vegetation loss. Desert
+cluster (class 2) exported as fully transparent in the PNG overlay. Wired into
+`webapp/dashboard.html` as a toggleable layer on `pixelClassPane` (z-442).
+
+---
+
+## 15. Phase 4.8 — NDVI Anomaly Detection (commit 1254155)
+
+Script: `src/phase4_compute_anomalies.py`
+
+Monthly climatology computed per calendar month (Jan–Dec) across all years.
+Anomaly = value − climatology; z-score = anomaly / std. Months with |z| > 2
+flagged as anomalies. Results augmented into `webapp/data/phase4/ndvi_timeseries.json`
+(`anomaly_zscore`, `is_anomaly`, `anomaly_direction` fields added).
+
+Results: 9 anomalies total (wadi_hanifa 3, king_salman_park 3, northern_expansion 1,
+central_urban 2). April 2022 appears as a co-occurring negative anomaly in 3 of 4
+ROIs — independent signal of a regional event. Web app shows anomaly months as
+red/blue dots on ROI time-series charts.
+
+---
+
+## 16. Phase 4.9 — Active Hotspots (commit 8683ceb)
+
+Script: `src/phase4_compute_hotspots.py`
+
+Composite hotspot score per cell: 50% veg_loss_score + 40% change_score + 10%
+anomaly_overlap. Top 10 cells ranked. Point-in-polygon check (ray-casting) flags
+ROI overlap. Also outputs `cell_veg_loss.json` (all 56 cells). Web app gains a
+collapsible hotspot panel (bottom-left) with ranked rows; clicking a row flies to
+the cell and opens its popup. Hotspot cell borders rendered on `hotspotPane` (z-444).
+
+---
+
+## 17. Phase 4.10 — Confidence Layer + Hotspot Drill-In (commit 9f222dc)
+
+Script: `src/phase4_export_coverage.py`
+
+Maps per-pixel scene-count raster (`outputs/phase4_pixel_coverage.tif`) to a grey
+haze RGBA overlay. Thresholds: ≥60 transparent, 50–59 light, 40–49 medium, 30–39
+heavy, <30 near-opaque. Only 0.7% of AOI falls below the 60-scene threshold
+(bimodal distribution: most pixels at 66–67 or 76). Output: `coverage_mask.png` (51 KB).
+
+Hotspot drill-in button added to each cell popup: clicking "Show pixel evolution"
+loads the pixel-class thumbnail for that cell and computes a veg-loss stat inline.
+`pixelClassLayer` hoisted from `const` inside `init()` to module-level `let` to
+allow access from the popup event handler.
+
+---
+
+## 18. Phase 4.11 — Hotspot Time Attribution (commit 2187fb8)
+
+Script: `src/phase4_cell_timeseries.py` (hotspot mode)
+
+For each of the top-10 hotspot cells: windowed rasterio read of the 76-month
+NDVI cube, masked to valid pixels, mean per month. Onset detection: baseline from
+first 18 months, threshold = baseline − 1σ, sustained ≥2 consecutive months.
+`est_onset`, `delta_ndvi`, `baseline_ndvi` fields appended to `hotspots.json`.
+6 of 10 hotspots show April 2022 onset — consistent with the ROI anomaly signal.
+Runtime ~27 s for 10 cells using windowed reads.
+
+---
+
+## 19. Phase 4.12 — Per-Cell NDVI Time Series Chart (commit a602cbe)
+
+Script: `src/phase4_cell_timeseries.py --all` (56-cell mode)
+
+Extended the hotspot-mode script to process all 56 grid cells. Output:
+`webapp/data/phase4/cell_timeseries.json` (270 KB, 56 cells × ~76 months each).
+Each cell popup now renders a Chart.js time-series chart (date-fns adapter) when
+opened. An `activeCellChart` module-level variable tracks the Chart.js instance
+and destroys it on `popupclose` to prevent canvas reuse errors. Onset annotation
+drawn as a vertical dashed line where `est_onset` is available.
+
+---
+
+## 20. Phase 4.13 — Landing Page (commit 0e90c16)
+
+`webapp/index.html` (old dashboard) renamed to `webapp/dashboard.html` via
+`git mv` to preserve history. New `webapp/index.html` is a pure HTML+CSS
+dark-theme landing page: hero section with Sentinel-2 background at 0.15 opacity,
+Arabic "بصيرة" label, "Basira" gradient wordmark, three capability cards
+(classification, hotspots, onset), CTA button to `dashboard.html`. No JavaScript.
+
+---
+
+## 21. Phase 4.14 — Auto-Generated PDF Report (commit b8a9442)
+
+Script: `src/generate_report_pdf.py`
+
+Two-part output. Part A: matplotlib hero map — `latest_rgb.png` basemap with
+correct geographic extent, red cell rectangles for top-10 hotspots (numbered
+labels for top 5), dashed yellow/orange ROI outlines, dark theme. Saved at 300
+DPI to `outputs/report_hero_map.png`. Part B: reportlab one-page A4 PDF —
+header, hero map image, 4-column stat bar (10 hotspots / 9 anomalies / 3.35M
+pixels / 76 months), top-5 hotspot table (score highlighted in red), April 2022
+event callout box, methodology paragraph, footer. Runtime 3.6 s; PDF ~14 MB
+(embedded 300-DPI image). Both outputs gitignored as regenerable artifacts.
+
+---
+
 ## 12. Phase 5 Considerations
 
 - **Disk savings:** uint16 with scale factor 10000 instead of float32 → ~50% reduction

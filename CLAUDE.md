@@ -9,7 +9,7 @@ session end. Keep lean — only what must persist.
 
 **Name:** Basira (بصيرة) — "insight" in Arabic
 **Type:** Satellite-based change monitoring platform for Saudi Arabia
-**Stage:** Phase 4 complete; Phase 4.5a complete (web integration); Phase 4.5c complete (cell breakdowns + grid layer); Phase 4.5b (time-series chart) deferred
+**Stage:** Phase 4.14 complete (full analytical pipeline + landing page + PDF report)
 **Repo:** github.com/a7zain/sar-change-detection
 **Local path:** /Users/a7zain/sar-change-detection
 **Conda env:** sarsat (`/opt/anaconda3/envs/sarsat/bin/python`)
@@ -27,7 +27,7 @@ session end. Keep lean — only what must persist.
 
 ---
 
-## Current state (as of April 13, 2026)
+## Current state (as of April 16, 2026)
 
 ### What works
 - SAR pipeline: Sentinel-1 download → GCP correction → UTM → Lee filter →
@@ -45,6 +45,21 @@ session end. Keep lean — only what must persist.
   (gridPane, z-index 446) with per-cell change/vegetation breakdowns,
   desert-masked stats (AOI: 42.6% raw -> 17.8% masked), ROI cross-reference
   via ray-casting PIP, wired to "Show Changes" toggle
+- **Phase 4.6:** before/after slider (2020 vs 2026, leaflet-side-by-side)
+- **Phase 4.7:** pixel-level time-series classification (K-means k=5 on
+  5 temporal features, 76-month NDVI trajectories, 5 clusters)
+- **Phase 4.8:** NDVI anomaly detection (z-score on monthly climatology,
+  9 anomalies across 4 ROIs, April 2022 regional signal)
+- **Phase 4.9:** active hotspots (composite scoring, top 10, collapsible
+  panel with fly-to + popup trigger)
+- **Phase 4.10:** confidence layer (coverage mask) + hotspot drill-in
+  (show pixel evolution per cell with veg-loss stat)
+- **Phase 4.11:** hotspot time attribution (per-cell onset estimation,
+  6/10 hotspots onset April 2022)
+- **Phase 4.12:** per-cell NDVI time series chart in every cell popup
+- **Phase 4.13:** landing page (webapp/index.html, dashboard moved to
+  webapp/dashboard.html)
+- **Phase 4.14:** auto-generated PDF report (src/generate_report_pdf.py)
 
 ### Known limitations
 - 10 of 76 monthly scenes have partial coverage (diagonal nodata strip)
@@ -72,6 +87,7 @@ session end. Keep lean — only what must persist.
 | Static web app (Leaflet + GitHub Pages) | Zero backend cost |
 | 80% coverage threshold for valid mask | Balances coverage vs strictness |
 | 500-pixel minimum for ROI stats | Prevents partial-scene artifacts |
+| Landing page + dashboard split | Clean separation of marketing and product; landing is static HTML, dashboard is the app |
 
 ---
 
@@ -85,11 +101,6 @@ session end. Keep lean — only what must persist.
 
 ## Immediate priorities
 
-1. **Phase 4.5c follow-up:** Relabel "Land clearing" -> "Surface change /
-   clearing" in popup + legend (5-min credibility fix)
-2. **Decide next phase:** Phase 4.5b (time-series chart on ROI click) vs
-   Phase 5 (Jeddah multi-city) vs zoom UX polish
-3. Re-test with the 4 original testers using the updated site
-4. SpaceUp Competition 2026 application status
-5. MSc applications (GMU/Edinburgh/Glasgow)
-6. SARsatX outreach
+1. Awaiting tester responses on updated prototype
+2. UI polish pass: hotspot panel, legend stack, mobile layout
+3. Decision: deeper Riyadh features vs second AOI (after tester input)
