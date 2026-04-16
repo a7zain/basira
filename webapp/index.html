@@ -359,6 +359,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .hotspot-onset {
+            font-size: 9px;
+            color: #666688;
+            margin-top: 1px;
+        }
 
         /* ── Side-by-side slider override ────────────── */
         .leaflet-sbs-range {
@@ -1060,12 +1065,16 @@ async function init() {
         for (const hs of hotspotData.hotspots) {
             const row = document.createElement('div');
             row.className = 'hotspot-row';
+            const onsetLine = hs.est_onset
+                ? `Onset: ${new Date(hs.est_onset + '-15').toLocaleDateString('en-US', {month:'short', year:'numeric'})} · \u0394NDVI: ${hs.delta_ndvi >= 0 ? '+' : ''}${hs.delta_ndvi}`
+                : 'No sustained drop detected';
             row.innerHTML = `
                 <span class="hotspot-rank">#${hs.rank}</span>
                 <span class="hotspot-score">${hs.score}</span>
                 <div class="hotspot-info">
                     <div class="hotspot-cell-id">Cell ${hs.cell_id}</div>
                     <div class="hotspot-reason" title="${hs.reason}">${hs.reason}</div>
+                    <div class="hotspot-onset">${onsetLine}</div>
                 </div>
             `;
             row.addEventListener('click', function () {

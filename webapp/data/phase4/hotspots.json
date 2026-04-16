@@ -12,7 +12,10 @@
       "veg_loss_pct": 3.7,
       "change_pct_masked": 28.6,
       "dominant_change_category": "New construction",
-      "reason": "High vegetation loss (3.7%) + significant surface change"
+      "reason": "High vegetation loss (3.7%) + significant surface change",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.01,
+      "baseline_ndvi": 0.111
     },
     {
       "rank": 2,
@@ -23,7 +26,10 @@
       "veg_loss_pct": 2.4,
       "change_pct_masked": 26.8,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (2.4%) + significant surface change + recent NDVI anomaly in ROI"
+      "reason": "Moderate vegetation loss (2.4%) + significant surface change + recent NDVI anomaly in ROI",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.005,
+      "baseline_ndvi": 0.115
     },
     {
       "rank": 3,
@@ -34,7 +40,10 @@
       "veg_loss_pct": 2.3,
       "change_pct_masked": 27.0,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (2.3%) + significant surface change + recent NDVI anomaly in ROI"
+      "reason": "Moderate vegetation loss (2.3%) + significant surface change + recent NDVI anomaly in ROI",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.007,
+      "baseline_ndvi": 0.116
     },
     {
       "rank": 4,
@@ -45,7 +54,10 @@
       "veg_loss_pct": 5.4,
       "change_pct_masked": 11.7,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "High vegetation loss (5.4%) + moderate surface change"
+      "reason": "High vegetation loss (5.4%) + moderate surface change",
+      "est_onset": "2022-07",
+      "delta_ndvi": -0.022,
+      "baseline_ndvi": 0.098
     },
     {
       "rank": 5,
@@ -56,7 +68,10 @@
       "veg_loss_pct": 1.5,
       "change_pct_masked": 26.5,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (1.5%) + significant surface change + recent NDVI anomaly in ROI"
+      "reason": "Moderate vegetation loss (1.5%) + significant surface change + recent NDVI anomaly in ROI",
+      "est_onset": "2023-06",
+      "delta_ndvi": -0.008,
+      "baseline_ndvi": 0.077
     },
     {
       "rank": 6,
@@ -67,7 +82,10 @@
       "veg_loss_pct": 2.4,
       "change_pct_masked": 27.2,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (2.4%) + significant surface change"
+      "reason": "Moderate vegetation loss (2.4%) + significant surface change",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.013,
+      "baseline_ndvi": 0.101
     },
     {
       "rank": 7,
@@ -78,7 +96,10 @@
       "veg_loss_pct": 1.8,
       "change_pct_masked": 26.3,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (1.8%) + significant surface change"
+      "reason": "Moderate vegetation loss (1.8%) + significant surface change",
+      "est_onset": "2021-07",
+      "delta_ndvi": -0.01,
+      "baseline_ndvi": 0.082
     },
     {
       "rank": 8,
@@ -89,7 +110,10 @@
       "veg_loss_pct": 1.8,
       "change_pct_masked": 25.0,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (1.8%) + significant surface change"
+      "reason": "Moderate vegetation loss (1.8%) + significant surface change",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.01,
+      "baseline_ndvi": 0.083
     },
     {
       "rank": 9,
@@ -100,7 +124,10 @@
       "veg_loss_pct": 1.2,
       "change_pct_masked": 22.1,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Moderate vegetation loss (1.2%) + significant surface change + recent NDVI anomaly in ROI"
+      "reason": "Moderate vegetation loss (1.2%) + significant surface change + recent NDVI anomaly in ROI",
+      "est_onset": "2022-04",
+      "delta_ndvi": -0.004,
+      "baseline_ndvi": 0.083
     },
     {
       "rank": 10,
@@ -111,7 +138,10 @@
       "veg_loss_pct": 1.0,
       "change_pct_masked": 26.6,
       "dominant_change_category": "Surface change / clearing",
-      "reason": "Significant surface change"
+      "reason": "Significant surface change",
+      "est_onset": null,
+      "delta_ndvi": -0.001,
+      "baseline_ndvi": 0.059
     }
   ]
 }
