@@ -1,16 +1,18 @@
 """
-Phase 4.11 — Hotspot Cell NDVI Time Series + Onset Detection
-==============================================================
-For each top-10 hotspot cell, computes monthly mean NDVI using windowed
-rasterio reads, then detects the estimated onset of change via a
-sustained-drop-below-baseline heuristic.
+Phase 4.11/4.12 — Cell NDVI Time Series + Onset Detection
+===========================================================
+Computes monthly mean NDVI for grid cells using windowed rasterio reads.
 
-Outputs:
+Modes:
+    python src/phase4_cell_timeseries.py          — hotspot cells only (Phase 4.11)
+    python src/phase4_cell_timeseries.py --all     — all 56 cells (Phase 4.12)
+
+Outputs (hotspot mode):
     webapp/data/phase4/hotspots.json           — augmented with onset fields
-    webapp/data/phase4/hotspot_cell_timeseries.json — full per-cell series
+    webapp/data/phase4/hotspot_cell_timeseries.json — hotspot-only series
 
-Usage:
-    python src/phase4_cell_timeseries.py
+Outputs (--all mode):
+    webapp/data/phase4/cell_timeseries.json    — all 56 cells' series
 """
 
 import json
@@ -34,7 +36,9 @@ from phase4_ndvi_timeseries import (
 
 # ── Config ──────────────────────────────────────────────────
 HOTSPOTS_JSON = "webapp/data/phase4/hotspots.json"
-OUT_TIMESERIES = "webapp/data/phase4/hotspot_cell_timeseries.json"
+GRID_INDEX_JSON = "webapp/data/grid_index.json"
+OUT_HOTSPOT_TS = "webapp/data/phase4/hotspot_cell_timeseries.json"
+OUT_ALL_TS = "webapp/data/phase4/cell_timeseries.json"
 THUMB_SIZE = 256
 IMG_H = 1687
 IMG_W = 2002
@@ -112,22 +116,15 @@ def detect_onset(series):
     return est_onset, round(delta_ndvi, 3), round(float(baseline), 3)
 
 
-def main():
-    t0 = time.time()
-    print("Phase 4.11 — Hotspot Cell NDVI Time Series + Onset Detection")
-    print("=" * 60)
+def run_hotspot_mode(mask, scenes):
+    """Process top-10 hotspot cells — original Phase 4.11 behavior."""
+    print("  Mode: hotspot cells only")
 
-    # ── Load prerequisites ────────────────────────────────
     with open(HOTSPOTS_JSON) as f:
         hotspot_data = json.load(f)
     hotspots = hotspot_data["hotspots"]
     print(f"  Hotspots: {len(hotspots)}")
 
-    mask = load_mask()
-    scenes = list_monthly_tifs(MONTHLY_DIR)
-    print(f"  Monthly scenes: {len(scenes)}")
-
-    # ── Compute per-cell time series ──────────────────────
     all_timeseries = {}
 
     print(f"\n  {'Cell':>5}  {'Points':>6}  {'Baseline':>8}  {'Onset':>10}  {'ΔNDVI':>7}")
@@ -142,7 +139,6 @@ def main():
 
         est_onset, delta_ndvi, baseline_ndvi = detect_onset(series)
 
-        # Augment hotspot record
         hs["est_onset"] = est_onset
         hs["delta_ndvi"] = delta_ndvi
         hs["baseline_ndvi"] = baseline_ndvi
@@ -153,15 +149,59 @@ def main():
 
         print(f"  {cell_id:>5}  {len(series):>6}  {base_str:>8}  {onset_str:>10}  {delta_str:>7}")
 
-    # ── Save augmented hotspots ───────────────────────────
     with open(HOTSPOTS_JSON, "w") as f:
         json.dump(hotspot_data, f, indent=2)
     print(f"\n  Saved: {HOTSPOTS_JSON}")
 
-    # ── Save cell timeseries ──────────────────────────────
-    with open(OUT_TIMESERIES, "w") as f:
+    with open(OUT_HOTSPOT_TS, "w") as f:
         json.dump(all_timeseries, f, indent=2)
-    print(f"  Saved: {OUT_TIMESERIES} ({os.path.getsize(OUT_TIMESERIES) / 1024:.0f} KB)")
+    print(f"  Saved: {OUT_HOTSPOT_TS} ({os.path.getsize(OUT_HOTSPOT_TS) / 1024:.0f} KB)")
+
+
+def run_all_mode(mask, scenes):
+    """Process all 56 grid cells — Phase 4.12."""
+    print("  Mode: all 56 cells")
+
+    with open(GRID_INDEX_JSON) as f:
+        grid = json.load(f)
+    cells = grid["cells"]
+    print(f"  Cells: {len(cells)}")
+
+    all_timeseries = {}
+
+    for i, cell in enumerate(cells):
+        cell_id = cell["id"]
+        r, c = cell["row"], cell["col"]
+
+        series = compute_cell_timeseries(scenes, mask, r, c)
+        all_timeseries[cell_id] = series
+
+        if (i + 1) % 10 == 0 or i == len(cells) - 1:
+            print(f"    Processed {i + 1}/{len(cells)} cells...")
+
+    with open(OUT_ALL_TS, "w") as f:
+        json.dump(all_timeseries, f, indent=2)
+    sz = os.path.getsize(OUT_ALL_TS) / 1024
+    print(f"\n  Saved: {OUT_ALL_TS} ({sz:.0f} KB, {len(all_timeseries)} cells)")
+
+
+def main():
+    t0 = time.time()
+    all_mode = "--all" in sys.argv
+
+    title = "Phase 4.12 — All-Cell NDVI Time Series" if all_mode else \
+            "Phase 4.11 — Hotspot Cell NDVI Time Series + Onset Detection"
+    print(title)
+    print("=" * 60)
+
+    mask = load_mask()
+    scenes = list_monthly_tifs(MONTHLY_DIR)
+    print(f"  Monthly scenes: {len(scenes)}")
+
+    if all_mode:
+        run_all_mode(mask, scenes)
+    else:
+        run_hotspot_mode(mask, scenes)
 
     elapsed = time.time() - t0
     print(f"\n  Runtime: {elapsed:.1f}s")

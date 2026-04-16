@@ -547,6 +547,8 @@ let roiGeoData = null;  // cached for point-in-polygon lookup
 let ndviIndex = {};     // roi_name -> [{date, mean_ndvi, anomaly, ...}, ...]
 let ndviRoiMeta = {};   // roi_name -> {n_anomalies, climatology}
 let activeRoiChart = null; // current Chart.js instance (destroyed on popup close)
+let activeCellChart = null; // Chart.js instance for cell popup charts
+let cellTimeseriesIndex = {}; // cell_id -> [{date, mean_ndvi}, ...]
 let sideBySideControl = null;
 let sbsLeft = null;   // 2020 layer for side-by-side
 let sbsRight = null;  // 2026 layer for side-by-side
@@ -1026,6 +1028,14 @@ async function init() {
         console.warn('cell_veg_loss.json not found');
     }
 
+    // 6c. Load per-cell NDVI time series (all 56 cells)
+    try {
+        const ctResp = await fetch('data/phase4/cell_timeseries.json');
+        cellTimeseriesIndex = await ctResp.json();
+    } catch (e) {
+        console.warn('cell_timeseries.json not found');
+    }
+
     // 7. Hotspots layer and panel
     try {
         const hsResp = await fetch('data/phase4/hotspots.json');
@@ -1111,34 +1121,126 @@ function toggleHotspotPanel() {
     }
 }
 
-// ── Cell drill-in: show pixel evolution layer + veg stats ─
+// ── Cell popup handlers: drill-in + chart ─────────────
 map.on('popupopen', function (e) {
     const container = e.popup.getElement();
     if (!container) return;
+
+    // Drill-in button handler
     const btn = container.querySelector('.cell-action-btn');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-        const cellId = this.id.replace('cell-drill-', '');
-        // Turn on pixel evolution layer if not already visible
-        if (pixelClassLayer && !map.hasLayer(pixelClassLayer)) {
-            map.addLayer(pixelClassLayer);
-            document.getElementById('pixelClassLegend').style.display = 'block';
+    if (btn) {
+        btn.addEventListener('click', function () {
+            const cellId = this.id.replace('cell-drill-', '');
+            if (pixelClassLayer && !map.hasLayer(pixelClassLayer)) {
+                map.addLayer(pixelClassLayer);
+                document.getElementById('pixelClassLegend').style.display = 'block';
+            }
+            const statEl = document.getElementById('cell-veg-stat-' + cellId);
+            const vl = cellVegLoss[cellId];
+            if (statEl && vl) {
+                statEl.style.display = 'block';
+                statEl.innerHTML = `Vegetation loss pixels: <strong>${vl.veg_loss_pct}%</strong> (${vl.veg_loss_count.toLocaleString()} pixels)`;
+            } else if (statEl) {
+                statEl.style.display = 'block';
+                statEl.textContent = 'Vegetation loss: no data for this cell';
+            }
+            this.disabled = true;
+            this.style.opacity = '0.5';
+            this.textContent = 'Pixel evolution active';
+        });
+    }
+
+    // Cell NDVI chart
+    const cellCanvas = container.querySelector('[id^="cell-chart-"]');
+    if (cellCanvas) {
+        const cellId = cellCanvas.id.replace('cell-chart-', '');
+        const series = cellTimeseriesIndex[cellId];
+        if (!series || series.length === 0) {
+            cellCanvas.style.display = 'none';
+            return;
         }
-        // Show veg loss stat
-        const statEl = document.getElementById('cell-veg-stat-' + cellId);
-        const vl = cellVegLoss[cellId];
-        if (statEl && vl) {
-            statEl.style.display = 'block';
-            statEl.innerHTML = `Vegetation loss pixels: <strong>${vl.veg_loss_pct}%</strong> (${vl.veg_loss_count.toLocaleString()} pixels)`;
-        } else if (statEl) {
-            statEl.style.display = 'block';
-            statEl.textContent = 'Vegetation loss: no data for this cell';
+
+        if (activeCellChart) {
+            activeCellChart.destroy();
+            activeCellChart = null;
         }
-        // Disable button after click
-        this.disabled = true;
-        this.style.opacity = '0.5';
-        this.textContent = 'Pixel evolution active';
-    });
+
+        // Check if this cell is a hotspot with onset
+        let onsetDate = null;
+        if (hotspotData && hotspotData.hotspots) {
+            const hs = hotspotData.hotspots.find(h => h.cell_id === cellId);
+            if (hs && hs.est_onset) {
+                onsetDate = hs.est_onset + '-15';
+            }
+        }
+
+        const pointColors = series.map(p =>
+            onsetDate && p.date === onsetDate ? '#f44336' : '#10b981'
+        );
+        const pointRadii = series.map(p =>
+            onsetDate && p.date === onsetDate ? 5 : 2
+        );
+
+        activeCellChart = new Chart(cellCanvas, {
+            type: 'line',
+            data: {
+                labels: series.map(p => p.date),
+                datasets: [{
+                    data: series.map(p => p.mean_ndvi),
+                    borderColor: '#10b981',
+                    borderWidth: 1.5,
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: pointColors,
+                    pointRadius: pointRadii,
+                    pointHoverRadius: 5,
+                    fill: false,
+                    tension: 0.1,
+                }],
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function (items) {
+                                const d = new Date(items[0].label);
+                                return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                            },
+                            label: function (item) {
+                                const val = 'NDVI: ' + item.raw.toFixed(3);
+                                const pt = series[item.dataIndex];
+                                if (onsetDate && pt.date === onsetDate) {
+                                    const d = new Date(onsetDate);
+                                    return [val, 'Onset: ' + d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })];
+                                }
+                                return val;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'year', tooltipFormat: 'MMM yyyy' },
+                        ticks: { font: { size: 10 }, color: '#888' },
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                    },
+                    y: {
+                        ticks: { font: { size: 10 }, color: '#888', callback: v => v.toFixed(2) },
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                    },
+                },
+            },
+        });
+    }
+});
+
+map.on('popupclose', function () {
+    if (activeCellChart) {
+        activeCellChart.destroy();
+        activeCellChart = null;
+    }
 });
 
 // ── Compare toggle (side-by-side slider) ─────────────
@@ -1331,6 +1433,10 @@ function buildCellPopup(cell) {
                 Show pixel evolution in this cell
             </button>
             <div id="cell-veg-stat-${cell.id}" style="font-size:11px;color:#6d28d9;margin-top:4px;display:none;"></div>
+            <div style="margin-top:8px;padding-top:6px;border-top:1px solid #eee;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:4px;">NDVI Time Series</div>
+                <canvas id="cell-chart-${cell.id}" width="300" height="160" style="width:300px;height:160px;"></canvas>
+            </div>
             <div style="font-size:10px;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #eee;">
                 Cell ${cell.id} · ${(cell.valid_pixels || 0).toLocaleString()} valid pixels
                 ${roiHtml}
