@@ -35,4 +35,5 @@ Thumbs.db
 # ── Regenerable artifacts in outputs/ ─────────
 outputs/*.png
 outputs/*.pdf
+outputs/phase4_anomalies/
 
