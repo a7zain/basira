@@ -31,3 +31,8 @@ outputs/*.tif
 outputs/basira_report.pdf
 outputs/report_hero_map.png
 Thumbs.db
+
+# ── Regenerable artifacts in outputs/ ─────────
+outputs/*.png
+outputs/*.pdf
+
