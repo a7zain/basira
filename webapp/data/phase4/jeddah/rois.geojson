@@ -1,0 +1,141 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "corniche",
+        "description": "Jeddah Corniche \u2014 waterfront development zone along the Red Sea."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              39.1,
+              21.54
+            ],
+            [
+              39.17,
+              21.54
+            ],
+            [
+              39.17,
+              21.66
+            ],
+            [
+              39.1,
+              21.66
+            ],
+            [
+              39.1,
+              21.54
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "jeddah_central",
+        "description": "Jeddah Central Project \u2014 mega-development reshaping the old downtown and waterfront."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              39.14,
+              21.48
+            ],
+            [
+              39.22,
+              21.48
+            ],
+            [
+              39.22,
+              21.56
+            ],
+            [
+              39.14,
+              21.56
+            ],
+            [
+              39.14,
+              21.48
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "airport_district",
+        "description": "King Abdulaziz International Airport area and surrounding expansion."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              39.15,
+              21.65
+            ],
+            [
+              39.23,
+              21.65
+            ],
+            [
+              39.23,
+              21.73
+            ],
+            [
+              39.15,
+              21.73
+            ],
+            [
+              39.15,
+              21.65
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "eastern_hills",
+        "description": "Eastern hill slopes \u2014 sparse vegetation, suburban growth edge."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              39.26,
+              21.45
+            ],
+            [
+              39.34,
+              21.45
+            ],
+            [
+              39.34,
+              21.6
+            ],
+            [
+              39.26,
+              21.6
+            ],
+            [
+              39.26,
+              21.45
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

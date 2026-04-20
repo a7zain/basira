@@ -1,0 +1,67 @@
+name: jeddah
+display_name: Jeddah
+country: Saudi Arabia
+arabic_label: جدة
+
+aoi:
+  lat_min: 21.40
+  lat_max: 21.75
+  lon_min: 39.05
+  lon_max: 39.35
+
+crs:
+  target: EPSG:32637          # UTM Zone 37N
+
+resolution_m: 20
+
+years:
+  baseline: 2020
+  current: 2026
+
+annual_scenes:
+  baseline_month: 3           # March 2020
+  current_month: 3            # March 2026
+
+# Phase 5.0: annual only. Monthly/hotspots/anomalies/classification come later.
+pipelines:
+  annual: true
+  monthly: false
+  hotspots: false
+  anomalies: false
+  classification: false
+
+paths:
+  monthly_dir: data/processed/jeddah/monthly
+  ndvi_dir: data/processed/jeddah/ndvi
+  web_dir: webapp/data/phase4/jeddah
+
+green_map:
+  ndvi_veg_threshold: 0.20
+  persist_high: 0.6
+  persist_low: 0.2
+
+rois:
+  - name: corniche
+    description: "Jeddah Corniche — waterfront development zone along the Red Sea."
+    lat_min: 21.54
+    lat_max: 21.66
+    lon_min: 39.10
+    lon_max: 39.17
+  - name: jeddah_central
+    description: "Jeddah Central Project — mega-development reshaping the old downtown and waterfront."
+    lat_min: 21.48
+    lat_max: 21.56
+    lon_min: 39.14
+    lon_max: 39.22
+  - name: airport_district
+    description: "King Abdulaziz International Airport area and surrounding expansion."
+    lat_min: 21.65
+    lat_max: 21.73
+    lon_min: 39.15
+    lon_max: 39.23
+  - name: eastern_hills
+    description: "Eastern hill slopes — sparse vegetation, suburban growth edge."
+    lat_min: 21.45
+    lat_max: 21.60
+    lon_min: 39.26
+    lon_max: 39.34

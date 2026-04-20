@@ -1,0 +1,52 @@
+{
+  "cities": [
+    {
+      "name": "jeddah",
+      "display_name": "Jeddah",
+      "country": "Saudi Arabia",
+      "arabic_label": "جدة",
+      "aoi": {
+        "lat_min": 21.4,
+        "lat_max": 21.75,
+        "lon_min": 39.05,
+        "lon_max": 39.35
+      },
+      "center": {
+        "lat": 21.575,
+        "lon": 39.2
+      },
+      "pipelines": {
+        "annual": true,
+        "monthly": false,
+        "hotspots": false,
+        "anomalies": false,
+        "classification": false
+      },
+      "web_dir": "webapp/data/phase4/jeddah"
+    },
+    {
+      "name": "riyadh",
+      "display_name": "Riyadh",
+      "country": "Saudi Arabia",
+      "arabic_label": "الرياض",
+      "aoi": {
+        "lat_min": 24.55,
+        "lat_max": 24.85,
+        "lon_min": 46.55,
+        "lon_max": 46.95
+      },
+      "center": {
+        "lat": 24.700000000000003,
+        "lon": 46.75
+      },
+      "pipelines": {
+        "annual": true,
+        "monthly": true,
+        "hotspots": true,
+        "anomalies": true,
+        "classification": true
+      },
+      "web_dir": "webapp/data/phase4/riyadh"
+    }
+  ]
+}

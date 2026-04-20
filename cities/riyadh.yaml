@@ -1,0 +1,70 @@
+name: riyadh
+display_name: Riyadh
+country: Saudi Arabia
+arabic_label: الرياض
+
+aoi:
+  lat_min: 24.55
+  lat_max: 24.85
+  lon_min: 46.55
+  lon_max: 46.95
+
+crs:
+  target: EPSG:32638          # UTM Zone 38N
+
+resolution_m: 20
+
+years:
+  baseline: 2020
+  current: 2026
+
+# Annual-mode scene selection: pick the scene from this month/year pair
+# (lowest cloud cover in that month from the existing catalog).
+annual_scenes:
+  baseline_month: 3           # March 2020 (dry, low cloud)
+  current_month: 3            # March 2026
+
+# Pipeline modes enabled for this city
+pipelines:
+  annual: true
+  monthly: true               # Riyadh has full monthly pipeline
+  hotspots: true
+  anomalies: true
+  classification: true
+
+paths:
+  monthly_dir: data/processed/monthly
+  ndvi_dir: data/processed/ndvi
+  web_dir: webapp/data/phase4/riyadh
+
+# NDVI / greening parameters
+green_map:
+  ndvi_veg_threshold: 0.20
+  persist_high: 0.6
+  persist_low: 0.2
+
+rois:
+  - name: wadi_hanifa
+    description: "Wadi Hanifa corridor — narrow NW-SE greenbelt, known greening and rehabilitation area."
+    lat_min: 24.62
+    lat_max: 24.78
+    lon_min: 46.58
+    lon_max: 46.65
+  - name: king_salman_park
+    description: "King Salman Park / Royal Arts Complex — major construction zone on the NW edge of the AOI."
+    lat_min: 24.80
+    lat_max: 24.85
+    lon_min: 46.55
+    lon_max: 46.62
+  - name: northern_expansion
+    description: "Northern suburban expansion — new grading and infrastructure development north of central Riyadh."
+    lat_min: 24.80
+    lat_max: 24.85
+    lon_min: 46.65
+    lon_max: 46.75
+  - name: central_urban
+    description: "Central urban core — established dense city, expected to be stable (control baseline)."
+    lat_min: 24.66
+    lat_max: 24.71
+    lon_min: 46.68
+    lon_max: 46.74

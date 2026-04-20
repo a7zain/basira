@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riyadh Change Explorer</title>
+    <title>Basira Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -420,10 +420,14 @@
 <!-- Header -->
 <div class="header">
     <div class="header-left">
-        <h1>Riyadh Change Explorer</h1>
-        <div class="subtitle">Tracking urban development with satellite imagery (2020–2026)</div>
+        <h1 id="cityTitle">Riyadh Change Explorer</h1>
+        <div class="subtitle" id="citySubtitle">Tracking urban development with satellite imagery (2020–2026)</div>
     </div>
     <div class="header-right">
+        <select id="citySelect" onchange="onCityChange()" style="background:#2a2a4a;border:1px solid #3a3a5a;color:#ccc;padding:7px 10px;border-radius:6px;font-size:13px;cursor:pointer;">
+            <option value="riyadh">Riyadh</option>
+            <option value="jeddah">Jeddah</option>
+        </select>
         <button class="toggle-btn" id="changeToggle" onclick="toggleChangeOverlay()">
             <span class="dot"></span>
             Show Changes
@@ -533,6 +537,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-side-by-side@2.2.0/leaflet-side-by-side.min.js"></script>
 <script>
+// ── City selection (from ?city= query param) ──────────
+const CITY = (new URLSearchParams(window.location.search).get('city') || 'riyadh').toLowerCase();
+const PHASE4 = `data/phase4/${CITY}`;
+let cityInfo = null;        // entry from cities.json for the current city
+let pipelines = {};         // feature flags from city config
+
 // ── State ──────────────────────────────────────────────
 let currentYear = '2026';
 let changeVisible = false;
@@ -556,6 +566,24 @@ let hotspotData = null;
 let hotspotBorderLayer = null;
 let pixelClassLayer = null;
 let cellVegLoss = {};   // cell_id -> {veg_loss_pct, veg_loss_count}
+
+async function safeFetchJson(url) {
+    try {
+        const r = await fetch(url);
+        if (!r.ok) return null;
+        return await r.json();
+    } catch (e) { return null; }
+}
+async function urlExists(url) {
+    try {
+        const r = await fetch(url, { method: 'HEAD' });
+        return r.ok;
+    } catch (e) { return false; }
+}
+function onCityChange() {
+    const v = document.getElementById('citySelect').value;
+    window.location.search = `?city=${v}`;
+}
 
 // Badge colors for change classes
 const CLASS_COLORS = {
@@ -589,11 +617,11 @@ const VEG_LABELS = {
     lost_green:   'Lost green',
 };
 
-// ── Initialize map ─────────────────────────────────────
+// ── Initialize map (center set properly in init() once city loaded) ──
 const map = L.map('map', {
     center: [24.7, 46.75],
     zoom: 12,
-    minZoom: 10,
+    minZoom: 3,
     maxZoom: 18,
     zoomControl: true,
 });
@@ -653,62 +681,115 @@ function setLayerOpacity(layer, val) {
 
 // ── Load data ──────────────────────────────────────────
 async function init() {
-    // Load bounds
-    const boundsResp = await fetch('data/bounds.json');
-    bounds = await boundsResp.json();
-    const imgBounds = [[bounds.south, bounds.west], [bounds.north, bounds.east]];
+    // Load city registry
+    const cityData = await safeFetchJson('data/cities.json');
+    if (cityData) {
+        cityInfo = cityData.cities.find(c => c.name === CITY) || cityData.cities[0];
+    }
+    if (!cityInfo) {
+        // Fallback to Riyadh defaults
+        cityInfo = {
+            name: 'riyadh',
+            display_name: 'Riyadh',
+            aoi: { lat_min: 24.55, lat_max: 24.85, lon_min: 46.55, lon_max: 46.95 },
+            center: { lat: 24.7, lon: 46.75 },
+            pipelines: { annual: true, monthly: true, hotspots: true, anomalies: true, classification: true },
+        };
+    }
+    pipelines = cityInfo.pipelines || {};
 
-    // Create optical overlays for each year
-    const years = ['2020', '2023', '2026'];
-    for (const year of years) {
-        const layer = L.imageOverlay(`data/optical_${year}.png`, imgBounds, {
-            opacity: year === '2026' ? 1 : 0,
-            interactive: false,
-        });
-        layer.addTo(map);
-        opticalLayers[year] = layer;
+    // Sync UI to selected city
+    const sel = document.getElementById('citySelect');
+    if (sel) sel.value = cityInfo.name;
+    document.getElementById('cityTitle').textContent = `${cityInfo.display_name} Change Explorer`;
+    document.getElementById('citySubtitle').textContent =
+        pipelines.monthly
+            ? 'Tracking urban development with satellite imagery (2020–2026)'
+            : 'Annual snapshots 2020 → 2026 · deeper analytics coming soon';
+    document.getElementById('yearLabel').textContent = `Sentinel-2 — 2026 · ${cityInfo.display_name}`;
+
+    // Hide controls that require monthly pipeline
+    if (!pipelines.monthly) {
+        const btn = document.getElementById('changeToggle');
+        if (btn) btn.style.display = 'none';
+        const timeBar = document.querySelector('.time-bar');
+        if (timeBar) timeBar.style.display = 'none';
     }
 
-    // Create dedicated panes for side-by-side layers (must be separate from opticalLayers)
-    map.createPane('sbsLeftPane');
-    map.getPane('sbsLeftPane').style.zIndex = 401;
-    map.createPane('sbsRightPane');
-    map.getPane('sbsRightPane').style.zIndex = 402;
-
-    sbsLeft = L.imageOverlay('data/optical_2020.png', imgBounds, {
-        interactive: false,
-        pane: 'sbsLeftPane',
-    });
-    sbsRight = L.imageOverlay('data/optical_2026.png', imgBounds, {
-        interactive: false,
-        pane: 'sbsRightPane',
-    });
-
-    // Create change overlay in custom pane (renders above optical layers)
-    changeLayer = L.imageOverlay('data/change_overlay.png', imgBounds, {
-        opacity: 0,
-        interactive: false,
-        pane: 'changePane',
-    });
-    changeLayer.addTo(map);
-    requestAnimationFrame(() => {
-        const el = changeLayer.getElement();
-        if (el) el.style.transition = 'opacity 0.3s ease-in-out';
-    });
-
-    // Load grid index for click interaction
-    const gridResp = await fetch('data/grid_index.json');
-    gridData = await gridResp.json();
-
-    // Load NDVI time-series and index by ROI name
-    const ndviResp = await fetch('data/phase4/ndvi_timeseries.json');
-    const ndviRaw = await ndviResp.json();
-    for (const roi of ndviRaw) {
-        ndviIndex[roi.roi_name] = roi.data;
-        ndviRoiMeta[roi.roi_name] = {
-            n_anomalies: roi.n_anomalies || 0,
-            climatology: roi.climatology || [],
+    // Load AOI bounds: try Phase 3 bounds.json for Riyadh, fall back to city AOI
+    const phase3Bounds = pipelines.monthly ? await safeFetchJson('data/bounds.json') : null;
+    if (phase3Bounds) {
+        bounds = phase3Bounds;
+    } else {
+        bounds = {
+            north: cityInfo.aoi.lat_max,
+            south: cityInfo.aoi.lat_min,
+            east: cityInfo.aoi.lon_max,
+            west: cityInfo.aoi.lon_min,
         };
+    }
+    const imgBounds = [[bounds.south, bounds.west], [bounds.north, bounds.east]];
+
+    // Re-center map to city AOI
+    map.fitBounds(imgBounds, { padding: [10, 10] });
+
+    // Create optical overlays for each year (Phase 3 — monthly cities only)
+    if (pipelines.monthly) {
+        const years = ['2020', '2023', '2026'];
+        for (const year of years) {
+            const ok = await urlExists(`data/optical_${year}.png`);
+            if (!ok) continue;
+            const layer = L.imageOverlay(`data/optical_${year}.png`, imgBounds, {
+                opacity: year === '2026' ? 1 : 0,
+                interactive: false,
+            });
+            layer.addTo(map);
+            opticalLayers[year] = layer;
+        }
+    }
+
+    // Create dedicated panes for side-by-side layers (monthly cities only)
+    if (pipelines.monthly) {
+        map.createPane('sbsLeftPane');
+        map.getPane('sbsLeftPane').style.zIndex = 401;
+        map.createPane('sbsRightPane');
+        map.getPane('sbsRightPane').style.zIndex = 402;
+
+        sbsLeft = L.imageOverlay('data/optical_2020.png', imgBounds, {
+            interactive: false,
+            pane: 'sbsLeftPane',
+        });
+        sbsRight = L.imageOverlay('data/optical_2026.png', imgBounds, {
+            interactive: false,
+            pane: 'sbsRightPane',
+        });
+
+        // Create change overlay in custom pane (renders above optical layers)
+        changeLayer = L.imageOverlay('data/change_overlay.png', imgBounds, {
+            opacity: 0,
+            interactive: false,
+            pane: 'changePane',
+        });
+        changeLayer.addTo(map);
+        requestAnimationFrame(() => {
+            const el = changeLayer.getElement();
+            if (el) el.style.transition = 'opacity 0.3s ease-in-out';
+        });
+
+        // Load grid index for click interaction
+        gridData = await safeFetchJson('data/grid_index.json');
+
+        // Load NDVI time-series and index by ROI name
+        const ndviRaw = await safeFetchJson(`${PHASE4}/ndvi_timeseries.json`);
+        if (ndviRaw) {
+            for (const roi of ndviRaw) {
+                ndviIndex[roi.roi_name] = roi.data;
+                ndviRoiMeta[roi.roi_name] = {
+                    n_anomalies: roi.n_anomalies || 0,
+                    climatology: roi.climatology || [],
+                };
+            }
+        }
     }
 
     // ── Phase 4 layers ──────────────────────────────────
@@ -722,15 +803,16 @@ async function init() {
     map.getPane('roiPane').style.zIndex = 445;
 
     // 1. Green map overlay (default ON)
-    const gmBoundsResp = await fetch('data/phase4/green_map_bounds.json');
-    const gmBounds = await gmBoundsResp.json();
-    const gmImgBounds = [[gmBounds.south, gmBounds.west], [gmBounds.north, gmBounds.east]];
-
-    const greenMapLayer = L.imageOverlay('data/phase4/green_map.png', gmImgBounds, {
-        opacity: 0.9,
-        pane: 'greenPane',
-    });
-    greenMapLayer.addTo(map);
+    const gmBounds = await safeFetchJson(`${PHASE4}/green_map_bounds.json`);
+    let greenMapLayer = null;
+    if (gmBounds) {
+        const gmImgBounds = [[gmBounds.south, gmBounds.west], [gmBounds.north, gmBounds.east]];
+        greenMapLayer = L.imageOverlay(`${PHASE4}/green_map.png`, gmImgBounds, {
+            opacity: 0.9,
+            pane: 'greenPane',
+        });
+        greenMapLayer.addTo(map);
+    }
 
     // 2. ROI GeoJSON layer with clickable popups
     const ROI_STATS = {
@@ -740,11 +822,15 @@ async function init() {
         central_urban:      { label: 'Central Urban',      stable: 1.586, new_g: 0.184, lost: 0.486, ratio: 0.38 },
     };
 
-    const roiResp = await fetch('data/phase4/rois.geojson');
-    const roiData = await roiResp.json();
-    roiGeoData = roiData; // cache for point-in-polygon in cell popups
+    const roiData = await safeFetchJson(`${PHASE4}/rois.geojson`);
+    let roiLayer = null;
+    if (!roiData) {
+        // No ROIs — skip ROI layer entirely
+        roiGeoData = null;
+    } else {
+        roiGeoData = roiData; // cache for point-in-polygon in cell popups
 
-    const roiLayer = L.geoJSON(roiData, {
+    roiLayer = L.geoJSON(roiData, {
         pane: 'roiPane',
         style: {
             color: '#ffcc00',
@@ -900,11 +986,14 @@ async function init() {
         },
     });
     roiLayer.addTo(map);
+    }  // end if (roiData)
 
     // 3. Grid cell rectangles (clickable, styled by change intensity)
+    let cellW, cellH;
+    if (gridData) {
     gridLayer = L.layerGroup();
-    const cellW = (bounds.east - bounds.west) / gridData.n_cols;
-    const cellH = (bounds.north - bounds.south) / gridData.n_rows;
+    cellW = (bounds.east - bounds.west) / gridData.n_cols;
+    cellH = (bounds.north - bounds.south) / gridData.n_rows;
 
     for (const cell of gridData.cells) {
         const west  = bounds.west + cell.col * cellW;
@@ -948,35 +1037,45 @@ async function init() {
         gridLayer.addLayer(rect);
     }
     // Grid starts hidden — toggled with "Show Changes"
+    }  // end if (gridData)
 
     // 4. Sentinel-2 RGB (latest) overlay
-    const rgbBoundsResp = await fetch('data/phase4/latest_rgb_bounds.json');
-    const rgbBounds = await rgbBoundsResp.json();
-    const rgbImgBounds = [[rgbBounds.south, rgbBounds.west], [rgbBounds.north, rgbBounds.east]];
-
-    const latestRgbLayer = L.imageOverlay('data/phase4/latest_rgb.png', rgbImgBounds, {
-        opacity: 1,
-    });
+    const rgbBounds = await safeFetchJson(`${PHASE4}/latest_rgb_bounds.json`);
+    let latestRgbLayer = null;
+    if (rgbBounds) {
+        const rgbImgBounds = [[rgbBounds.south, rgbBounds.west], [rgbBounds.north, rgbBounds.east]];
+        latestRgbLayer = L.imageOverlay(`${PHASE4}/latest_rgb.png`, rgbImgBounds, {
+            opacity: 1,
+        });
+    }
 
     // 5. Pixel evolution overlay (76-month K-means classification)
-    map.createPane('pixelClassPane');
-    map.getPane('pixelClassPane').style.zIndex = 442;
-    map.getPane('pixelClassPane').style.pointerEvents = 'none';
+    const pcBounds = pipelines.classification
+        ? await safeFetchJson(`${PHASE4}/pixel_classes_bounds.json`)
+        : null;
+    if (pcBounds) {
+        map.createPane('pixelClassPane');
+        map.getPane('pixelClassPane').style.zIndex = 442;
+        map.getPane('pixelClassPane').style.pointerEvents = 'none';
 
-    const pcBoundsResp = await fetch('data/phase4/pixel_classes_bounds.json');
-    const pcBounds = await pcBoundsResp.json();
-    const pcImgBounds = [[pcBounds.south, pcBounds.west], [pcBounds.north, pcBounds.east]];
+        const pcImgBounds = [[pcBounds.south, pcBounds.west], [pcBounds.north, pcBounds.east]];
 
-    pixelClassLayer = L.imageOverlay('data/phase4/pixel_classes.png', pcImgBounds, {
-        opacity: 0.9,
-        pane: 'pixelClassPane',
-    });
+        pixelClassLayer = L.imageOverlay(`${PHASE4}/pixel_classes.png`, pcImgBounds, {
+            opacity: 0.9,
+            pane: 'pixelClassPane',
+        });
+    }
 
-    // Add Phase 4 layers to the layers control
-    layersControl.addOverlay(greenMapLayer, 'Vegetation Change (2020→2025)');
-    layersControl.addOverlay(pixelClassLayer, 'Pixel evolution (76-month)');
-    layersControl.addOverlay(roiLayer, 'Regions of Interest');
-    layersControl.addOverlay(latestRgbLayer, 'Sentinel-2 RGB (latest)');
+    // Add Phase 4 layers to the layers control (only ones that exist)
+    if (greenMapLayer) {
+        const label = pipelines.monthly
+            ? 'Vegetation Change (2020→2025)'
+            : 'Vegetation Change (2020 vs 2026)';
+        layersControl.addOverlay(greenMapLayer, label);
+    }
+    if (pixelClassLayer) layersControl.addOverlay(pixelClassLayer, 'Pixel evolution (76-month)');
+    if (roiLayer) layersControl.addOverlay(roiLayer, 'Regions of Interest');
+    if (latestRgbLayer) layersControl.addOverlay(latestRgbLayer, 'Sentinel-2 RGB (latest)');
 
     // Toggle green legend when green map layer is added/removed
     map.on('overlayadd', function (e) {
@@ -1000,58 +1099,50 @@ async function init() {
     });
 
     // 6a. Confidence (coverage quality) overlay
-    map.createPane('confidencePane');
-    map.getPane('confidencePane').style.zIndex = 443;
-    map.getPane('confidencePane').style.pointerEvents = 'none';
-
-    const covBoundsResp = await fetch('data/phase4/coverage_mask_bounds.json');
-    const covBounds = await covBoundsResp.json();
-    const covImgBounds = [[covBounds.south, covBounds.west], [covBounds.north, covBounds.east]];
-
-    const confidenceLayer = L.imageOverlay('data/phase4/coverage_mask.png', covImgBounds, {
-        opacity: 0.9,
-        pane: 'confidencePane',
-    });
-    layersControl.addOverlay(confidenceLayer, 'Data quality (confidence)');
+    let confidenceLayer = null;
+    const covBounds = pipelines.monthly
+        ? await safeFetchJson(`${PHASE4}/coverage_mask_bounds.json`)
+        : null;
+    if (covBounds) {
+        map.createPane('confidencePane');
+        map.getPane('confidencePane').style.zIndex = 443;
+        map.getPane('confidencePane').style.pointerEvents = 'none';
+        const covImgBounds = [[covBounds.south, covBounds.west], [covBounds.north, covBounds.east]];
+        confidenceLayer = L.imageOverlay(`${PHASE4}/coverage_mask.png`, covImgBounds, {
+            opacity: 0.9,
+            pane: 'confidencePane',
+        });
+        layersControl.addOverlay(confidenceLayer, 'Data quality (confidence)');
+    }
 
     map.on('overlayadd', function (e) {
-        if (e.layer === confidenceLayer) {
+        if (confidenceLayer && e.layer === confidenceLayer) {
             document.getElementById('confidenceLegend').style.display = 'block';
         }
     });
 
     // 6b. Load per-cell veg loss data
-    try {
-        const vlResp = await fetch('data/phase4/cell_veg_loss.json');
-        cellVegLoss = await vlResp.json();
-    } catch (e) {
-        console.warn('cell_veg_loss.json not found');
+    if (pipelines.monthly) {
+        cellVegLoss = (await safeFetchJson(`${PHASE4}/cell_veg_loss.json`)) || {};
     }
 
     // 6c. Load per-cell NDVI time series (all 56 cells)
-    try {
-        const ctResp = await fetch('data/phase4/cell_timeseries.json');
-        cellTimeseriesIndex = await ctResp.json();
-    } catch (e) {
-        console.warn('cell_timeseries.json not found');
+    if (pipelines.monthly) {
+        cellTimeseriesIndex = (await safeFetchJson(`${PHASE4}/cell_timeseries.json`)) || {};
     }
 
     // 7. Hotspots layer and panel
-    try {
-        const hsResp = await fetch('data/phase4/hotspots.json');
-        hotspotData = await hsResp.json();
-    } catch (e) {
-        console.warn('hotspots.json not found, skipping hotspot panel');
+    if (pipelines.hotspots) {
+        hotspotData = await safeFetchJson(`${PHASE4}/hotspots.json`);
     }
 
-    if (hotspotData && hotspotData.hotspots && hotspotData.hotspots.length > 0) {
+    if (hotspotData && hotspotData.hotspots && hotspotData.hotspots.length > 0 && cellW && cellH) {
         // Create hotspot border pane (above pixelClass 442, below ROI 445)
         map.createPane('hotspotPane');
         map.getPane('hotspotPane').style.zIndex = 444;
         map.getPane('hotspotPane').style.pointerEvents = 'none';
 
         hotspotBorderLayer = L.layerGroup();
-        const hotspotIds = new Set(hotspotData.hotspots.map(h => h.cell_id));
 
         for (const hs of hotspotData.hotspots) {
             const [r, c] = hs.cell_id.split('_').map(Number);
