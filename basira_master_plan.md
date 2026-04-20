@@ -1,173 +1,187 @@
-# Basira (بصيرة) — Master Plan
-**Last updated:** April 13, 2026  
-**Author:** Ahmed Zainaddin  
+# Basira (بصيرة) — Direction
+
+**Last updated:** 2026-04-20
 
 ---
 
-## What is Basira?
+## What this document is
 
-A Saudi Arabia-wide satellite change monitoring platform. It lets anyone — from a
-government planner to a curious citizen — see how the land has changed over time.
-New construction, vegetation growth, land clearing, infrastructure — all detected
-automatically using satellite data and machine learning.
+An internal planning document. It describes what Basira is today, what the 
+immediate objective is, and what the longer arc looks like. It is written 
+for me, and for any future collaborator who needs to get oriented quickly.
 
-It starts as software. It becomes a company.
-
----
-
-## Why this matters
-
-1. **The market is real.** Saudi geospatial analytics = $1.68B in 2026, growing at 10.6%.
-   Vision 2030 is spending SAR 1.285 trillion on development programs. Every mega-project
-   needs monitoring. PIF launched Neo Space Group + UP42 marketplace in 2025.
-
-2. **The gap is real.** UP42/SARsatX operate at the data/infrastructure layer. Nobody is
-   building the consumer-grade application layer — the "Google Maps of change" — for
-   Saudi Arabia. That's where Basira sits.
-
-3. **The timing is right.** Free Sentinel data, cloud APIs, ML tools — the technical barriers
-   have never been lower. SpaceUp Competition offers contractual opportunities. Saudi Space
-   Agency is actively looking for private sector participation.
+This is not a marketing document. It does not oversell. It is meant to be 
+honest about scope, limitations, and intent.
 
 ---
 
-## What we've built (Riyadh Prototype)
+## What Basira is
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| SAR preprocessing pipeline | ✅ Done | GCP correction, UTM reprojection, Lee filter |
-| SAR change detection (2022→2024) | ✅ Done | Log-ratio, 3dB threshold, validated |
-| ML classification (K-means, k=5) | ✅ Done | 5 classes, nodata masked, silhouette 0.319 |
-| Sentinel-2 optical download | ✅ Done | 2020, 2023, 2026 via Sentinel Hub API |
-| Optical change detection | ✅ Done | K-means k=4, cross-sensor validation 58.4% |
-| Google Maps validation | ✅ Done | King Salman Park, northern expansion confirmed |
-| Interactive web app | ✅ Done | Leaflet.js, timeline, change overlay, popups. Phase 4.5a (greening map, ROIs, RGB basemap) shipped April 13 |
-| GitHub repo | ✅ Done | a7zain/sar-change-detection |
-| Professional deliverables | ✅ Done | README, technical PDF, dashboard HTML |
+Basira is a satellite-based change monitoring project focused on Saudi 
+Arabia. Today, it is a working prototype: Sentinel-1 SAR and Sentinel-2 
+optical imagery, processed into monthly change detection and vegetation 
+time series, served through an interactive web dashboard deployed on 
+GitHub Pages.
 
----
+The project has been active since early 2026 and has progressed through 
+four major phases of technical work — SAR preprocessing and change 
+detection, ML classification, optical cross-validation, and monthly 
+temporal resolution with per-pixel time-series analytics. The Riyadh AOI 
+has 76 months of Sentinel-2 scenes from January 2020 to April 2026, with 
+associated NDVI time-series, anomaly detection, hotspot ranking, and 
+pixel-level classification.
 
-## Product Architecture
-
-```
-FREE TIER (Public)                    PRO TIER (Paid)                 ENTERPRISE TIER
-─────────────────                    ────────────────                ────────────────
-Annual change maps                   Monthly updates                 API access
-All Saudi cities                     Higher resolution (10m)         Custom AOI monitoring
-Basic change categories              Detailed classification         Alert notifications
-Web access                           Export reports (PDF)             Historical archive (2015+)
-                                     Custom area monitoring          Custom ML models
-                                     Mobile app                      GIS integration
-                                                                     Research/academic data
-```
-
-## Platform
-
-- **Web app** — primary interface, works everywhere
-- **Mobile** (iOS/Android) — for field use, site visits, quick checks
-- **API** — for developers and enterprises integrating into their own systems
-- **Language** — English first, Arabic next
+The name Basira (بصيرة) means insight.
 
 ---
 
-## Roadmap
+## Where it sits in my broader trajectory
 
-### Phase 4: Monthly Temporal Resolution (COMPLETE)
-- [x] Automate Sentinel-2 download for every month, Jan 2020 to present
-- [ ] ML cloud masking for clean monthly composites
-- [x] Time-series change analysis: when did each pixel change?
-- [x] NDVI vegetation index using NIR band
-- [x] Web integration: greening map, ROI popups, RGB basemap (Phase 4.5a, April 13)
-- **Goal:** Riyadh has a complete monthly change history
+I am an electrical engineer with upstream satellite systems experience — 
+qualification-model build work on SHAMS at KACST, mission analysis 
+documentation, communications systems focus. Basira is the deliberate 
+downstream counterpart to that upstream foundation. The goal is to 
+become credible at both ends of the space value chain: building the 
+satellites and building the products that consume their data.
 
-### Phase 5: Multi-City Expansion
-- Config-driven architecture (city_config.yaml)
-- Add: Jeddah, Dammam, NEOM, Mecca, Medina
-- Batch processing pipeline
-- Shared ML models with transfer learning
-- **Goal:** All major Saudi cities covered
-
-### Phase 6: Advanced ML
-- Deep learning segmentation (U-Net / SegFormer)
-- Training data from validated Riyadh results
-- Categories: residential, commercial, roads, utilities, parks, demolition, agriculture
-- Confidence scores per pixel
-- Automated report generation
-- **Goal:** Classification accuracy that enterprises trust
-
-### Phase 7: Multi-Sensor Fusion
-- Add Landsat (30m, 40+ year archive for historical research)
-- Explore Planet (3m daily), Capella/ICEYE (commercial SAR)
-- Weather, population, economic data layers
-- ML fusion model optimizing per change type
-- **Goal:** Best possible change detection from all available sources
-
-### Phase 8: Production Platform
-- Full-stack web application (React + FastAPI + PostgreSQL/PostGIS)
-- User accounts, dashboards, saved locations
-- 10m tile serving on zoom (progressive detail)
-- Monthly automated updates
-- Mobile app (React Native or Flutter)
-- Export reports, alert system
-- Cloud deployment (AWS/Azure)
-- **Goal:** Production-grade product that paying customers use daily
-
-### Phase 9: Commercialization
-- Pricing model finalized
-- API documentation
-- Enterprise dashboard with custom branding
-- Government contracts pipeline
-- SpaceUp Competition / Saudi Space Agency engagement
-- **Goal:** Revenue
+This positioning matters because the most interesting product-engineering 
+roles in space sit at the upstream-downstream intersection, and very few 
+people are building credibility on both sides simultaneously.
 
 ---
 
-## Beyond the software (company vision)
+## Phase 1 — Immediate objective
 
-Basira the software is the entry point. The company can expand into:
+**Ship a focused technical deliverable demonstrating end-to-end capability 
+on Vision 2030 megaproject monitoring.**
 
-- **Upstream:** Satellite systems, new remote sensors, CubeSat programs
-- **Downstream research:** Academic partnerships, environmental monitoring, migration
-  patterns, 3D city modeling, drone integration
-- **Adjacent markets:** UAE, Qatar, broader GCC, Africa
-- **Internet/connectivity:** Leveraging space infrastructure expertise
-- **Defense/security:** Monitoring, surveillance, border change detection
+This is a pivot from the earlier framing of Basira as a comprehensive 
+nationwide change monitoring platform. The pivot is deliberate: a focused, 
+polished, scoped deliverable is more valuable in the current moment than 
+a broad, partial one. The broader product ambition is preserved in the 
+longer arc below and is not abandoned — it is sequenced.
 
-The software proves the team can execute. Everything else follows from credibility.
+### Scope
+
+Three Vision 2030 megaprojects as flagship demonstrations:
+
+- **Qiddiya** — hero demo, dense construction activity
+- **King Salman Park** — vegetation establishment and landscape transformation
+- **Diriyah Gate** — mixed-use, heritage-adjacent, subtler change patterns
+
+For each project, the deliverable includes:
+
+- Monthly imagery time series (2020 to present, from Sentinel-2)
+- SAR-optical fusion for robust detection through dust and partial cloud 
+  cover
+- A progress metric curve per project
+- A project-focused view in the web dashboard
+
+### Supporting deliverables
+
+- A 3–5 page technical memo (PDF) describing approach, scoping decisions, 
+  technical choices, limitations, and what I would build next
+- A rewritten project README aligned to the current direction
+- A cleaned GitHub repo with a readable history (completed April 2026)
+
+### What Phase 1 is not
+
+- Not a multi-city platform (multi-city work is parked on the 
+  `wip/phase5-multicity` branch and will be re-evaluated after Phase 1)
+- Not a commercial product pitch with pricing tiers
+- Not a research paper on novel methodology
+- Not a marketing site
+
+Phase 1 is a scoped demonstration of end-to-end execution: from raw 
+Sentinel data to a user-facing dashboard to a written technical 
+communication. The full stack, done cleanly.
+
+### What "done" looks like
+
+Phase 1 is done when:
+
+1. The three-project dashboard is live and the Qiddiya timelapse is 
+   visually compelling
+2. The technical memo exists as a PDF and reads well
+3. The README on GitHub accurately represents the project
+4. The deliverable has been shared with its intended first reader
+
+Approximate timeline: 4–6 weeks from the cleanup completion date 
+(2026-04-20). No hard external deadline.
 
 ---
 
-## Key accounts and credentials
+## Design principles
 
-| Service | Account | Notes |
-|---------|---------|-------|
-| Copernicus Dataspace | ahmadxgpx@gmail.com | Download SAR + search catalog |
-| Sentinel Hub (CDSE) | OAuth client created | 30K processing units/month free |
-| GitHub | a7zain | Repo: sar-change-detection |
+A few principles that have emerged over the project so far and should 
+continue to shape decisions:
 
----
+**Surface area discipline.** Every feature added to the user-facing 
+dashboard competes with every other feature for attention. Features that 
+don't serve the current primary use case stay in the codebase but leave 
+the surface. The Phase 4 analytics work (anomaly detection, hotspot 
+scoring, 56-cell grid, confidence layer, pixel time-series classification) 
+is technically strong but will not be on the Phase 1 dashboard surface — 
+it lives behind an "Advanced" view at most.
 
-## Workflow
+**Scoping decisions are evidence.** What I chose to cut is as informative 
+as what I chose to build. Phase 1 documentation explicitly records these 
+decisions rather than presenting only the end state.
 
-| Tool | Use for |
-|------|---------|
-| Claude Chat | Strategy, brainstorming, planning, analysis |
-| Claude Code | All code execution, debugging, file editing |
-| GitHub | Version control, deployment |
-| Notion | Daily tracking, learning log |
-| The project dashboard HTML | Living roadmap, updated regularly |
+**Free data unless there's a specific reason otherwise.** Sentinel-1 and 
+Sentinel-2 are the default. Paid imagery (Planet, Maxar) is not part of 
+Phase 1. The constraint is part of the story: making Sentinel imagery 
+look good is itself a signal.
 
----
-
-## Honest priorities (next 30 days)
-
-1. **Show the prototype to 3 non-engineers.** Get feedback. Write it down.
-2. **Phase 4: Monthly pipeline for Riyadh.** Makes the product genuinely useful.
-3. **Check SpaceUp Competition 2026.** Apply if open. Basira fits their tracks.
-4. **Continue GMU/Edinburgh/Glasgow applications.** MSc in Remote Sensing + a
-   working product = extremely strong position.
-5. **Talk to SARsatX.** Even informally. They're the closest to what you're building.
+**Honest limitations.** The memo and the README name real limitations 
+explicitly. Overclaiming is a worse failure mode than underclaiming.
 
 ---
 
-*"An action is always better than inaction — even if we have to redo everything."*
+## Longer arc
+
+Phase 1 is the near-term focus. The longer arc — preserved here to 
+document intent, not to pursue until Phase 1 ships — remains Basira as a 
+Saudi-focused satellite change monitoring product, with the potential to 
+become the foundation of a company combining upstream (satellite 
+building) and downstream (data analytics) capability.
+
+The nearest adjacent directions, once Phase 1 has shipped and taught us 
+what resonates, are likely one of: unauthorized construction detection 
+for municipalities, afforestation verification for Saudi Green Initiative 
+claims, or agricultural water compliance monitoring. Each of these is a 
+vertical where satellite-scale monitoring is the appropriate primary 
+tool, the customer is identifiable, and current market offerings are 
+weak. The correct next vertical is not yet decided — Phase 1 shipping 
+and the conversations it generates are the forcing function for that 
+decision.
+
+The broader company ambition — upstream satellite systems plus 
+downstream analytics, Saudi-focused, eventually GCC and beyond — remains 
+the north star. Phase 1 is the first legible artifact of that ambition.
+
+---
+
+## Active credentials and infrastructure
+
+- Copernicus Dataspace: ahmadxgpx@gmail.com
+- Sentinel Hub OAuth client: active (30K PU/month free tier)
+- GitHub repo: a7zain/sar-change-detection
+- Deployed dashboard: GitHub Pages
+- Local conda environment: `sarsat`
+- Local project path: `/Users/a7zain/sar-change-detection`
+
+---
+
+## Working rhythm
+
+- This chat (Claude): strategy, planning, document drafting, review
+- Claude Code: all code execution, file manipulation, commits
+- GitHub: version control, deployment, canonical source of truth
+- Per-objective cleanup pass at each objective boundary (one pass, 
+  not two)
+- Per-session logs in `docs/sessions/` capturing what happened and 
+  what's next
+
+The Phase 5 multi-city work is parked on `wip/phase5-multicity` for 
+re-evaluation after Phase 1 ships.

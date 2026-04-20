@@ -1,106 +1,194 @@
-# CLAUDE.md — Basira Project Memory
+# CLAUDE.md
 
-Persistent memory for the Basira project. Read at session start, updated at
-session end. Keep lean — only what must persist.
+**Project:** Basira (بصيرة) — Saudi satellite change monitoring
+**Last updated:** 2026-04-20
+**Purpose of this doc:** Minimum context needed to be immediately useful 
+in a fresh chat. Not a changelog.
 
----
-
-## Project snapshot
-
-**Name:** Basira (بصيرة) — "insight" in Arabic
-**Type:** Satellite-based change monitoring platform for Saudi Arabia
-**Stage:** Phase 4.14 complete (full analytical pipeline + landing page + PDF report)
-**Repo:** github.com/a7zain/sar-change-detection
-**Local path:** /Users/a7zain/sar-change-detection
-**Conda env:** sarsat (`/opt/anaconda3/envs/sarsat/bin/python`)
+> For employer-specific context on the current deliverable target, load 
+> `.private/context.md` at session start. That file is gitignored and 
+> contains the specific opportunity this work is shaped for.
 
 ---
 
-> **Claude Code guardrail:** Every Claude Code prompt must start with "Work
-> directly on the main working tree. Do NOT create a git worktree under
-> `.claude/worktrees/`." Worktree drift silently broke sessions on April 8
-> and April 13.
+## Who I am
 
-> **Git status guardrail:** After every Claude Code step, run `git status` to
-> confirm what's actually staged. Two sessions have shipped "done" messages
-> while changes sat uncommitted on disk.
+Ahmed Zainaddin. Electrical engineer, based in Dammam, Saudi Arabia. 
+Early-career — still building, still choosing direction deliberately.
 
----
+**Upstream background.** Hands-on satellite systems work at KACST 
+(King Abdulaziz City for Science and Technology). Qualification-model 
+build on SHAMS satellite. Mission analysis documentation for previous 
+satellite launches. Three weeks as a space systems engineer handling 
+communications-systems documentation. This is where my technical roots 
+are: hardware, systems integration, comms.
 
-## Current state (as of April 16, 2026)
+**Downstream direction.** Over the last eight months, deliberate 
+self-study in earth observation and machine learning. Basira is the 
+product of that effort — the intent was always to build something real 
+rather than just complete courses. I'm applying to KAUST Academy ML 
+Program and to MSc programs at GMU, Edinburgh, and Glasgow. The 
+deliberate trajectory is to become credible at both ends of the space 
+value chain — upstream satellite engineering and downstream data 
+products — because the most interesting roles in the Saudi space sector 
+sit at that intersection, and few people are building on both sides 
+simultaneously.
 
-### What works
-- SAR pipeline: Sentinel-1 download → GCP correction → UTM → Lee filter →
-  log-ratio change detection → K-means (k=5)
-- Sentinel-2 optical: 3 time points (2020/2023/2026) + **76 monthly scenes**
-  (Jan 2020 – Apr 2026) at 20m, 4 bands (B02/B03/B04/B08), UTM 38N
-- Per-pixel NDVI time series, common valid mask (80% threshold), 4 ROIs
-- Pixel-level greening map (NDVI > 0.2 persistence, 2020 vs 2025)
-- Web-ready exports in webapp/data/phase4/ (green map, RGB, time series JSON)
-- Interactive Leaflet web app deployed via GitHub Pages
-- **Web-visible greening map:** Phase 4 greening overlay, ROI polygons with
-  popups, and Sentinel-2 RGB basemap live in the web app (Phase 4.5a, commit
-  `d9f83d3`)
-- **Phase 4.5c visible grid + breakdowns:** 56-cell clickable grid layer
-  (gridPane, z-index 446) with per-cell change/vegetation breakdowns,
-  desert-masked stats (AOI: 42.6% raw -> 17.8% masked), ROI cross-reference
-  via ray-casting PIP, wired to "Show Changes" toggle
-- **Phase 4.6:** before/after slider (2020 vs 2026, leaflet-side-by-side)
-- **Phase 4.7:** pixel-level time-series classification (K-means k=5 on
-  5 temporal features, 76-month NDVI trajectories, 5 clusters)
-- **Phase 4.8:** NDVI anomaly detection (z-score on monthly climatology,
-  9 anomalies across 4 ROIs, April 2022 regional signal)
-- **Phase 4.9:** active hotspots (composite scoring, top 10, collapsible
-  panel with fly-to + popup trigger)
-- **Phase 4.10:** confidence layer (coverage mask) + hotspot drill-in
-  (show pixel evolution per cell with veg-loss stat)
-- **Phase 4.11:** hotspot time attribution (per-cell onset estimation,
-  6/10 hotspots onset April 2022)
-- **Phase 4.12:** per-cell NDVI time series chart in every cell popup
-- **Phase 4.13:** landing page (webapp/index.html, dashboard moved to
-  webapp/dashboard.html)
-- **Phase 4.14:** auto-generated PDF report (src/generate_report_pdf.py)
+**How I work.** I move fast, I change course when evidence says I should, 
+and I prefer shipping over deliberating. I keep persistent notes across 
+sessions (this doc, session logs, master plan) because context-switching 
+between strategy chats and code execution burns more energy than most 
+people admit. I value direct pushback over polite agreement — if I'm 
+about to make a mistake, I'd rather hear that in the moment than 
+discover it later. When I say "do your recommendations" or "proceed," I 
+sometimes mean it and sometimes I'm fatigued; a fresh Claude is right to 
+flag when a decision is big enough that a real review is warranted.
 
-### Known limitations
-- 10 of 76 monthly scenes have partial coverage (diagonal nodata strip)
-- 20m resolution (Sentinel Hub free tier)
-- Only Riyadh covered
-- No radiometric calibration to sigma-naught (relative change only)
-- K-means "Land clearing" label is a heuristic for surface darkening /
-  vegetation loss / disturbance — not all detected pixels are genuine
-  demolition. Real attribution requires monthly time-series classification
-  (Phase 5+).
+**What I'm building toward.** Near term: a credible entry into the Saudi 
+space sector through a role that lets me work on both satellite systems 
+and EO products. Longer term: Basira (or its successor) as a product 
+company that produces value from satellite data, potentially expanding 
+into upstream capability. The company ambition is real but it's the 
+north star, not the current objective. Right now I'm focused on building 
+evidence that I can scope, execute, and communicate.
 
-### Open questions
-- 2022_07 Central Urban NDVI spike: partial-coverage artifact now filtered
-  (< 500 px threshold), but root cause not confirmed radiometrically
+**Who's around me.** Mutual contacts at multiple Saudi space-sector 
+entities. Small sector, warm introductions matter, reputation compounds. 
+I am deliberate about not overpromising.
+
+**Language.** English primary for technical work. Arabic native. The 
+project name Basira (بصيرة) means insight.
 
 ---
 
-## Architecture decisions
+## Current objective
 
-| Decision | Why |
-|----------|-----|
-| Sentinel-1 + Sentinel-2 (free Copernicus) | Free, global, well-documented |
-| Sentinel Hub Process API for optical | Pre-processed L2A, cloud masking |
-| K-means for ML classification | Simple, interpretable, validated |
-| Static web app (Leaflet + GitHub Pages) | Zero backend cost |
-| 80% coverage threshold for valid mask | Balances coverage vs strictness |
-| 500-pixel minimum for ROI stats | Prevents partial-scene artifacts |
-| Landing page + dashboard split | Clean separation of marketing and product; landing is static HTML, dashboard is the app |
+**Phase 1 deliverable: scoped technical demonstration of end-to-end 
+capability on Vision 2030 megaproject monitoring.**
+
+Three projects — Qiddiya (hero), King Salman Park, Diriyah Gate. 
+Deliverable includes a live dashboard, a 3–5 page technical memo PDF, 
+a rewritten README, and targeted outreach.
+
+This is shaped for a specific employment opportunity in the Saudi space 
+sector — a role that rewards breadth, scoping judgment, and clean 
+communication rather than deep methodological novelty. Framing of every 
+artifact should reflect that: execution story and upstream-downstream 
+narrative, not depth competition.
+
+For the specific target, context, and timing of the outreach, see 
+`.private/context.md`.
+
+Approximate timeline: 4–6 weeks from 2026-04-20.
+
+Full strategic framing: see `basira_master_plan.md`.
 
 ---
 
-## Active credentials
+## Current repo state
 
-- Copernicus Dataspace: `ahmadxgpx@gmail.com`
+- On `main`: cleaned as of 2026-04-20 (five cleanup commits, ending `d0457bb`)
+- Phase 5 multi-city work parked on `wip/phase5-multicity` (commit `8ea085b`)
+- Superseded scripts archived under `src/archive/` with `git mv` history preserved
+- Historical docs under `docs/archive/`
+- 187 tracked files (down from 215 pre-cleanup)
+- `outputs/*.png` and `outputs/*.pdf` now gitignored; files regenerable from `src/`
+
+## What works right now
+
+- **SAR pipeline** (`src/preprocess_v2.py`, `src/change_detect_v2.py`): 
+  Sentinel-1 download → GCP correction → UTM → Lee filter → log-ratio 
+  change detection → K-means (k=5)
+- **Sentinel-2 monthly time series**: 76 scenes Jan 2020 – Apr 2026, 
+  Riyadh AOI, 20m, 4 bands (B02/B03/B04/B08), UTM 38N
+- **NDVI analytics**: per-pixel time series, greening map, ROI time series, 
+  anomaly detection, hotspot ranking, pixel-level classification
+- **Web dashboard**: Leaflet.js, deployed GitHub Pages, shows greening 
+  map, ROI polygons, before/after slider, hotspots, per-cell charts
+- **Auto-generated PDF report**: `src/generate_report_pdf.py`
+
+## What's parked or incomplete
+
+- Multi-city (Jeddah, etc.): on `wip/phase5-multicity` branch, not in 
+  Phase 1 scope
+- Qiddiya, King Salman Park, Diriyah Gate project-specific views: not 
+  yet built (Phase 1 deliverable)
+- SAR-optical fusion as a clean single product: not yet done (Phase 1 
+  technical work)
+- Technical memo: not yet written
+- README rewrite: pending Pass 3 of cleanup
+
+---
+
+## Working rhythm
+
+- **This chat (Claude)**: strategy, planning, document drafting, review. 
+  No code execution here.
+- **Claude Code**: all file operations, commits, code changes. Prompts 
+  from this chat are pasted into Claude Code.
+- **Per-objective cleanup pass**: one cleanup at each objective boundary. 
+  Not two (beginning and end are the same event).
+- **Per-session logs**: committed to `docs/sessions/YYYY-MM-DD.md` at 
+  session end.
+
+---
+
+## Operational guardrails (learned the hard way)
+
+**Worktree drift.** Claude Code has previously created git worktrees 
+under `.claude/worktrees/` and silently broken sessions three times 
+(April 8, April 13, and one during the Phase 4 rush). Every Claude Code 
+prompt must include: *"Work directly on the main working tree. Do NOT 
+create a git worktree under `.claude/worktrees/`. If you think you need 
+one, stop and ask."*
+
+**Post-edit verification.** After any Claude Code report of "N insertions" 
+or "file edited," verify with `git status` and `find . -name <file> -not 
+-path '*/.git/*'` before trusting the edit. This caught two "shipped but 
+not actually committed" states.
+
+**Atomic commits.** Each cleanup, refactor, or feature goes in its own 
+commit with an accurate message. No mixed commits. If a multi-part 
+operation is needed, split it into numbered passes (e.g. Pass 2A, 2B, 
+2C, 2D) and verify between each.
+
+**Token budget awareness.** Claude Code reading full file contents of 
+every script when it only needs filenames and metadata is a budget waste. 
+Prompts should explicitly constrain depth of reading where possible.
+
+---
+
+## Active credentials and paths
+
+- Copernicus Dataspace: ahmadxgpx@gmail.com
 - Sentinel Hub OAuth: stored in `.env` (gitignored)
-- GitHub repo: `a7zain/sar-change-detection`
+- GitHub: `a7zain/sar-change-detection`
+- Local path: `/Users/a7zain/sar-change-detection`
+- Conda env: `sarsat`
 
 ---
 
-## Immediate priorities
+## Open questions and things to decide
 
-1. Awaiting tester responses on updated prototype
-2. UI polish pass: hotspot panel, legend stack, mobile layout
-3. Decision: deeper Riyadh features vs second AOI (after tester input)
+- Which project becomes the hero timelapse for the landing page? 
+  Currently leaning Qiddiya but open to King Salman Park if the greening 
+  story reads more compellingly.
+- SAR-optical fusion design spec: to be drafted before Phase 1 build 
+  begins. Held for now pending cleanup completion.
+- Outreach message framing: draft closer to send date, not now.
+
+---
+
+## What NOT to do
+
+- Do not re-litigate the TPM-track vs. EO-specialist framing. That 
+  decision was made 2026-04-20 after an explicit reframe conversation. 
+  The deliverable is shaped for breadth and execution, not for 
+  methodological depth competition.
+- Do not expand Phase 1 scope. The three projects are the scope. 
+  Additional projects, additional cities, additional analytics — all 
+  post-Phase 1.
+- Do not suggest paid imagery (Planet, Maxar) for Phase 1. Sentinel is 
+  the constraint, deliberately.
+- Do not treat the longer-arc company vision as the active objective. 
+  It's the north star, not the map.
