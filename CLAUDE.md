@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 **Project:** Basira (بصيرة) — Saudi satellite change monitoring
-**Last updated:** 2026-04-20
+**Last updated:** 2026-04-21
 **Purpose of this doc:** Minimum context needed to be immediately useful 
 in a fresh chat. Not a changelog.
 
@@ -87,12 +87,12 @@ Full strategic framing: see `basira_master_plan.md`.
 
 ## Current repo state
 
-- On `main`: cleaned as of 2026-04-20 (five cleanup commits, ending `d0457bb`)
+- On `main`: Phase 1 data-acquisition session complete 2026-04-21 (latest commit `14fda9e`, five Phase 1 commits stacked on the 2026-04-20 cleanup ending `d0457bb`)
+- Phase 1 data fully downloaded (2026-04-21): 228 Sentinel-2 scenes across three AOIs, polygon-clipped to KML geometry
 - Phase 5 multi-city work parked on `wip/phase5-multicity` (commit `8ea085b`)
 - Superseded scripts archived under `src/archive/` with `git mv` history preserved
 - Historical docs under `docs/archive/`
-- 187 tracked files (down from 215 pre-cleanup)
-- `outputs/*.png` and `outputs/*.pdf` now gitignored; files regenerable from `src/`
+- `outputs/*.png` and `outputs/*.pdf` now gitignored; `outputs/phase1/` and `data/phase1/*/*.tif` also gitignored (regenerable)
 
 ## What works right now
 
@@ -106,13 +106,21 @@ Full strategic framing: see `basira_master_plan.md`.
 - **Web dashboard**: Leaflet.js, deployed GitHub Pages, shows greening 
   map, ROI polygons, before/after slider, hotspots, per-cell charts
 - **Auto-generated PDF report**: `src/generate_report_pdf.py`
+- **Phase 1 pipeline**: KML-based AOI registry, polygon-clipped Sentinel-2
+  downloader, RGB timelapse generator. Scripts: `src/phase1_aois.py`,
+  `src/phase1_download.py`, `src/phase1_quicklook.py`, `src/phase1_timelapse.py`
+- **Phase 1 data**: 76 months × 3 AOIs (qiddiya_core, king_salman_park,
+  diriyah_gate), 10 m, 6 bands (B02/03/04/08/11/12), ~387 MB total
+- **Phase 1 timelapses**: RGB GIFs per AOI, fixed cross-stack contrast,
+  4 fps, polygon-outlined
 
 ## What's parked or incomplete
 
 - Multi-city (Jeddah, etc.): on `wip/phase5-multicity` branch, not in 
   Phase 1 scope
-- Qiddiya, King Salman Park, Diriyah Gate project-specific views: not 
-  yet built (Phase 1 deliverable)
+- Site build not yet started. Cinematic site spec locked in
+  `docs/site_spec.md` (v1, 2026-04-21). Build sequence: repo rename →
+  HTML skeleton → sliders → scroll players → prose → memo PDF.
 - SAR-optical fusion as a clean single product: not yet done (Phase 1 
   technical work)
 - Technical memo: not yet written
@@ -170,9 +178,9 @@ Prompts should explicitly constrain depth of reading where possible.
 
 ## Open questions and things to decide
 
-- Which project becomes the hero timelapse for the landing page? 
-  Currently leaning Qiddiya but open to King Salman Park if the greening 
-  story reads more compellingly.
+- Chart design per project chapter (Qiddiya = built area, KSP = NDVI,
+  Diriyah = TBD — probably vegetation/built blend). Defer until site
+  skeleton exists.
 - SAR-optical fusion design spec: to be drafted before Phase 1 build 
   begins. Held for now pending cleanup completion.
 - Outreach message framing: draft closer to send date, not now.
@@ -192,3 +200,6 @@ Prompts should explicitly constrain depth of reading where possible.
   the constraint, deliberately.
 - Do not treat the longer-arc company vision as the active objective. 
   It's the north star, not the map.
+- Do not re-litigate the cinematic NYT-feature direction. Locked
+  2026-04-21 after explicit pushback discussion. All surface-level
+  additions pass through: "does this belong in a New York Times feature?"
