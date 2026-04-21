@@ -40,9 +40,39 @@
 | Repo rename | Not done — Ahmed does this on GitHub directly |
 | GitHub Pages config | Untouched |
 
+---
+
+## Wide-context backdrop imagery (2026-04-21)
+
+**Script:** `src/phase1_backdrops.py` (standalone, do not modify phase1_download.py)
+
+**What it does:** Downloads a single cloud-free RGB (B02/B03/B04) composite per AOI at 20 m
+resolution, using a bbox ~3× the tight KML polygon in each dimension, centred on the polygon
+centroid.  Mosaicking: leastCC.  Date range: 2024-01-01–2024-12-31.  Output: JPEG quality=85,
+percentile-stretched for visual quality.
+
+**Outputs (assets/backdrops/):**
+
+| File | Size | Px dims | Est. PU |
+|---|---|---|---|
+| `king_salman_park_context.jpg` | 358 KB | 802 × 841 | 2.57 |
+| `qiddiya_core_context.jpg`     | 149 KB | 829 × 455 | 1.44 |
+| `diriyah_gate_context.jpg`     |  76 KB | 530 × 312 | 0.63 |
+
+**Total estimated PU:** 4.64
+
+**Note — Diriyah file size below 200 KB target:** Diriyah's tight polygon is small (roughly
+3.5 km × 2 km before expansion), so the 3× bbox is only ~12 km × 6 km → 530×312 px image.
+Desert terrain compresses heavily at JPEG 85 → 76 KB.  If you want a physically larger context
+image for Diriyah, re-run with `EXPAND_FACTOR = 2.0` in the script (→ 5× bbox, costs ~1.5 PU).
+For a blurred backdrop this size may be perfectly adequate.
+
+---
+
 ## Next session priorities
 
 1. Before/after sliders — lightweight JS, no library (Ch 2–4)
 2. Real timelapse render as MP4 at 1920×1080 for Ch 0 hero and per-AOI
 3. Ahmed's prose first drafts (Chs 1–4 are the bottleneck)
 4. Methodology text (Ch 5)
+5. Wire backdrop JPEGs into index.html as blurred bg behind each AOI chapter
