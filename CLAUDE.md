@@ -138,6 +138,12 @@ Full strategic framing: see `basira_master_plan.md`.
   Not two (beginning and end are the same event).
 - **Per-session logs**: committed to `docs/sessions/YYYY-MM-DD.md` at 
   session end.
+- **End-of-session file handoff**: Claude (chat) drafts any repo-bound 
+  files — session logs, specs, notes — as text in chat, not as 
+  downloadable files. Ahmed copies the text and pastes it into a 
+  single Claude Code prompt that creates the file at the correct path, 
+  commits with a meaningful message, and pushes. No browser downloads, 
+  no GitHub web UI uploads. Text flows chat → Claude Code → repo.
 
 ---
 
@@ -163,6 +169,15 @@ operation is needed, split it into numbered passes (e.g. Pass 2A, 2B,
 **Token budget awareness.** Claude Code reading full file contents of 
 every script when it only needs filenames and metadata is a budget waste. 
 Prompts should explicitly constrain depth of reading where possible.
+
+**File handoff discipline.** Do not use chat's file-download or file-
+presentation tools for repo-bound files. Any content that belongs in 
+the repo (session logs, specs, notes, docs) is drafted as text in chat, 
+copied by Ahmed, and committed via Claude Code in a single prompt. 
+Using GitHub's web UI to upload files (as happened 2026-04-21) fragments 
+history with generic "Add files via upload" commits that duplicate 
+atomic work already staged locally. If Ahmed is unclear where a file 
+goes, Claude provides the exact target path in the Claude Code prompt.
 
 ---
 
