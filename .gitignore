@@ -36,6 +36,8 @@ Thumbs.db
 outputs/*.png
 outputs/*.pdf
 outputs/phase4_anomalies/
+outputs/phase1/
+data/phase1/*/*.tif
 
 # Private strategic context (added 2026-04-20 Pass 3)
 .private/
