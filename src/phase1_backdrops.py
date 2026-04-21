@@ -2,18 +2,18 @@
 Phase 1 — Wide-context backdrop downloader
 ==========================================
 Downloads a single cloud-free RGB composite per AOI, using a bbox that
-extends the tight KML polygon bbox by ~3× in each dimension (centred on
+extends the tight KML polygon bbox by ~5× in each dimension (centred on
 the polygon centroid).  Output is a JPEG visual asset for use as blurred
 background imagery on the Basira site — not for analysis.
 
 Usage (from repo root, sarsat env):
-    python src/phase1_backdrops.py [--dry-run]
+    python src/phase1_backdrops.py [--dry-run] [--overwrite]
 
 Outputs:
     assets/backdrops/<aoi_id>_context.jpg   (one per AOI, 200–500 KB)
 
-PU budget: ~2 PU per AOI, ~6 PU total.  Script aborts if a single AOI
-would exceed PU_PER_AOI_CEILING before downloading.
+PU budget: ~3–5 PU per AOI.  Script aborts if a single AOI would exceed
+PU_PER_AOI_CEILING before downloading.
 
 Do NOT modify phase1_download.py — this is a one-off pull.
 """
@@ -46,31 +46,42 @@ from phase4_download import S2_L2A_CDSE, get_credentials, configure_sh  # noqa: 
 
 # ── Constants ───────────────────────────────────────────────────────────
 RESOLUTION    = 20          # metres — coarser = smaller file, fine for blurred bg
-BANDS         = ["B02", "B03", "B04"]  # R/G/B only
-DATE_START    = "2024-01-01"
-DATE_END      = "2024-12-31"
-JPEG_QUALITY  = 85
+DATE_START    = "2024-04-01"  # Saudi dry season: less haze, cleaner composites
+DATE_END      = "2024-10-31"
+JPEG_QUALITY  = 90
 OUT_DIR       = os.path.join(REPO_ROOT, "assets", "backdrops")
 TARGET_CRS    = "EPSG:32638"  # UTM Zone 38N — matches existing pipeline
 
 # Abort if a single AOI download is estimated to exceed this PU count.
-PU_PER_AOI_CEILING = 5.0
+# Raised to 12.0 to accommodate 5× bbox (EXPAND_FACTOR=2.0); monthly budget is 30K PU.
+PU_PER_AOI_CEILING = 12.0
 
 # How much to expand the tight polygon bbox on each side.
-# 1.0 → 3× total width/height (1 tight + 1 extra each side).
-EXPAND_FACTOR = 1.0
+# 2.0 → 5× total width/height (1 tight + 2 extra each side).
+# Diriyah's tight polygon is small, so 5× gives it enough physical extent
+# to be used as a full-viewport backdrop without JPEG artifacts through blur.
+EXPAND_FACTOR = 2.0
 
+# True-color stretch: gain=2.5 applied in evalscript, values clamped to [0,1].
+# Band order MUST be [B04, B03, B02] = [Red, Green, Blue] for correct colors.
+# Previous version incorrectly returned [B02, B03, B04] (Blue→R channel).
 EVALSCRIPT_RGB = """
 //VERSION=3
 function setup() {
-    return {
-        input:  [{ bands: ["B02", "B03", "B04"] }],
-        output: { bands: 3, sampleType: "FLOAT32" }
-    };
+  return {
+    input: [{bands: ["B02","B03","B04"]}],
+    output: {bands: 3, sampleType: "AUTO"}
+  };
 }
 function evaluatePixel(s) {
-    // Return raw reflectance (0.0–1.0); Python handles stretch.
-    return [s.B02, s.B03, s.B04];
+  // Standard true-color stretch — gain 2.5, clip at 1.0 reflectance.
+  // B04=Red, B03=Green, B02=Blue: must be in this order for correct RGB.
+  const gain = 2.5;
+  return [
+    Math.min(1, s.B04 * gain),
+    Math.min(1, s.B03 * gain),
+    Math.min(1, s.B02 * gain)
+  ];
 }
 """
 
@@ -85,10 +96,10 @@ def polygon_centroid(polygon_lonlat):
 
 def wide_bbox_wgs84(polygon_lonlat, expand_factor=EXPAND_FACTOR):
     """
-    Compute a bbox ~3× the tight polygon bbox, centred on the centroid.
+    Compute a wide bbox centred on the polygon centroid.
 
-    expand_factor=1.0 adds 1× the tight width/height on each side,
-    yielding 3× total extent.  Returns (minlon, minlat, maxlon, maxlat).
+    expand_factor=2.0 adds 2× the tight width/height on each side,
+    yielding 5× total extent.  Returns (minlon, minlat, maxlon, maxlat).
     """
     shp  = Polygon(polygon_lonlat)
     minx, miny, maxx, maxy = shp.bounds
@@ -118,32 +129,20 @@ def estimate_pu(width, height, n_bands=3):
 
 # ── Image processing ─────────────────────────────────────────────────────
 
-def to_uint8(band_float, lo_pct=2, hi_pct=98):
-    """
-    Percentile stretch a single float32 band to uint8.
-    Pixels at or below lo_pct → 0; at or above hi_pct → 255.
-    """
-    valid = band_float[band_float > 0]
-    if valid.size == 0:
-        return np.zeros(band_float.shape, dtype=np.uint8)
-    lo = np.percentile(valid, lo_pct)
-    hi = np.percentile(valid, hi_pct)
-    if hi == lo:
-        return np.zeros(band_float.shape, dtype=np.uint8)
-    stretched = (band_float - lo) / (hi - lo)
-    return np.clip(stretched * 255, 0, 255).astype(np.uint8)
-
-
 def array_to_jpeg(data, out_path, quality=JPEG_QUALITY):
     """
-    Convert a (H, W, 3) float32 reflectance array to a JPEG file.
-    Applies percentile stretch per-band then saves as RGB JPEG.
-    Returns file size in bytes.
+    Convert a (H, W, 3) array to a JPEG file and return file size in bytes.
+
+    The evalscript uses sampleType "AUTO" with values in [0, 1], so sentinelhub
+    returns the array as float32 in [0, 1].  We convert directly to uint8 —
+    no per-band stretch, because the evalscript has already applied gain+clamp.
+    Per-band percentile stretch (previous version) equalized all channels and
+    destroyed color balance.
     """
-    r = to_uint8(data[:, :, 0])  # B04 → Red
-    g = to_uint8(data[:, :, 1])  # B03 → Green
-    b = to_uint8(data[:, :, 2])  # B02 → Blue
-    rgb = np.stack([r, g, b], axis=2)
+    if data.dtype == np.uint8:
+        rgb = data  # API returned uint8 directly (shouldn't happen with TIFF, but safe)
+    else:
+        rgb = np.clip(data * 255.0, 0, 255).astype(np.uint8)
     img = Image.fromarray(rgb, mode="RGB")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     img.save(out_path, format="JPEG", quality=quality, optimize=True)
@@ -194,6 +193,8 @@ def main():
     parser = argparse.ArgumentParser(description="Phase 1 backdrop downloader")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print plan and PU estimates without downloading.")
+    parser.add_argument("--overwrite", action="store_true",
+                        help="Re-download and overwrite existing output files.")
     args = parser.parse_args()
 
     aois = list_primary_aois()
@@ -205,7 +206,7 @@ def main():
     print(f"  Resolution: {RESOLUTION} m  (JPEG, not analysis)")
     print(f"  Bands:      B02 B03 B04  (RGB)")
     print(f"  Mosaicking: leastCC")
-    print(f"  Expand:     {EXPAND_FACTOR}× → ~3× tight bbox in each dimension")
+    print(f"  Expand:     {EXPAND_FACTOR}× → ~{1+2*EXPAND_FACTOR:.0f}× tight bbox in each dimension")
     print(f"  Output:     {OUT_DIR}/<aoi>_context.jpg")
     print()
 
@@ -264,9 +265,9 @@ def main():
         aoi_key  = p["key"]
         out_path = p["out_path"]
 
-        if os.path.exists(out_path):
+        if os.path.exists(out_path) and not args.overwrite:
             sz = os.path.getsize(out_path)
-            print(f"  [skip] {aoi_key} — already exists ({sz/1024:.0f} KB)")
+            print(f"  [skip] {aoi_key} — already exists ({sz/1024:.0f} KB)  (use --overwrite to replace)")
             continue
 
         print(f"  [{aoi_key}] downloading...", end=" ", flush=True)
