@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 **Project:** Basira (بصيرة) — Saudi satellite change monitoring
-**Last updated:** 2026-04-21
+**Last updated:** 2026-04-22
 **Purpose of this doc:** Minimum context needed to be immediately useful 
 in a fresh chat. Not a changelog.
 
@@ -87,7 +87,11 @@ Full strategic framing: see `basira_master_plan.md`.
 
 ## Current repo state
 
-- On `main`: Phase 1 data-acquisition session complete 2026-04-21 (latest commit `14fda9e`, five Phase 1 commits stacked on the 2026-04-20 cleanup ending `d0457bb`)
+- On `main`: latest commit `db3cfa1` (2026-04-22 — mask alignment fix)
+- Phase 1 site skeleton live with per-GIF blurred Sentinel-2 context (commit `8b6aa83`)
+- No viewport-wide chapter backdrops; spec updated to reflect per-GIF masking approach
+- AI-generated imagery prohibited in surface discipline (locked in `docs/site_spec.md`)
+- Mask alignment verified across all three AOIs (preview PNGs at GIF dims, no object-fit crop)
 - Phase 1 data fully downloaded (2026-04-21): 228 Sentinel-2 scenes across three AOIs, polygon-clipped to KML geometry
 - Phase 5 multi-city work parked on `wip/phase5-multicity` (commit `8ea085b`)
 - Superseded scripts archived under `src/archive/` with `git mv` history preserved
@@ -113,16 +117,28 @@ Full strategic framing: see `basira_master_plan.md`.
   diriyah_gate), 10 m, 6 bands (B02/03/04/08/11/12), ~387 MB total
 - **Phase 1 timelapses**: RGB GIFs per AOI, fixed cross-stack contrast,
   4 fps, polygon-outlined
+- **Basira cinematic site** (`index.html`): 8-chapter skeleton, per-GIF
+  blurred Sentinel-2 context via CSS mask-image (polygon masks at GIF
+  dims), IntersectionObserver autoplay + scale/fade, off-white chapters
+  2–4, prefers-reduced-motion support. Served locally at port 8888.
+- **Wide-context backdrops** (`assets/backdrops/`): Sentinel-2 RGB
+  composites per AOI, 2024 dry season, 20 m, leastCC, correct band
+  order (R=B04, G=B03, B=B02). Script: `src/phase1_backdrops.py`
+- **Polygon masks** (`assets/masks/`): white-inside/black-outside PNGs
+  at GIF native dims (1110×598 / 1086×1106 / 1065×615), 98.9–99.3%
+  polygon alignment verified
 
 ## What's parked or incomplete
 
 - Multi-city (Jeddah, etc.): on `wip/phase5-multicity` branch, not in 
   Phase 1 scope
-- Site build not yet started. Cinematic site spec locked in
-  `docs/site_spec.md` (v1, 2026-04-21). Build sequence: repo rename →
-  HTML skeleton → sliders → scroll players → prose → memo PDF.
-- SAR-optical fusion as a clean single product: not yet done (Phase 1 
-  technical work)
+- **Tomorrow's committed order** (2026-04-23): Ch 1 premise prose →
+  MP4 migration + HTML swap → Ch 2/3/4 prose → before/after sliders →
+  methodology prose. Memo PDF parked for a separate day.
+- Before/after sliders: placeholder in HTML, JS not yet written
+- MP4 timelapses: GIFs used for now; MP4 render + `<video>` swap is next
+- All prose: `[DRAFT]` markers throughout Ch 1–6; Ahmed writes
+- SAR-optical fusion as a clean single product: not yet done
 - Technical memo: not yet written
 - README rewrite: pending Pass 3 of cleanup
 
