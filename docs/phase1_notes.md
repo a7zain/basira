@@ -88,6 +88,28 @@ For a blurred backdrop this size may be perfectly adequate.
 
 ---
 
+---
+
+## Per-GIF blurred context via CSS masking (2026-04-22)
+
+**Replaced** the viewport-wide chapter backdrop system (session 5) with a tighter per-timelapse treatment:
+
+**Approach:** Each timelapse lives in a `.timelapse-frame` div whose `aspect-ratio` is set inline to the GIF's native pixel dimensions (1110/598, 1086/1106, 1065/615). Inside that frame: a `.timelapse-backdrop` img (Sentinel-2 context JPEG, `blur(18px) brightness(0.6)`, `object-fit: cover`, scaled 1.06× to clip blur fringe) and a `.timelapse-gif` img (the GIF or static placeholder, `object-fit: cover`, clipped by `mask-image`).
+
+**Masks (`assets/masks/`):** Three white-inside/black-outside PNG masks at GIF native dimensions, generated from the KML polygon coordinates using the same `polygon_pixel_coords()` logic as the timelapse script. Verified 98.9–99.3% alignment with GIF data pixels.
+
+**Preview PNG dimension mismatch resolved:** Preview PNGs have different dimensions than GIFs (e.g. Qiddiya: preview 1419×836, GIF 1110×598). Fixed by locking `.timelapse-frame` to GIF aspect-ratio via `aspect-ratio` inline style; both images use `object-fit: cover`, so the preview PNG fills the fixed frame without layout shift. The mask at `mask-size: 100% 100%` always covers the element correctly.
+
+**What changed structurally:**
+- Removed: `.chapter--project` class, viewport-wide `.backdrop` divs, `.content` wrapper, `--ch-text`/`--ch-muted` CSS vars, dark-text cascade for project chapters
+- Chapters 2–4 return to `background: var(--bg)` (#FAF8F3) with standard `padding: 10vh 8vw`
+- JS `setPlaying()` updated: queries `.timelapse-gif` not generic `img`
+- Ch 0 hero backdrop unchanged (sits inside `.ch0-frame`, not viewport-wide)
+
+**Spec amended:** imagery bullet and surface discipline section updated to reflect per-GIF masking and AI imagery prohibition.
+
+---
+
 ## Next session priorities
 
 1. Before/after sliders — lightweight JS, no library (Ch 2–4)

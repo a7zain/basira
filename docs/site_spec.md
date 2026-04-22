@@ -45,8 +45,8 @@ Static HTML/CSS/JS. No framework. Single `index.html` file. Deployed via GitHub 
 
 ### Imagery
 
-- Satellite data is the hero visual. No stock photography.
-- Polygon-clipped timelapses sit over a blurred wide-context backdrop of the same region (Sentinel-2 RGB composite, 2024, blurred 24px + darkened to 55% brightness). No black bars. The polygon becomes a sharp window into the location with soft geographic context surrounding it.
+- Satellite data is the hero visual. No stock photography. No generative AI imagery of any kind — not for backdrops, not for illustrations, not for placeholder content.
+- Each timelapse sits in a fixed-aspect-ratio frame (GIF native pixel dimensions). Behind it: a blurred Sentinel-2 RGB composite of the same region (blur 18px, brightness 60%), sized to fill the frame. The GIF is clipped to its polygon by a CSS mask-image (white-inside/black-outside PNG at GIF dims), so black letterbox pixels become transparent and the blurred backdrop shows through. Chapters 2–4 are on off-white (#FAF8F3); the backdrop is per-timelapse only, not viewport-wide.
 
 ---
 
@@ -240,6 +240,7 @@ Considered in 2026-04-21 session. Rejected: fragile on mobile, would replace the
 
 Non-exhaustive list of things that will not be added to the main cinematic scroll, regardless of how tempting:
 
+- Generative AI imagery of any kind (backdrops, illustrations, placeholders) — all imagery is real satellite data or nothing
 - Metric grids, KPI cards, dashboard widgets
 - Filter panels, dropdowns, toggles
 - Phase 4 analytics (hotspots, 56-cell grid, pixel classification, ML anomalies) — these live in the methodology chapter and memo only
