@@ -69,10 +69,28 @@ For a blurred backdrop this size may be perfectly adequate.
 
 ---
 
+---
+
+## Backdrop integration + scroll fades (2026-04-22)
+
+**What changed in index.html:**
+
+- **Backdrop system**: `.backdrop` div (position absolute, fills parent, `filter: blur(24px) brightness(0.55) saturate(0.9)`, `transform: scale(1.08)` to prevent blur edge reveal)
+- **Chapter 0**: backdrop inside `.ch0-frame`; `qiddiya_core_context.jpg` replaces the solid black; `.ch0-gif` given `position: relative; z-index: 1`
+- **Chapters 2–4**: each gets `.chapter--project` class with `overflow: hidden`; backdrop div; `.content` wrapper (`position: relative; z-index: 1; padding: 10vh 8vw`); each uses its own AOI backdrop
+- **Text cascade for dark chapters**: `.chapter--project` cascades `var(--ch-text)` (warm cream) and `var(--ch-muted)` for legibility over the dark backdrop; chart borders, tech-note, coords all adjusted
+- **Timelapse box-shadow**: `0 20px 60px rgba(0,0,0,0.4)` — "placed" feel on backdrop
+- **Scroll-linked scale/fade**: second `IntersectionObserver` (threshold 0.4) adds `.is-visible` class once per timelapse wrap; CSS transitions from `opacity:0 scale(1.04)` → `opacity:1 scale(1.0)` over 800ms ease-out
+- **Mobile**: backdrop blur reduced to 12px at ≤768px (lighter GPU load)
+- **prefers-reduced-motion**: timelapse wraps start at `opacity:1 scale(1.0)` with no transition; backdrop stays static (no animation was planned)
+
+**spec amended**: imagery section, motion section (scroll-linked bullet), parked decisions (video scrubbing rejection).
+
+---
+
 ## Next session priorities
 
 1. Before/after sliders — lightweight JS, no library (Ch 2–4)
 2. Real timelapse render as MP4 at 1920×1080 for Ch 0 hero and per-AOI
 3. Ahmed's prose first drafts (Chs 1–4 are the bottleneck)
 4. Methodology text (Ch 5)
-5. Wire backdrop JPEGs into index.html as blurred bg behind each AOI chapter

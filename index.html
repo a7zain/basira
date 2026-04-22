@@ -13,12 +13,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:     #FAF8F3;
-      --ink:    #1A1A1A;
-      --muted:  #6b6b68;
-      --accent: #B87333;
-      --serif:  'Playfair Display', Georgia, serif;
-      --sans:   'Inter', system-ui, sans-serif;
+      --bg:       #FAF8F3;
+      --ink:      #1A1A1A;
+      --muted:    #6b6b68;
+      --accent:   #B87333;
+      --serif:    'Playfair Display', Georgia, serif;
+      --sans:     'Inter', system-ui, sans-serif;
+      /* Light variants for dark/backdrop chapters */
+      --ch-text:  rgba(245, 240, 232, 0.92);
+      --ch-muted: rgba(245, 240, 232, 0.52);
     }
 
     html {
@@ -39,6 +42,36 @@
     .chapter {
       min-height: 100vh;
       position: relative;
+    }
+
+    /* ─── Backdrop system ──────────────────────────────
+       Used in Chapters 0 (inside .ch0-frame), 2, 3, 4.
+    ───────────────────────────────────────────────── */
+
+    /* Project chapters clip the scale(1.08) backdrop edge bleed */
+    .chapter--project {
+      overflow: hidden;
+    }
+
+    /* The blurred context image — fills parent, sits behind everything */
+    .backdrop {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      /* blur 24px desktop | brightness 55% | subtle desaturate */
+      filter: blur(24px) brightness(0.55) saturate(0.9);
+      /* Scale slightly past edges so blur fringing doesn't show */
+      transform: scale(1.08);
+      z-index: 0;
+      /* backdrop never animates — only the timelapse/title elements do */
+    }
+
+    /* Content wrapper: sits above the backdrop */
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 10vh 8vw;
     }
 
     /* ─── Utility ─── */
@@ -65,6 +98,21 @@
       margin-bottom: 0.5rem;
     }
 
+    .draft-label {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 0.55rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--muted);
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      vertical-align: middle;
+    }
+
     /* ─────────────────────────────────────────────
        CHAPTER 0 — OPENING
     ───────────────────────────────────────────── */
@@ -81,13 +129,19 @@
       position: relative;
       width: min(100vw, 177.78vh); /* 16/9 × 100vh */
       aspect-ratio: 16 / 9;
+      overflow: hidden; /* clip the scaled backdrop */
     }
+
+    /* The backdrop sits inside the frame; the GIF sits above it */
+    /* .backdrop is already defined globally — reused here */
 
     .ch0-gif {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      position: relative; /* sit above backdrop */
+      z-index: 1;
     }
 
     /* Title overlay — bottom third */
@@ -101,8 +155,8 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      /* Semi-opaque gradient so text is legible without a box */
       background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%);
+      z-index: 2;
     }
 
     .ch0-title {
@@ -140,6 +194,7 @@
       transform: translateX(-50%);
       opacity: 0;
       transition: opacity 800ms ease-out;
+      z-index: 2;
     }
 
     .ch0-arrow svg {
@@ -177,6 +232,7 @@
 
     /* ─────────────────────────────────────────────
        CHAPTER 1 — THE PREMISE
+       (unchanged — no backdrop, no scale/fade)
     ───────────────────────────────────────────── */
     #ch1 {
       background: var(--bg);
@@ -201,29 +257,9 @@
 
     .ch1-inner p:last-child { margin-bottom: 0; }
 
-    .draft-label {
-      display: inline-block;
-      font-family: var(--sans);
-      font-size: 0.55rem;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--muted);
-      padding: 2px 7px;
-      border-radius: 2px;
-      margin-bottom: 1.5rem;
-      vertical-align: middle;
-    }
-
     /* ─────────────────────────────────────────────
-       AOI CHAPTERS — shared (2, 3, 4)
+       AOI CHAPTERS — shared layout (2, 3, 4)
     ───────────────────────────────────────────── */
-    .aoi-chapter {
-      background: var(--bg);
-      padding: 10vh 8vw;
-    }
-
     .aoi-inner {
       max-width: 960px;
       margin: 0 auto;
@@ -240,6 +276,8 @@
       font-weight: 600;
       line-height: 1.1;
       margin-bottom: 0.25rem;
+      /* default ink; overridden to light inside .chapter--project */
+      color: var(--ink);
     }
 
     .aoi-coords {
@@ -249,7 +287,12 @@
       color: var(--muted);
     }
 
-    /* Timelapse wrapper */
+    /* ── Timelapse wrapper ──
+       - Scroll-linked scale/fade: starts at opacity 0, scale(1.04)
+       - Triggered once by IntersectionObserver (threshold 0.4)
+       - .is-visible class added by JS transitions to full opacity/scale
+       - box-shadow to feel "placed" on the backdrop
+    ── */
     .timelapse-wrap {
       position: relative;
       width: 100%;
@@ -258,13 +301,26 @@
       cursor: pointer;
       margin-bottom: 3vh;
       overflow: hidden;
+      /* Placed feeling — soft drop shadow */
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      /* Scale/fade entry — starts invisible, scaled up slightly */
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity 800ms ease-out, transform 800ms ease-out;
+      will-change: opacity, transform;
+    }
+
+    /* JS adds this class once when element is >40% in viewport */
+    .timelapse-wrap.is-visible {
+      opacity: 1;
+      transform: scale(1.0);
     }
 
     .timelapse-wrap img {
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: contain; /* letterbox within the 16:9 frame */
+      object-fit: contain; /* letterbox within 16:9 frame */
     }
 
     /* Pause indicator */
@@ -349,6 +405,7 @@
     .aoi-prose p {
       margin-bottom: 1.2em;
       max-width: 680px;
+      color: var(--ink); /* overridden to light in .chapter--project */
     }
 
     .aoi-prose p:last-child { margin-bottom: 0; }
@@ -391,11 +448,28 @@
       max-width: 620px;
     }
 
-    /* Alternating bg for visual separation */
-    #ch3 { background: #f5f3ee; }
+    /* ─────────────────────────────────────────────
+       PROJECT CHAPTER DARK THEME
+       Text overrides for chapters with dark backdrop
+       (ch2, ch3, ch4 — all carry .chapter--project)
+    ───────────────────────────────────────────── */
+    .chapter--project .aoi-header h2     { color: var(--ch-text); }
+    .chapter--project .aoi-coords        { color: var(--ch-muted); }
+    .chapter--project .draft-label       {
+      color: var(--ch-muted);
+      border-color: var(--ch-muted);
+    }
+    .chapter--project .aoi-prose p       { color: var(--ch-text); }
+    .chapter--project .chart-placeholder {
+      border-color: rgba(245,240,232,0.15);
+    }
+    .chapter--project .chart-placeholder-label { color: var(--ch-muted); }
+    .chapter--project .chart-caption     { color: var(--ch-muted); }
+    .chapter--project .tech-note         { color: var(--ch-muted); }
 
     /* ─────────────────────────────────────────────
        CHAPTER 5 — METHODOLOGY
+       (unchanged — no backdrop)
     ───────────────────────────────────────────── */
     #ch5 {
       background: var(--bg);
@@ -525,20 +599,47 @@
 
       .ch0-frame {
         width: 100vw;
-        /* On narrow screens, fill width and let height follow */
         aspect-ratio: 16 / 9;
       }
 
-      #ch1, .aoi-chapter, #ch5, #ch6 {
+      #ch1, #ch5, #ch6 {
         padding: 8vh 6vw;
       }
 
-      .timelapse-wrap,
-      .ba-placeholder {
-        /* Already 16:9 via aspect-ratio — no override needed */
+      .content {
+        padding: 8vh 6vw;
       }
 
       .exit-ramps { gap: 1.5rem; }
+
+      /* Lighter blur on mobile — heavy blur taxes mobile GPUs */
+      .backdrop {
+        filter: blur(12px) brightness(0.55) saturate(0.9);
+      }
+    }
+
+    /* ─────────────────────────────────────────────
+       REDUCED MOTION
+    ───────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      /* Chapter 0 title/arrow: already visible via CSS, no JS fade */
+      .ch0-title, .ch0-tagline, .ch0-arrow {
+        opacity: 1;
+        transform: none;
+        transition: none;
+        animation: none;
+      }
+
+      /* Timelapse scale/fade: skip entirely — elements start visible */
+      .timelapse-wrap {
+        opacity: 1;
+        transform: scale(1.0);
+        transition: none;
+        will-change: auto;
+      }
+
+      /* Backdrop: no animation was planned anyway; scale(1.08) stays
+         as it's a static bleed-prevention transform, not an animation. */
     }
   </style>
 </head>
@@ -546,9 +647,18 @@
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 0 — OPENING
+       Backdrop: qiddiya_core_context.jpg
+       (inside .ch0-frame so it's clipped to the 16:9 letterbox)
   ═══════════════════════════════════════════ -->
   <section id="ch0" class="chapter">
     <div class="ch0-frame">
+
+      <!-- Blurred wide-context backdrop, clipped to 16:9 frame -->
+      <div
+        class="backdrop"
+        style="background-image: url('assets/backdrops/qiddiya_core_context.jpg');"
+        aria-hidden="true"
+      ></div>
 
       <img
         id="hero-gif"
@@ -579,6 +689,7 @@
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 1 — THE PREMISE
+       (no backdrop, no scale/fade — unchanged)
   ═══════════════════════════════════════════ -->
   <section id="ch1" class="chapter">
     <div class="ch1-inner">
@@ -597,173 +708,208 @@
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 2 — QIDDIYA
+       Backdrop: qiddiya_core_context.jpg
   ═══════════════════════════════════════════ -->
-  <section id="ch2" class="chapter aoi-chapter">
-    <div class="aoi-inner">
+  <section id="ch2" class="chapter chapter--project">
 
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter II</div>
-        <h2>Qiddiya</h2>
-        <div class="aoi-coords">24.59°N, 46.33°E</div>
-      </div>
+    <!-- Blurred wide-context Sentinel-2 composite, Qiddiya region -->
+    <div
+      class="backdrop"
+      style="background-image: url('assets/backdrops/qiddiya_core_context.jpg');"
+      aria-hidden="true"
+    ></div>
 
-      <!-- Timelapse: autoplay on scroll-into-view, pause on scroll-out, click to toggle -->
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/qiddiya_core_timelapse.gif"
-        data-static="assets/timelapses/qiddiya_core_preview.png"
-        aria-label="Qiddiya timelapse — click to pause or resume"
-      >
-        <img
-          src="assets/timelapses/qiddiya_core_preview.png"
-          alt="Qiddiya Sentinel-2 timelapse, January 2020 – April 2026"
-        >
-        <div class="pause-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    <div class="content">
+      <div class="aoi-inner">
+
+        <div class="aoi-header">
+          <div class="chapter-label">Chapter II</div>
+          <h2>Qiddiya</h2>
+          <div class="aoi-coords">24.59°N, 46.33°E</div>
         </div>
-      </div>
 
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/qiddiya_core_preview.png"
-          alt="Qiddiya April 2026 still"
+        <!-- Timelapse: autoplay on scroll-into-view, pause on scroll-out, click to toggle -->
+        <!-- Scale/fade entry: IntersectionObserver adds .is-visible at 40% threshold (once) -->
+        <div
+          class="timelapse-wrap"
+          data-gif="assets/timelapses/qiddiya_core_timelapse.gif"
+          data-static="assets/timelapses/qiddiya_core_preview.png"
+          aria-label="Qiddiya timelapse — click to pause or resume"
         >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
+          <img
+            src="assets/timelapses/qiddiya_core_preview.png"
+            alt="Qiddiya Sentinel-2 timelapse, January 2020 – April 2026"
+          >
+          <div class="pause-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </div>
+        </div>
+
+        <!-- TODO: implement before/after slider in next session -->
+        <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
+          <img
+            src="assets/timelapses/qiddiya_core_preview.png"
+            alt="Qiddiya April 2026 still"
+          >
+          <span class="ba-label left">Jan 2020</span>
+          <span class="ba-label right">Apr 2026</span>
+          <span class="ba-note">← before / after →</span>
+        </div>
+
+        <div class="aoi-prose">
+          <span class="draft-label">Draft</span>
+          <p>[DRAFT] Two paragraphs in Ahmed's voice — what changed, what he noticed, what surprised him. Approximately 120 words total. Observational, first-person.</p>
+          <p>[DRAFT] Placeholder second paragraph. Ahmed writes this while looking at the timelapse. Claude does not invent voice here.</p>
+        </div>
+
+        <!-- Chart placeholder -->
+        <div class="chart-placeholder">
+          <span class="chart-placeholder-label">Chart placeholder — built area over time</span>
+        </div>
+        <p class="chart-caption">[DRAFT] Caption: built area progression, Qiddiya core AOI, monthly Sentinel-2, 2020–2026.</p>
+
+        <p class="tech-note">[DRAFT] Note: March 2022 had persistent dust cover; that month's frame is cloudier than its neighbors. This is why Basira's next step is SAR-optical fusion.</p>
+
       </div>
-
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice — what changed, what he noticed, what surprised him. Approximately 120 words total. Observational, first-person.</p>
-        <p>[DRAFT] Placeholder second paragraph. Ahmed writes this while looking at the timelapse. Claude does not invent voice here.</p>
-      </div>
-
-      <!-- Chart placeholder -->
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — built area over time</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: built area progression, Qiddiya core AOI, monthly Sentinel-2, 2020–2026.</p>
-
-      <p class="tech-note">[DRAFT] Note: March 2022 had persistent dust cover; that month's frame is cloudier than its neighbors. This is why Basira's next step is SAR-optical fusion.</p>
-
     </div>
   </section>
 
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 3 — KING SALMAN PARK
+       Backdrop: king_salman_park_context.jpg
   ═══════════════════════════════════════════ -->
-  <section id="ch3" class="chapter aoi-chapter">
-    <div class="aoi-inner">
+  <section id="ch3" class="chapter chapter--project">
 
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter III</div>
-        <h2>King Salman Park</h2>
-        <div class="aoi-coords">24.71°N, 46.65°E</div>
-      </div>
+    <!-- Blurred wide-context Sentinel-2 composite, King Salman Park region -->
+    <div
+      class="backdrop"
+      style="background-image: url('assets/backdrops/king_salman_park_context.jpg');"
+      aria-hidden="true"
+    ></div>
 
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/king_salman_park_timelapse.gif"
-        data-static="assets/timelapses/king_salman_park_preview.png"
-        aria-label="King Salman Park timelapse — click to pause or resume"
-      >
-        <img
-          src="assets/timelapses/king_salman_park_preview.png"
-          alt="King Salman Park Sentinel-2 timelapse, January 2020 – April 2026"
-        >
-        <div class="pause-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    <div class="content">
+      <div class="aoi-inner">
+
+        <div class="aoi-header">
+          <div class="chapter-label">Chapter III</div>
+          <h2>King Salman Park</h2>
+          <div class="aoi-coords">24.71°N, 46.65°E</div>
         </div>
-      </div>
 
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/king_salman_park_preview.png"
-          alt="King Salman Park April 2026 still"
+        <div
+          class="timelapse-wrap"
+          data-gif="assets/timelapses/king_salman_park_timelapse.gif"
+          data-static="assets/timelapses/king_salman_park_preview.png"
+          aria-label="King Salman Park timelapse — click to pause or resume"
         >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
+          <img
+            src="assets/timelapses/king_salman_park_preview.png"
+            alt="King Salman Park Sentinel-2 timelapse, January 2020 – April 2026"
+          >
+          <div class="pause-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </div>
+        </div>
+
+        <!-- TODO: implement before/after slider in next session -->
+        <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
+          <img
+            src="assets/timelapses/king_salman_park_preview.png"
+            alt="King Salman Park April 2026 still"
+          >
+          <span class="ba-label left">Jan 2020</span>
+          <span class="ba-label right">Apr 2026</span>
+          <span class="ba-note">← before / after →</span>
+        </div>
+
+        <div class="aoi-prose">
+          <span class="draft-label">Draft</span>
+          <p>[DRAFT] Two paragraphs in Ahmed's voice about King Salman Park. The story here is greening, not construction — a different character from Qiddiya. Approximately 120 words total.</p>
+          <p>[DRAFT] Placeholder second paragraph. What vegetation establishment looks like from orbit month by month.</p>
+        </div>
+
+        <div class="chart-placeholder">
+          <span class="chart-placeholder-label">Chart placeholder — NDVI time series</span>
+        </div>
+        <p class="chart-caption">[DRAFT] Caption: NDVI monthly time series, King Salman Park AOI, Sentinel-2 B08/B04, 2020–2026.</p>
+
+        <p class="tech-note">[DRAFT] Note: NDVI is sensitive to soil moisture and seasonal dust; months with high aerosol optical depth are flagged in the underlying dataset. SAR-optical fusion would allow cross-validation on the cloudiest months.</p>
+
       </div>
-
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice about King Salman Park. The story here is greening, not construction — a different character from Qiddiya. Approximately 120 words total.</p>
-        <p>[DRAFT] Placeholder second paragraph. What vegetation establishment looks like from orbit month by month.</p>
-      </div>
-
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — NDVI time series</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: NDVI monthly time series, King Salman Park AOI, Sentinel-2 B08/B04, 2020–2026.</p>
-
-      <p class="tech-note">[DRAFT] Note: NDVI is sensitive to soil moisture and seasonal dust; months with high aerosol optical depth are flagged in the underlying dataset. SAR-optical fusion would allow cross-validation on the cloudiest months.</p>
-
     </div>
   </section>
 
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 4 — DIRIYAH GATE
+       Backdrop: diriyah_gate_context.jpg
   ═══════════════════════════════════════════ -->
-  <section id="ch4" class="chapter aoi-chapter">
-    <div class="aoi-inner">
+  <section id="ch4" class="chapter chapter--project">
 
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter IV</div>
-        <h2>Diriyah Gate</h2>
-        <div class="aoi-coords">24.73°N, 46.57°E</div>
-      </div>
+    <!-- Blurred wide-context Sentinel-2 composite, Diriyah Gate region -->
+    <div
+      class="backdrop"
+      style="background-image: url('assets/backdrops/diriyah_gate_context.jpg');"
+      aria-hidden="true"
+    ></div>
 
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/diriyah_gate_timelapse.gif"
-        data-static="assets/timelapses/diriyah_gate_preview.png"
-        aria-label="Diriyah Gate timelapse — click to pause or resume"
-      >
-        <img
-          src="assets/timelapses/diriyah_gate_preview.png"
-          alt="Diriyah Gate Sentinel-2 timelapse, January 2020 – April 2026"
-        >
-        <div class="pause-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    <div class="content">
+      <div class="aoi-inner">
+
+        <div class="aoi-header">
+          <div class="chapter-label">Chapter IV</div>
+          <h2>Diriyah Gate</h2>
+          <div class="aoi-coords">24.73°N, 46.57°E</div>
         </div>
-      </div>
 
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/diriyah_gate_preview.png"
-          alt="Diriyah Gate April 2026 still"
+        <div
+          class="timelapse-wrap"
+          data-gif="assets/timelapses/diriyah_gate_timelapse.gif"
+          data-static="assets/timelapses/diriyah_gate_preview.png"
+          aria-label="Diriyah Gate timelapse — click to pause or resume"
         >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
+          <img
+            src="assets/timelapses/diriyah_gate_preview.png"
+            alt="Diriyah Gate Sentinel-2 timelapse, January 2020 – April 2026"
+          >
+          <div class="pause-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </div>
+        </div>
+
+        <!-- TODO: implement before/after slider in next session -->
+        <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
+          <img
+            src="assets/timelapses/diriyah_gate_preview.png"
+            alt="Diriyah Gate April 2026 still"
+          >
+          <span class="ba-label left">Jan 2020</span>
+          <span class="ba-label right">Apr 2026</span>
+          <span class="ba-note">← before / after →</span>
+        </div>
+
+        <div class="aoi-prose">
+          <span class="draft-label">Draft</span>
+          <p>[DRAFT] Two paragraphs in Ahmed's voice about Diriyah Gate. Heritage-adjacent, subtler change. Construction proceeding around an existing fabric rather than on a blank canvas. Approximately 120 words total.</p>
+          <p>[DRAFT] Placeholder second paragraph. What is and isn't visible at 10m resolution; the cloud frequency over this AOI across the 76-month series.</p>
+        </div>
+
+        <div class="chart-placeholder">
+          <span class="chart-placeholder-label">Chart placeholder — vegetation / built blend</span>
+        </div>
+        <p class="chart-caption">[DRAFT] Caption: composite vegetation and built-area indicator, Diriyah Gate AOI, 2020–2026.</p>
+
+        <p class="tech-note">[DRAFT] Note: Diriyah's cloud frequency is higher than the other two AOIs — real figure to be computed from the full scene stack. This is where SAR's cloud-penetration matters most.</p>
+
       </div>
-
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice about Diriyah Gate. Heritage-adjacent, subtler change. Construction proceeding around an existing fabric rather than on a blank canvas. Approximately 120 words total.</p>
-        <p>[DRAFT] Placeholder second paragraph. What is and isn't visible at 10m resolution; the cloud frequency over this AOI across the 76-month series.</p>
-      </div>
-
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — vegetation / built blend</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: composite vegetation and built-area indicator, Diriyah Gate AOI, 2020–2026.</p>
-
-      <p class="tech-note">[DRAFT] Note: Diriyah's cloud frequency is higher than the other two AOIs — real figure to be computed from the full scene stack. This is where SAR's cloud-penetration matters most.</p>
-
     </div>
   </section>
 
 
   <!-- ═══════════════════════════════════════════
        CHAPTER 5 — METHODOLOGY
+       (no backdrop — unchanged structure)
   ═══════════════════════════════════════════ -->
   <section id="ch5" class="chapter">
     <div class="ch5-inner">
@@ -836,14 +982,14 @@
     (function () {
       'use strict';
 
-      // ── Detect reduced motion preference ──
+      // ── Detect reduced motion preference ──────────────────────────────
       var prefersReducedMotion =
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // ─────────────────────────────────────────────
+      // ──────────────────────────────────────────────────────────────────
       // Chapter 0 — fade in title at ~3s, arrow at ~5s
-      // (skipped under prefers-reduced-motion; elements are shown immediately via CSS)
-      // ─────────────────────────────────────────────
+      // (skipped under prefers-reduced-motion; CSS shows them immediately)
+      // ──────────────────────────────────────────────────────────────────
       if (!prefersReducedMotion) {
         setTimeout(function () {
           var title = document.getElementById('ch0-title');
@@ -858,15 +1004,14 @@
         }, 5000);
       }
 
-      // ─────────────────────────────────────────────
+      // ──────────────────────────────────────────────────────────────────
       // GIF timelapse autoplay via IntersectionObserver
       //
-      // Strategy: GIFs can't be paused directly in the browser.
-      // We swap src between the animated .gif (playing) and the
-      // static preview .png (paused). Swapping src restarts the GIF
-      // from frame 0 — acceptable for this skeleton pass.
-      // MP4 <video> with proper play/pause comes in a later session.
-      // ─────────────────────────────────────────────
+      // GIFs can't be paused natively in browsers. Strategy: swap src
+      // between the animated .gif and the static preview .png.
+      // Swapping src restarts the GIF from frame 0 — acceptable for this
+      // skeleton pass. MP4 <video> with play/pause comes in a later session.
+      // ──────────────────────────────────────────────────────────────────
       var wraps = document.querySelectorAll('.timelapse-wrap');
 
       function setPlaying(wrap, playing) {
@@ -891,24 +1036,23 @@
         wrap.addEventListener('click', function () {
           var userPaused = wrap.dataset.userPaused === 'true';
           if (userPaused) {
-            // Resume
             wrap.dataset.userPaused = 'false';
             setPlaying(wrap, true);
           } else {
-            // Pause
             wrap.dataset.userPaused = 'true';
             setPlaying(wrap, false);
           }
         });
       });
 
-      // IntersectionObserver: autoplay when in view, pause when out
-      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
+      // GIF autoplay observer — threshold 0.3 (30% in view starts the loop)
+      if ('IntersectionObserver' in window) {
+        var ioGif = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
-            var wrap = entry.target;
+            var wrap      = entry.target;
             var userPaused = wrap.dataset.userPaused === 'true';
-            if (entry.isIntersecting && !userPaused) {
+
+            if (entry.isIntersecting && !userPaused && !prefersReducedMotion) {
               setPlaying(wrap, true);
             } else if (!entry.isIntersecting) {
               setPlaying(wrap, false);
@@ -918,10 +1062,37 @@
 
         wraps.forEach(function (wrap) {
           wrap.dataset.userPaused = 'false';
-          io.observe(wrap);
+          ioGif.observe(wrap);
         });
       }
-      // Under reduced-motion: leave static preview, no autoplay
+
+      // ──────────────────────────────────────────────────────────────────
+      // Scroll-linked scale/fade for project-chapter timelapses
+      //
+      // Starting state (CSS): opacity 0, transform scale(1.04)
+      // Ending state: .is-visible → opacity 1, scale(1.0), 800ms ease-out
+      // Triggered ONCE per element when >40% is in the viewport.
+      // Under prefers-reduced-motion: CSS already sets opacity 1, scale(1.0)
+      // and no transition, so elements are immediately visible.
+      // ──────────────────────────────────────────────────────────────────
+      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        var ioFade = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !entry.target.classList.contains('is-visible')) {
+              entry.target.classList.add('is-visible');
+              // Once class is added we no longer need to observe this element
+              ioFade.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.4 });
+
+        wraps.forEach(function (wrap) {
+          ioFade.observe(wrap);
+        });
+      }
+      // Under reduced-motion: .timelapse-wrap CSS has opacity:1, scale(1.0),
+      // no transition — elements are visible immediately, no JS needed.
+
     })();
   </script>
 

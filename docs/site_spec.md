@@ -41,11 +41,12 @@ Static HTML/CSS/JS. No framework. Single `index.html` file. Deployed via GitHub 
 - Slow. Fades 400-800ms, ease-out.
 - `prefers-reduced-motion` respected: autoplaying video has static fallback, animations degrade to fades.
 - No parallax. No scroll-jacking — a scroll gesture always moves the page.
+- Subtle scroll-linked scale/fade on chapter-in for project chapters: 1.04→1.0 scale, 0→1 opacity, 800ms ease-out, once per page load. Disabled under prefers-reduced-motion.
 
 ### Imagery
 
 - Satellite data is the hero visual. No stock photography.
-- 16:9 letterboxing on non-square polygons is acceptable and encouraged.
+- Polygon-clipped timelapses sit over a blurred wide-context backdrop of the same region (Sentinel-2 RGB composite, 2024, blurred 24px + darkened to 55% brightness). No black bars. The polygon becomes a sharp window into the location with soft geographic context surrounding it.
 
 ---
 
@@ -228,6 +229,10 @@ Kept in the spec. Drop if execution makes it feel pretentious rather than editor
 ### Chapter 6 as standalone vs folded into footer
 
 Kept standalone for now. Might fold into the footer if it reads as ego rather than authorship.
+
+### Scroll-linked video scrubbing (rejected for v1)
+
+Considered in 2026-04-21 session. Rejected: fragile on mobile, would replace the autoplay-on-view behavior that already tested well, and can be added as Phase 1.5 polish if the softer scale/fade approach feels insufficient in the live review.
 
 ---
 
