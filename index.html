@@ -314,8 +314,8 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      /* mask-image applied inline per AOI (polygon mask PNG at GIF dimensions) */
+      /* object-fit removed — frame and image share exact aspect ratio after
+         preview PNG regeneration; no fit adjustment needed, mask aligns exactly */
     }
 
     /* Pause indicator */

@@ -110,6 +110,20 @@ For a blurred backdrop this size may be perfectly adequate.
 
 ---
 
+## Fix: preview PNG alignment and object-fit (2026-04-22)
+
+Preview PNGs regenerated at exact GIF dimensions by extracting frame 0 from each GIF
+(`gif.seek(0); gif.convert('RGB').save(...)`). Previous preview PNGs were ~30–45% larger
+in each dimension with different aspect ratios, causing `object-fit: cover` to crop the
+polygon and break mask alignment. Sizes now: 1110×598 / 1086×1106 / 1065×615 — matching
+GIFs and masks exactly.
+
+Removed `object-fit: cover` from `.timelapse-gif`: since frame and image now share the
+same aspect ratio, no fit adjustment is needed and the mask aligns pixel-accurately.
+`.timelapse-backdrop` retains `object-fit: cover` (context JPEG has different dims).
+
+---
+
 ## Next session priorities
 
 1. Before/after sliders — lightweight JS, no library (Ch 2–4)
