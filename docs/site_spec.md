@@ -1,6 +1,6 @@
 # Basira — Site Specification (v1)
 
-**Last updated:** 2026-04-21
+**Last updated:** 2026-04-25
 **Status:** Locked. Any change to the visual direction or page structure is a deliberate decision, not a drift.
 
 ---
@@ -65,6 +65,8 @@ Then fade in over the video, bottom-third:
 
 After ~2 more seconds, a small monochrome down-arrow fades in at bottom center.
 
+Note: Chapter 0 is the only chapter using the black-letterbox framing. Chapters 2-4 use the §Imagery composition.
+
 ### Chapter 1 — The premise
 
 Off-white background, centered large text. Three short paragraphs in first person, Ahmed's voice. Template:
@@ -79,7 +81,7 @@ No images, no chrome. Text breathes. Optional small section number ("I.") in the
 
 ### Chapter 2 — Qiddiya
 
-Full-viewport timelapse, autoplayed on scroll-into-view via IntersectionObserver. Top-left, small and elegant:
+Timelapse autoplayed on scroll-into-view via IntersectionObserver, framed per §Imagery — native AOI dimensions, polygon-masked over a per-region blurred Sentinel-2 backdrop. Top-left, small and elegant:
 
 > *Chapter II*
 > **Qiddiya**
@@ -251,3 +253,7 @@ Non-exhaustive list of things that will not be added to the main cinematic scrol
 - Any CTA other than the two exit-ramp links at the end of Chapter 5
 
 If a future session wants to add any of these, the default answer is no and the burden is on the argument for inclusion, not exclusion.
+
+## Revision notes
+
+- 2026-04-25 — resolved §Imagery vs §Chapters 2/3/4 contradiction in v1 in favor of §Imagery composition. Ch 0 unchanged.
