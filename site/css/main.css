@@ -1,0 +1,441 @@
+/* ============================================================
+   Basira — main.css
+   Cinematic single-page scroll. Spec: docs/site_spec.md (v1).
+   ============================================================ */
+
+:root {
+  --bg: #FAF8F3;
+  --text: #1A1A1A;
+  --accent: #B87333;
+  --muted: #6b6b6b;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --measure: 38rem;          /* prose column ~600px */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+
+/* ---------- Reset / base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video { display: block; max-width: 100%; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms ease-out;
+}
+a:hover { border-bottom-color: var(--accent); }
+
+p { margin: 0 0 1.4em; }
+p:last-child { margin-bottom: 0; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.6em;
+  letter-spacing: -0.01em;
+}
+
+.display { font-family: var(--font-display); }
+.arabic  { font-family: var(--font-display); font-weight: 400; }
+
+/* ---------- Chapter shell ---------- */
+.chapter {
+  min-height: 100vh;
+  padding: clamp(4rem, 10vh, 8rem) var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.chapter-num {
+  position: absolute;
+  top: 2rem;
+  left: var(--gutter);
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--accent);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   CHAPTER 0 — Opening
+   ============================================================ */
+.chapter-0 {
+  background: #000;
+  color: #fff;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ch0-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;        /* letterbox, never crop */
+  background: #000;
+}
+
+.ch0-title {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 22%;
+  text-align: center;
+  opacity: 0;
+  animation: fade-in 1200ms ease-out 3000ms forwards;
+  pointer-events: none;
+}
+.ch0-title h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+.ch0-title .arabic {
+  margin-left: 0.4em;
+  font-weight: 400;
+  color: #f3e9d8;
+}
+.ch0-title .subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+}
+
+.ch0-arrow {
+  position: absolute;
+  left: 50%; bottom: 3rem;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  opacity: 0;
+  animation: fade-in 1200ms ease-out 5000ms forwards,
+             arrow-bob 2.4s ease-in-out 6200ms infinite;
+}
+
+@keyframes fade-in { to { opacity: 1; } }
+@keyframes arrow-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ============================================================
+   CHAPTER 1 — Premise
+   ============================================================ */
+.chapter-1 { background: var(--bg); }
+
+.premise {
+  max-width: 44rem;
+  text-align: center;
+}
+.premise p {
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  line-height: 1.55;
+  margin: 0 0 1.6em;
+}
+.premise p:last-child {
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* ============================================================
+   CHAPTERS 2-4 — Project chapters (§Imagery composition)
+   ============================================================ */
+.chapter-project {
+  background: var(--bg);
+  align-items: center;
+  gap: clamp(2rem, 5vh, 3.5rem);
+
+  /* Subtle scroll-in scale/fade — once per load, JS toggles .is-visible */
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+.chapter-project.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.chapter-mark {
+  align-self: flex-start;
+  margin: 0 0 0 clamp(0.5rem, 4vw, 3rem);
+}
+.chapter-mark p { margin: 0; line-height: 1.4; }
+.chapter-mark-num   { color: var(--accent); font-family: var(--font-display); font-size: 0.95rem; }
+.chapter-mark-name  { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; }
+.chapter-mark-coord { color: var(--muted); font-family: var(--font-display); font-size: 0.95rem; }
+
+/* The aoi-frame: fixed aspect ratio at AOI native pixel dimensions,
+   backdrop fills the rect, video is masked to the polygon. */
+.aoi-frame {
+  position: relative;
+  margin: 0;
+  width: min(90vw, calc(var(--aoi-w) * 1px));
+  aspect-ratio: var(--aoi-w) / var(--aoi-h);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.aoi-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.aoi-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  cursor: pointer;
+  /* mask-image set inline per-element so URL resolves against the document */
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-mode: luminance;
+          mask-mode: luminance;
+}
+
+/* Before/after slider — JS hydrates inner DOM into this container */
+.ba-slider {
+  position: relative;
+  width: min(90vw, 900px);
+  aspect-ratio: var(--ba-aspect, 16 / 9);
+  background: var(--bg);
+  overflow: hidden;
+  user-select: none;
+  touch-action: pan-y;
+}
+.ba-slider .ba-backdrop,
+.ba-slider .ba-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.ba-slider .ba-backdrop { z-index: 0; }
+.ba-slider .ba-img      { z-index: 1; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-mode: luminance; mask-mode: luminance; }
+.ba-slider .ba-after    { clip-path: inset(0 0 0 var(--ba-pos, 50%)); }
+
+.ba-slider .ba-handle {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--ba-pos, 50%);
+  width: 2px;
+  background: rgba(250, 248, 243, 0.85);
+  z-index: 2;
+  transform: translateX(-1px);
+  cursor: ew-resize;
+}
+.ba-slider .ba-handle::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 36px; height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1.5px solid rgba(250, 248, 243, 0.95);
+  border-radius: 50%;
+  background: rgba(26, 26, 26, 0.25);
+}
+.ba-slider .ba-handle::after {
+  content: "‹ ›";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fafaf6;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  z-index: 3;
+}
+
+.ba-slider .ba-label {
+  position: absolute;
+  bottom: 0.6rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  z-index: 2;
+  pointer-events: none;
+}
+.ba-slider .ba-label-before { left: 0.8rem; }
+.ba-slider .ba-label-after  { right: 0.8rem; }
+
+.aoi-prose {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.aoi-chart {
+  margin: 0;
+  width: min(90vw, 700px);
+}
+.chart-placeholder, .figure-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  border: 1px dashed rgba(26,26,26,0.18);
+}
+
+.aoi-note {
+  max-width: var(--measure);
+  margin: 0 auto;
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ============================================================
+   CHAPTER 5 — Methodology
+   ============================================================ */
+.chapter-methodology {
+  background: var(--bg);
+  align-items: center;
+}
+.methodology {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+.methodology h2 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin-bottom: 1.5em;
+}
+.methodology-figure {
+  margin: 2.5em 0;
+}
+.methodology-figure figcaption {
+  margin-top: 0.6em;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.exit-ramps {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  width: 100%;
+}
+.exit-ramp {
+  font-size: 1.375rem;       /* 22px per spec */
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* ============================================================
+   CHAPTER 6 — About
+   ============================================================ */
+.chapter-about { background: var(--bg); }
+.about {
+  max-width: var(--measure);
+  text-align: center;
+}
+.about-contact {
+  margin-top: 2em;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* ============================================================
+   CHAPTER 7 — Footer
+   ============================================================ */
+.chapter-footer {
+  background: var(--bg);
+  min-height: auto;
+  padding: 4rem var(--gutter) 3rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--muted);
+  gap: 0.6rem;
+}
+.footer-mark { font-family: var(--font-display); font-size: 1.1rem; color: var(--text); margin: 0; }
+.footer-mark .arabic { margin-left: 0.4em; color: var(--accent); }
+.footer-year, .footer-muted { margin: 0; }
+.footer-links {
+  margin: 0.4rem 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.footer-links a { font-size: 0.95rem; }
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+@media (max-width: 720px) {
+  .chapter-mark { margin-left: 0; }
+  .aoi-frame    { width: 100%; }
+  .ba-slider    { width: 100%; }
+  .aoi-chart    { width: 100%; }
+  .premise p    { font-size: clamp(1.15rem, 5vw, 1.45rem); }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  .ch0-video { display: none; }
+  .chapter-0 {
+    background: #000 url("../assets/qiddiya_core_2026_04.png") center/contain no-repeat;
+  }
+  .ch0-title { animation: fade-in 600ms ease-out forwards; opacity: 0; }
+  .ch0-arrow { animation: fade-in 600ms ease-out 800ms forwards; opacity: 0; }
+
+  .chapter-project {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .aoi-video { display: none; }
+  .aoi-frame::after {
+    /* fallback: backdrop alone is shown; no motion */
+  }
+}
