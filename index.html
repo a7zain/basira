@@ -3,1067 +3,270 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Basira — Insight, from above.</title>
+  <title>Basira — Insight, from above</title>
   <meta name="description" content="Three Vision 2030 megaprojects, watched from Sentinel-2 every month from 2020 through today.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    /* ─── Reset & base ─── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-    :root {
-      --bg:       #FAF8F3;
-      --ink:      #1A1A1A;
-      --muted:    #6b6b68;
-      --accent:   #B87333;
-      --serif:    'Playfair Display', Georgia, serif;
-      --sans:     'Inter', system-ui, sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-size: 20px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--sans);
-      font-weight: 400;
-      line-height: 1.75;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ─── Chapter scaffolding ─── */
-    .chapter {
-      min-height: 100vh;
-      position: relative;
-    }
-
-    /* ─── Utility ─── */
-    .serif { font-family: var(--serif); }
-    .muted { color: var(--muted); }
-    .accent { color: var(--accent); }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(184,115,51,0.35);
-      transition: border-color 200ms;
-    }
-    a:hover { border-bottom-color: var(--accent); }
-
-    /* ── Chapter number badge ── */
-    .chapter-label {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-
-    .draft-label {
-      display: inline-block;
-      font-family: var(--sans);
-      font-size: 0.55rem;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--muted);
-      padding: 2px 7px;
-      border-radius: 2px;
-      margin-bottom: 1.5rem;
-      vertical-align: middle;
-    }
-
-    /* ─────────────────────────────────────────────
-       CHAPTER 0 — OPENING
-    ───────────────────────────────────────────── */
-    #ch0 {
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    /* 16:9 letterbox container, centered */
-    .ch0-frame {
-      position: relative;
-      width: min(100vw, 177.78vh); /* 16/9 × 100vh */
-      aspect-ratio: 16 / 9;
-      overflow: hidden; /* clip the scaled backdrop */
-    }
-
-    /* The backdrop sits inside the frame; the GIF sits above it */
-    /* .backdrop is already defined globally — reused here */
-
-    .ch0-gif {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: relative; /* sit above backdrop */
-      z-index: 1;
-    }
-
-    /* Title overlay — bottom third */
-    .ch0-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 4% 6% 7%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%);
-      z-index: 2;
-    }
-
-    .ch0-title {
-      font-family: var(--serif);
-      font-weight: 600;
-      font-size: clamp(2rem, 5vw, 4rem);
-      color: #f5f0e8;
-      line-height: 1.1;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 800ms ease-out, transform 800ms ease-out;
-    }
-
-    .ch0-title .ar {
-      color: var(--accent);
-      font-weight: 400;
-    }
-
-    .ch0-tagline {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: clamp(0.9rem, 1.8vw, 1.25rem);
-      color: rgba(245,240,232,0.8);
-      margin-top: 0.5rem;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 800ms ease-out 200ms, transform 800ms ease-out 200ms;
-    }
-
-    /* Down arrow */
-    .ch0-arrow {
-      position: absolute;
-      bottom: 2.5%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 800ms ease-out;
-      z-index: 2;
-    }
-
-    .ch0-arrow svg {
-      display: block;
-      width: 28px;
-      height: 28px;
-      stroke: rgba(245,240,232,0.75);
-      stroke-width: 1.5;
-      fill: none;
-      animation: arrowBob 2s ease-in-out infinite;
-    }
-
-    @keyframes arrowBob {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(5px); }
-    }
-
-    /* Visible state — added by JS */
-    .ch0-title.visible,
-    .ch0-tagline.visible,
-    .ch0-arrow.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* prefers-reduced-motion: show immediately, no fade */
-    @media (prefers-reduced-motion: reduce) {
-      .ch0-title, .ch0-tagline, .ch0-arrow {
-        opacity: 1;
-        transform: none;
-        transition: none;
-        animation: none;
-      }
-    }
-
-    /* ─────────────────────────────────────────────
-       CHAPTER 1 — THE PREMISE
-       (unchanged — no backdrop, no scale/fade)
-    ───────────────────────────────────────────── */
-    #ch1 {
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10vh 8vw;
-    }
-
-    .ch1-inner {
-      max-width: 780px;
-      width: 100%;
-    }
-
-    .ch1-inner p {
-      font-family: var(--serif);
-      font-size: clamp(1.3rem, 2.5vw, 2rem);
-      line-height: 1.45;
-      color: var(--ink);
-      margin-bottom: 1.4em;
-    }
-
-    .ch1-inner p:last-child { margin-bottom: 0; }
-
-    /* ─────────────────────────────────────────────
-       AOI CHAPTERS — shared layout (2, 3, 4)
-       Off-white background, same padding as other prose chapters.
-    ───────────────────────────────────────────── */
-    #ch2, #ch3, #ch4 {
-      background: var(--bg);
-      padding: 10vh 8vw;
-    }
-
-    .aoi-inner {
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    /* AOI header */
-    .aoi-header {
-      margin-bottom: 4vh;
-    }
-
-    .aoi-header h2 {
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-      font-weight: 600;
-      line-height: 1.1;
-      margin-bottom: 0.25rem;
-      color: var(--ink);
-    }
-
-    .aoi-coords {
-      font-family: var(--sans);
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-    }
-
-    /* ── Timelapse wrapper ──
-       - Cursor pointer for click-to-pause
-       - Scale/fade entry: starts at opacity 0, scale(1.04)
-       - .is-visible (added by JS at 40% in-view) transitions to full opacity/scale
-    ── */
-    .timelapse-wrap {
-      position: relative;
-      cursor: pointer;
-      margin-bottom: 3vh;
-      /* Subtle shadow — placed on off-white background */
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      /* Scale/fade entry */
-      opacity: 0;
-      transform: scale(1.04);
-      transition: opacity 800ms ease-out, transform 800ms ease-out;
-      will-change: opacity, transform;
-    }
-
-    /* JS adds this class once when element is >40% in viewport */
-    .timelapse-wrap.is-visible {
-      opacity: 1;
-      transform: scale(1.0);
-    }
-
-    /* ── Per-GIF blurred context frame ──
-       The frame holds the blurred backdrop and the polygon-masked GIF.
-       aspect-ratio is set inline per AOI (matching GIF native pixel dimensions).
-       Both images use object-fit: cover so preview PNG fills without layout shift
-       when src is swapped to the static placeholder.
-    ── */
-    .timelapse-frame {
-      position: relative;
-      width: 100%;
-      overflow: hidden; /* clips scaled backdrop edge-bleed */
-    }
-
-    .timelapse-backdrop {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      /* Scale past edges so blur fringing doesn't show */
-      transform: scale(1.06);
-      filter: blur(18px) brightness(0.6) saturate(0.85);
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .timelapse-gif {
-      position: relative;
-      z-index: 1;
-      display: block;
-      width: 100%;
-      height: 100%;
-      /* object-fit removed — frame and image share exact aspect ratio after
-         preview PNG regeneration; no fit adjustment needed, mask aligns exactly */
-    }
-
-    /* Pause indicator */
-    .timelapse-wrap .pause-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 52px;
-      height: 52px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 300ms;
-      pointer-events: none;
-    }
-
-    .timelapse-wrap.is-paused .pause-icon { opacity: 1; }
-
-    .pause-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: rgba(245,240,232,0.9);
-    }
-
-    /* Before/after placeholder */
-    /* TODO: implement before/after slider interaction in next session */
-    .ba-placeholder {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #0a0a0a;
-      overflow: hidden;
-      margin-bottom: 4vh;
-    }
-
-    .ba-placeholder img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0.85;
-    }
-
-    .ba-label {
-      position: absolute;
-      bottom: 12px;
-      font-family: var(--sans);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.8);
-      background: rgba(0,0,0,0.35);
-      padding: 3px 8px;
-      border-radius: 2px;
-    }
-
-    .ba-label.left  { left: 12px; }
-    .ba-label.right { right: 12px; }
-
-    .ba-note {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--sans);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.45);
-      white-space: nowrap;
-    }
-
-    /* Prose */
-    .aoi-prose {
-      margin-bottom: 4vh;
-    }
-
-    .aoi-prose p {
-      margin-bottom: 1.2em;
-      max-width: 680px;
-    }
-
-    .aoi-prose p:last-child { margin-bottom: 0; }
-
-    /* Chart placeholder */
-    .chart-placeholder {
-      width: 100%;
-      aspect-ratio: 16 / 6;
-      border: 1px solid rgba(26,26,26,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 0.75rem;
-    }
-
-    .chart-placeholder-label {
-      font-family: var(--sans);
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .chart-caption {
-      font-family: var(--sans);
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-bottom: 4vh;
-    }
-
-    /* Technical honesty note */
-    .tech-note {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      color: var(--muted);
-      border-left: 2px solid var(--accent);
-      padding-left: 1.2rem;
-      max-width: 620px;
-    }
-
-    /* ─────────────────────────────────────────────
-       CHAPTER 5 — METHODOLOGY
-       (unchanged — no backdrop)
-    ───────────────────────────────────────────── */
-    #ch5 {
-      background: var(--bg);
-      padding: 10vh 8vw;
-    }
-
-    .ch5-inner {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    #ch5 h2 {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 600;
-      line-height: 1.15;
-      margin-bottom: 3vh;
-    }
-
-    #ch5 p {
-      margin-bottom: 1.3em;
-      max-width: 680px;
-    }
-
-    /* Exit-ramp links */
-    .exit-ramps {
-      margin-top: 6vh;
-      padding-top: 3vh;
-      border-top: 1px solid rgba(26,26,26,0.12);
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    .exit-ramps a {
-      font-family: var(--serif);
-      font-size: clamp(1.1rem, 1.8vw, 1.35rem);
-      font-weight: 600;
-      color: var(--accent);
-      border-bottom: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: gap 200ms;
-    }
-
-    .exit-ramps a:hover { gap: 0.65rem; }
-
-    /* ─────────────────────────────────────────────
-       CHAPTER 6 — ABOUT
-    ───────────────────────────────────────────── */
-    #ch6 {
-      background: #f5f3ee;
-      display: flex;
-      align-items: center;
-      padding: 10vh 8vw;
-    }
-
-    .ch6-inner {
-      max-width: 640px;
-    }
-
-    #ch6 h2 {
-      font-family: var(--serif);
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 600;
-      margin-bottom: 2.5vh;
-    }
-
-    #ch6 p { margin-bottom: 1.2em; }
-
-    /* ─────────────────────────────────────────────
-       CHAPTER 7 — FOOTER
-    ───────────────────────────────────────────── */
-    footer {
-      background: var(--ink);
-      color: rgba(245,240,232,0.65);
-      padding: 5vh 8vw;
-      font-size: 0.75rem;
-      letter-spacing: 0.04em;
-      line-height: 1.6;
-    }
-
-    .footer-inner {
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    .footer-mark {
-      font-family: var(--serif);
-      font-size: 1.1rem;
-      color: rgba(245,240,232,0.9);
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-mark .ar { color: var(--accent); }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .footer-links a {
-      color: rgba(245,240,232,0.65);
-      border-bottom-color: rgba(245,240,232,0.2);
-      font-family: var(--sans);
-    }
-
-    .footer-links a:hover { color: rgba(245,240,232,0.9); }
-
-    .footer-built {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 0.7rem;
-      color: rgba(245,240,232,0.4);
-    }
-
-    /* ─────────────────────────────────────────────
-       MOBILE — 768px and below
-    ───────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      html { font-size: 18px; }
-
-      #ch0 { align-items: flex-start; }
-
-      .ch0-frame {
-        width: 100vw;
-        aspect-ratio: 16 / 9;
-      }
-
-      #ch1, #ch2, #ch3, #ch4, #ch5, #ch6 {
-        padding: 8vh 6vw;
-      }
-
-      .exit-ramps { gap: 1.5rem; }
-
-      /* Lighter blur on mobile — heavy blur taxes mobile GPUs */
-      .timelapse-backdrop {
-        filter: blur(10px) brightness(0.6) saturate(0.85);
-      }
-    }
-
-    /* ─────────────────────────────────────────────
-       REDUCED MOTION
-    ───────────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      /* Chapter 0 title/arrow: already visible via CSS, no JS fade */
-      .ch0-title, .ch0-tagline, .ch0-arrow {
-        opacity: 1;
-        transform: none;
-        transition: none;
-        animation: none;
-      }
-
-      /* Timelapse scale/fade: skip entirely — elements start visible */
-      .timelapse-wrap {
-        opacity: 1;
-        transform: scale(1.0);
-        transition: none;
-        will-change: auto;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 0 — OPENING
-       Backdrop: qiddiya_core_context.jpg
-       (inside .ch0-frame so it's clipped to the 16:9 letterbox)
-  ═══════════════════════════════════════════ -->
-  <section id="ch0" class="chapter">
-    <div class="ch0-frame">
+  <!-- ============================================================ -->
+  <!-- CHAPTER 0 — Opening                                          -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-0" id="ch0">
+    <video class="ch0-video"
+           src="assets/qiddiya_core.mp4"
+           muted playsinline loop autoplay
+           poster="assets/qiddiya_core_2026_04.png"></video>
 
-      <!-- Blurred wide-context backdrop, clipped to 16:9 frame -->
-      <div
-        class="backdrop"
-        style="background-image: url('assets/backdrops/qiddiya_core_context.jpg');"
-        aria-hidden="true"
-      ></div>
+    <div class="ch0-title">
+      <h1 class="display">
+        Basira <span class="arabic">بصيرة</span>
+      </h1>
+      <p class="subtitle"><em>Insight, from above.</em></p>
+    </div>
 
-      <img
-        id="hero-gif"
-        class="ch0-gif"
-        src="assets/timelapses/qiddiya_core_timelapse.gif"
-        data-static="assets/timelapses/qiddiya_core_preview.png"
-        alt="Qiddiya satellite timelapse, January 2020 – April 2026"
-        aria-hidden="true"
-      >
-
-      <div class="ch0-overlay">
-        <h1 class="ch0-title" id="ch0-title">
-          Basira <span class="ar">بصيرة</span>
-        </h1>
-        <p class="ch0-tagline" id="ch0-tagline">Insight, from above.</p>
-      </div>
-
-      <div class="ch0-arrow" id="ch0-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9" transform="rotate(180 12 12)"/>
-          <line x1="12" y1="3" x2="12" y2="21"/>
-        </svg>
-      </div>
-
+    <div class="ch0-arrow" aria-hidden="true">
+      <svg width="24" height="36" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2 V32 M4 24 L12 32 L20 24"/>
+      </svg>
     </div>
   </section>
 
+  <!-- ============================================================ -->
+  <!-- CHAPTER 1 — The premise                                      -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-1" id="ch1">
+    <span class="chapter-num">I.</span>
+    <div class="premise">
+      <!-- PLACEHOLDER: Ahmed's premise prose, paragraph 1 -->
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. I'm an electrical engineer and I spent time at KACST on a satellite called SHAMS, learning how these instruments are built.</p>
 
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 1 — THE PREMISE
-       (no backdrop, no scale/fade — unchanged)
-  ═══════════════════════════════════════════ -->
-  <section id="ch1" class="chapter">
-    <div class="ch1-inner">
+      <!-- PLACEHOLDER: Ahmed's premise prose, paragraph 2 -->
+      <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. This project is the other side of that coin — not the satellite, but what you can see with one. Three Vision 2030 projects, watched from Sentinel-2 every month from 2020 through today.</p>
 
-      <div class="chapter-label">I.</div>
-      <span class="draft-label">Draft</span>
-
-      <!-- Template text from spec, verbatim, marked [DRAFT] -->
-      <p>[DRAFT] I'm an electrical engineer. I spent time at KACST on a satellite called SHAMS, learning how these instruments are built.</p>
-      <p>[DRAFT] This project is the other side of that coin — not the satellite, but what you can see with one. Three Vision 2030 projects, watched from Sentinel-2 every month from 2020 through today.</p>
-      <p>[DRAFT] Here's what they've shown me.</p>
-
+      <!-- PLACEHOLDER: Ahmed's premise prose, paragraph 3 -->
+      <p>Ut enim ad minim veniam, quis nostrud exercitation. Here's what they've shown me.</p>
     </div>
   </section>
 
+  <!-- ============================================================ -->
+  <!-- CHAPTER 2 — Qiddiya                                          -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-project" id="ch2" data-aoi="qiddiya_core">
+    <header class="chapter-mark">
+      <p class="chapter-mark-num"><em>Chapter II</em></p>
+      <p class="chapter-mark-name"><strong>Qiddiya</strong></p>
+      <p class="chapter-mark-coord"><em>24.59°N, 46.33°E</em></p>
+    </header>
 
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 2 — QIDDIYA
-  ═══════════════════════════════════════════ -->
-  <section id="ch2" class="chapter">
-    <div class="aoi-inner">
+    <figure class="aoi-frame" style="--aoi-w: 1110; --aoi-h: 598;">
+      <img class="aoi-backdrop" src="assets/qiddiya_core_backdrop.png" alt="" aria-hidden="true">
+      <video class="aoi-video"
+             src="assets/qiddiya_core.mp4"
+             muted playsinline loop preload="metadata"
+             poster="assets/qiddiya_core_2026_04.png"
+             style="-webkit-mask-image: url('assets/qiddiya_core_mask.png'); mask-image: url('assets/qiddiya_core_mask.png');"></video>
+    </figure>
 
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter II</div>
-        <h2>Qiddiya</h2>
-        <div class="aoi-coords">24.59°N, 46.33°E</div>
-      </div>
+    <div class="ba-slider"
+         data-before="assets/qiddiya_core_2020_01.png"
+         data-after="assets/qiddiya_core_2026_04.png"
+         data-aspect="1.857"
+         data-mask="assets/qiddiya_core_mask.png"
+         data-backdrop="assets/qiddiya_core_backdrop.png"
+         data-label-before="January 2020"
+         data-label-after="April 2026"
+         aria-label="Before-after slider, January 2020 versus April 2026"></div>
 
-      <!-- Timelapse: autoplay on scroll-into-view, pause on scroll-out, click to toggle -->
-      <!-- Scale/fade entry: IntersectionObserver adds .is-visible at 40% threshold (once) -->
-      <!-- aspect-ratio matches GIF native dims (1110×598) so mask-size 100%/100% aligns  -->
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/qiddiya_core_timelapse.gif"
-        data-static="assets/timelapses/qiddiya_core_preview.png"
-        aria-label="Qiddiya timelapse — click to pause or resume"
-      >
-        <div class="timelapse-frame" style="aspect-ratio: 1110 / 598">
-          <img
-            class="timelapse-backdrop"
-            src="assets/backdrops/qiddiya_core_context.jpg"
-            alt=""
-            aria-hidden="true"
-          >
-          <img
-            class="timelapse-gif"
-            src="assets/timelapses/qiddiya_core_preview.png"
-            alt="Qiddiya Sentinel-2 timelapse, January 2020 – April 2026"
-            style="mask-image: url('assets/masks/qiddiya_core_mask.png'); mask-size: 100% 100%; -webkit-mask-image: url('assets/masks/qiddiya_core_mask.png'); -webkit-mask-size: 100% 100%;"
-          >
-          <div class="pause-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          </div>
-        </div>
-      </div>
+    <div class="aoi-prose">
+      <!-- PLACEHOLDER: Ahmed's Qiddiya prose, paragraph 1 (~60 words) -->
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/qiddiya_core_preview.png"
-          alt="Qiddiya April 2026 still"
-        >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
-      </div>
+      <!-- PLACEHOLDER: Ahmed's Qiddiya prose, paragraph 2 (~60 words) -->
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
 
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice — what changed, what he noticed, what surprised him. Approximately 120 words total. Observational, first-person.</p>
-        <p>[DRAFT] Placeholder second paragraph. Ahmed writes this while looking at the timelapse. Claude does not invent voice here.</p>
-      </div>
+    <!-- PLACEHOLDER: small chart — built area over time. Minimal axes, no gridlines, desaturated. -->
+    <figure class="aoi-chart" aria-label="Built area over time, placeholder">
+      <div class="chart-placeholder">[ chart placeholder — built area over time ]</div>
+    </figure>
 
-      <!-- Chart placeholder -->
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — built area over time</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: built area progression, Qiddiya core AOI, monthly Sentinel-2, 2020–2026.</p>
+    <p class="aoi-note"><em>
+      <!-- PLACEHOLDER: technical-honesty note — e.g., dust cover month, cloud frequency. -->
+      Note: Lorem ipsum technical-honesty note about a specific month or sensor limitation that motivates the SAR-optical fusion next step.
+    </em></p>
+  </section>
 
-      <p class="tech-note">[DRAFT] Note: March 2022 had persistent dust cover; that month's frame is cloudier than its neighbors. This is why Basira's next step is SAR-optical fusion.</p>
+  <!-- ============================================================ -->
+  <!-- CHAPTER 3 — King Salman Park                                 -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-project" id="ch3" data-aoi="king_salman_park">
+    <header class="chapter-mark">
+      <p class="chapter-mark-num"><em>Chapter III</em></p>
+      <p class="chapter-mark-name"><strong>King Salman Park</strong></p>
+      <p class="chapter-mark-coord"><em>24.72°N, 46.72°E</em></p>
+    </header>
 
+    <figure class="aoi-frame" style="--aoi-w: 1086; --aoi-h: 1106;">
+      <img class="aoi-backdrop" src="assets/king_salman_park_backdrop.png" alt="" aria-hidden="true">
+      <video class="aoi-video"
+             src="assets/king_salman_park.mp4"
+             muted playsinline loop preload="metadata"
+             poster="assets/king_salman_park_2026_04.png"
+             style="-webkit-mask-image: url('assets/king_salman_park_mask.png'); mask-image: url('assets/king_salman_park_mask.png');"></video>
+    </figure>
+
+    <div class="ba-slider"
+         data-before="assets/king_salman_park_2020_01.png"
+         data-after="assets/king_salman_park_2026_04.png"
+         data-aspect="0.982"
+         data-mask="assets/king_salman_park_mask.png"
+         data-backdrop="assets/king_salman_park_backdrop.png"
+         data-label-before="January 2020"
+         data-label-after="April 2026"
+         aria-label="Before-after slider, January 2020 versus April 2026"></div>
+
+    <div class="aoi-prose">
+      <!-- PLACEHOLDER: Ahmed's KSP prose, paragraph 1 (~60 words) — story is greening -->
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. The story here is greening, not construction. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+      <!-- PLACEHOLDER: Ahmed's KSP prose, paragraph 2 (~60 words) -->
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <!-- PLACEHOLDER: small chart — NDVI time series. -->
+    <figure class="aoi-chart" aria-label="NDVI time series, placeholder">
+      <div class="chart-placeholder">[ chart placeholder — NDVI time series ]</div>
+    </figure>
+
+    <p class="aoi-note"><em>
+      <!-- PLACEHOLDER: technical-honesty note for KSP. -->
+      Note: Lorem ipsum technical-honesty note specific to vegetation indices and Sentinel-2's seasonal artifacts.
+    </em></p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CHAPTER 4 — Diriyah Gate                                     -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-project" id="ch4" data-aoi="diriyah_gate">
+    <header class="chapter-mark">
+      <p class="chapter-mark-num"><em>Chapter IV</em></p>
+      <p class="chapter-mark-name"><strong>Diriyah Gate</strong></p>
+      <p class="chapter-mark-coord"><em>24.75°N, 46.54°E</em></p>
+    </header>
+
+    <figure class="aoi-frame" style="--aoi-w: 1065; --aoi-h: 615;">
+      <img class="aoi-backdrop" src="assets/diriyah_gate_backdrop.png" alt="" aria-hidden="true">
+      <video class="aoi-video"
+             src="assets/diriyah_gate.mp4"
+             muted playsinline loop preload="metadata"
+             poster="assets/diriyah_gate_2026_04.png"
+             style="-webkit-mask-image: url('assets/diriyah_gate_mask.png'); mask-image: url('assets/diriyah_gate_mask.png');"></video>
+    </figure>
+
+    <div class="ba-slider"
+         data-before="assets/diriyah_gate_2020_01.png"
+         data-after="assets/diriyah_gate_2026_04.png"
+         data-aspect="1.732"
+         data-mask="assets/diriyah_gate_mask.png"
+         data-backdrop="assets/diriyah_gate_backdrop.png"
+         data-label-before="January 2020"
+         data-label-after="April 2026"
+         aria-label="Before-after slider, January 2020 versus April 2026"></div>
+
+    <div class="aoi-prose">
+      <!-- PLACEHOLDER: Ahmed's Diriyah prose, paragraph 1 (~60 words) — heritage-adjacent, subtler change -->
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diriyah's change is subtler — heritage-adjacent, not a green-field build. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+
+      <!-- PLACEHOLDER: Ahmed's Diriyah prose, paragraph 2 (~60 words) -->
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <!-- PLACEHOLDER: small chart — vegetation/built blend, TBD per CLAUDE.md open question -->
+    <figure class="aoi-chart" aria-label="Diriyah composite chart, placeholder">
+      <div class="chart-placeholder">[ chart placeholder — Diriyah composite, TBD ]</div>
+    </figure>
+
+    <p class="aoi-note"><em>
+      <!-- PLACEHOLDER: technical-honesty note — likely Diriyah cloud frequency once computed. -->
+      Note: Lorem ipsum technical-honesty note about Diriyah's cloud frequency over the 76-month window.
+    </em></p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CHAPTER 5 — How this was made                                -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-methodology" id="ch5">
+    <span class="chapter-num">V.</span>
+    <div class="methodology">
+      <h2 class="display">How this was made</h2>
+
+      <!-- PLACEHOLDER: methodology long-form prose, ~500-600 words. Plain technical voice. -->
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+
+      <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit. Why Sentinel-2 and 10 m. Why not Maxar or Planet — deliberate scoping. What SAR-optical fusion does and why it matters in this region.</p>
+
+      <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit. Sed quia non numquam eius modi tempora incidunt. What Basira deliberately does not do, and why. Scoping discipline as evidence. What I'd build next.</p>
+
+      <!-- PLACEHOLDER: figure 1 — e.g., optical vs SAR side-by-side for a cloudy month -->
+      <figure class="methodology-figure">
+        <div class="figure-placeholder">[ figure placeholder — optical vs SAR for a cloudy month ]</div>
+        <figcaption><em>Figure 1 placeholder — caption pending.</em></figcaption>
+      </figure>
+
+      <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+
+      <!-- PLACEHOLDER: figure 2 — e.g., processing pipeline diagram -->
+      <figure class="methodology-figure">
+        <div class="figure-placeholder">[ figure placeholder — pipeline diagram ]</div>
+        <figcaption><em>Figure 2 placeholder — caption pending.</em></figcaption>
+      </figure>
+
+      <p>Vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.</p>
+    </div>
+
+    <nav class="exit-ramps">
+      <a href="#" class="exit-ramp">Read the full technical memo (PDF) →</a>
+      <a href="#" class="exit-ramp">See the source code on GitHub →</a>
+    </nav>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CHAPTER 6 — About the builder                                -->
+  <!-- ============================================================ -->
+  <section class="chapter chapter-about" id="ch6">
+    <span class="chapter-num">VI.</span>
+    <div class="about">
+      <!-- PLACEHOLDER: Ahmed's about paragraph, ~60 words. -->
+      <p>I'm Ahmed Zainaddin. I'm based in Dammam. My background is in satellite hardware; my current interest is in what you can build with the data those satellites return. Basira is one answer to that question.</p>
+
+      <!-- PLACEHOLDER: contact line — email + LinkedIn -->
+      <p class="about-contact">You can reach me at <a href="mailto:placeholder@example.com">placeholder@example.com</a>, or find me on <a href="#">LinkedIn</a>.</p>
     </div>
   </section>
 
-
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 3 — KING SALMAN PARK
-  ═══════════════════════════════════════════ -->
-  <section id="ch3" class="chapter">
-    <div class="aoi-inner">
-
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter III</div>
-        <h2>King Salman Park</h2>
-        <div class="aoi-coords">24.71°N, 46.65°E</div>
-      </div>
-
-      <!-- aspect-ratio matches GIF native dims (1086×1106 — nearly square) -->
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/king_salman_park_timelapse.gif"
-        data-static="assets/timelapses/king_salman_park_preview.png"
-        aria-label="King Salman Park timelapse — click to pause or resume"
-      >
-        <div class="timelapse-frame" style="aspect-ratio: 1086 / 1106">
-          <img
-            class="timelapse-backdrop"
-            src="assets/backdrops/king_salman_park_context.jpg"
-            alt=""
-            aria-hidden="true"
-          >
-          <img
-            class="timelapse-gif"
-            src="assets/timelapses/king_salman_park_preview.png"
-            alt="King Salman Park Sentinel-2 timelapse, January 2020 – April 2026"
-            style="mask-image: url('assets/masks/king_salman_park_mask.png'); mask-size: 100% 100%; -webkit-mask-image: url('assets/masks/king_salman_park_mask.png'); -webkit-mask-size: 100% 100%;"
-          >
-          <div class="pause-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/king_salman_park_preview.png"
-          alt="King Salman Park April 2026 still"
-        >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
-      </div>
-
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice about King Salman Park. The story here is greening, not construction — a different character from Qiddiya. Approximately 120 words total.</p>
-        <p>[DRAFT] Placeholder second paragraph. What vegetation establishment looks like from orbit month by month.</p>
-      </div>
-
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — NDVI time series</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: NDVI monthly time series, King Salman Park AOI, Sentinel-2 B08/B04, 2020–2026.</p>
-
-      <p class="tech-note">[DRAFT] Note: NDVI is sensitive to soil moisture and seasonal dust; months with high aerosol optical depth are flagged in the underlying dataset. SAR-optical fusion would allow cross-validation on the cloudiest months.</p>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 4 — DIRIYAH GATE
-  ═══════════════════════════════════════════ -->
-  <section id="ch4" class="chapter">
-    <div class="aoi-inner">
-
-      <div class="aoi-header">
-        <div class="chapter-label">Chapter IV</div>
-        <h2>Diriyah Gate</h2>
-        <div class="aoi-coords">24.73°N, 46.57°E</div>
-      </div>
-
-      <!-- aspect-ratio matches GIF native dims (1065×615) -->
-      <div
-        class="timelapse-wrap"
-        data-gif="assets/timelapses/diriyah_gate_timelapse.gif"
-        data-static="assets/timelapses/diriyah_gate_preview.png"
-        aria-label="Diriyah Gate timelapse — click to pause or resume"
-      >
-        <div class="timelapse-frame" style="aspect-ratio: 1065 / 615">
-          <img
-            class="timelapse-backdrop"
-            src="assets/backdrops/diriyah_gate_context.jpg"
-            alt=""
-            aria-hidden="true"
-          >
-          <img
-            class="timelapse-gif"
-            src="assets/timelapses/diriyah_gate_preview.png"
-            alt="Diriyah Gate Sentinel-2 timelapse, January 2020 – April 2026"
-            style="mask-image: url('assets/masks/diriyah_gate_mask.png'); mask-size: 100% 100%; -webkit-mask-image: url('assets/masks/diriyah_gate_mask.png'); -webkit-mask-size: 100% 100%;"
-          >
-          <div class="pause-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- TODO: implement before/after slider in next session -->
-      <div class="ba-placeholder" aria-label="Before/after placeholder — January 2020 vs April 2026">
-        <img
-          src="assets/timelapses/diriyah_gate_preview.png"
-          alt="Diriyah Gate April 2026 still"
-        >
-        <span class="ba-label left">Jan 2020</span>
-        <span class="ba-label right">Apr 2026</span>
-        <span class="ba-note">← before / after →</span>
-      </div>
-
-      <div class="aoi-prose">
-        <span class="draft-label">Draft</span>
-        <p>[DRAFT] Two paragraphs in Ahmed's voice about Diriyah Gate. Heritage-adjacent, subtler change. Construction proceeding around an existing fabric rather than on a blank canvas. Approximately 120 words total.</p>
-        <p>[DRAFT] Placeholder second paragraph. What is and isn't visible at 10m resolution; the cloud frequency over this AOI across the 76-month series.</p>
-      </div>
-
-      <div class="chart-placeholder">
-        <span class="chart-placeholder-label">Chart placeholder — vegetation / built blend</span>
-      </div>
-      <p class="chart-caption">[DRAFT] Caption: composite vegetation and built-area indicator, Diriyah Gate AOI, 2020–2026.</p>
-
-      <p class="tech-note">[DRAFT] Note: Diriyah's cloud frequency is higher than the other two AOIs — real figure to be computed from the full scene stack. This is where SAR's cloud-penetration matters most.</p>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 5 — METHODOLOGY
-       (no backdrop — unchanged structure)
-  ═══════════════════════════════════════════ -->
-  <section id="ch5" class="chapter">
-    <div class="ch5-inner">
-
-      <div class="chapter-label">V.</div>
-      <h2>How this was made</h2>
-
-      <span class="draft-label">Draft</span>
-
-      <p>[DRAFT] Methodology prose, ~500–600 words, not a bullet list. This paragraph covers why Sentinel-2 and why 10 m resolution — the relationship between spatial resolution, revisit frequency, and what's actually visible at the scale of these projects.</p>
-
-      <p>[DRAFT] Why not Maxar or Planet: a deliberate scoping decision, not a constraint. Making Sentinel imagery look good is itself a signal. The constraint is part of the story.</p>
-
-      <p>[DRAFT] What SAR-optical fusion does and why it matters in this region specifically — dust, partial cloud cover, the seasonal conditions that degrade optical quality. What Sentinel-1 sees that Sentinel-2 misses, and the processing cost that makes it the next step rather than a finished product on this page.</p>
-
-      <p>[DRAFT] What Basira deliberately does not do, and why: multi-city platform, ML anomaly detection surface, hotspot scoring, 56-cell grid. These exist in the codebase. Scoping discipline is evidence of judgment, not limitation.</p>
-
-      <p>[DRAFT] What I'd build next, in order of confidence: SAR-optical fusion as a clean single product; a third AOI deep-dive with a cloud-frequency computation; the decision about which vertical to commit to first — unauthorized construction detection, afforestation verification, or agricultural water compliance.</p>
-
-      <div class="exit-ramps">
-        <a href="#">Read the full technical memo (PDF) &rarr;</a>
-        <a href="https://github.com/a7zain/sar-change-detection" target="_blank" rel="noopener">See the source code on GitHub &rarr;</a>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 6 — ABOUT THE BUILDER
-  ═══════════════════════════════════════════ -->
-  <section id="ch6" class="chapter">
-    <div class="ch6-inner">
-
-      <div class="chapter-label">VI.</div>
-      <h2>About the builder</h2>
-
-      <span class="draft-label">Draft</span>
-
-      <p>[DRAFT] I'm Ahmed Zainaddin. I'm based in Dammam. My background is in satellite hardware; my current interest is in what you can build with the data those satellites return. Basira is one answer to that question.</p>
-      <p>[DRAFT] You can reach me at <a href="mailto:">[email]</a>, or find me on <a href="#">LinkedIn</a>.</p>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════
-       CHAPTER 7 — FOOTER
-  ═══════════════════════════════════════════ -->
-  <footer>
-    <div class="footer-inner">
-
-      <div class="footer-mark">Basira <span class="ar">بصيرة</span></div>
-
-      <div class="footer-links">
-        <a href="https://github.com/a7zain/sar-change-detection" target="_blank" rel="noopener">GitHub</a>
-        <a href="#">Technical memo (PDF)</a>
-        <a href="mailto:">[email]</a>
-        <a href="#">LinkedIn</a>
-        <span>&copy; 2026</span>
-      </div>
-
-      <p class="footer-built">Built with Sentinel-1, Sentinel-2, Python, and Leaflet. No backend.</p>
-
-    </div>
+  <!-- ============================================================ -->
+  <!-- CHAPTER 7 — Footer                                           -->
+  <!-- ============================================================ -->
+  <footer class="chapter chapter-footer" id="ch7">
+    <p class="footer-mark">Basira <span class="arabic">بصيرة</span></p>
+    <p class="footer-year">2026</p>
+    <nav class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">Technical memo (PDF)</a>
+      <a href="mailto:placeholder@example.com">Email</a>
+      <a href="#">LinkedIn</a>
+    </nav>
+    <p class="footer-muted">Built with Sentinel-1, Sentinel-2, Python, and Leaflet. No backend.</p>
   </footer>
 
-
-  <script>
-    (function () {
-      'use strict';
-
-      // ── Detect reduced motion preference ──────────────────────────────
-      var prefersReducedMotion =
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // ──────────────────────────────────────────────────────────────────
-      // Chapter 0 — fade in title at ~3s, arrow at ~5s
-      // (skipped under prefers-reduced-motion; CSS shows them immediately)
-      // ──────────────────────────────────────────────────────────────────
-      if (!prefersReducedMotion) {
-        setTimeout(function () {
-          var title = document.getElementById('ch0-title');
-          var tag   = document.getElementById('ch0-tagline');
-          if (title) title.classList.add('visible');
-          if (tag)   tag.classList.add('visible');
-        }, 3000);
-
-        setTimeout(function () {
-          var arrow = document.getElementById('ch0-arrow');
-          if (arrow) arrow.classList.add('visible');
-        }, 5000);
-      }
-
-      // ──────────────────────────────────────────────────────────────────
-      // GIF timelapse autoplay via IntersectionObserver
-      //
-      // GIFs can't be paused natively in browsers. Strategy: swap src
-      // between the animated .gif and the static preview .png.
-      // Swapping src restarts the GIF from frame 0 — acceptable for this
-      // skeleton pass. MP4 <video> with play/pause comes in a later session.
-      // ──────────────────────────────────────────────────────────────────
-      var wraps = document.querySelectorAll('.timelapse-wrap');
-
-      function setPlaying(wrap, playing) {
-        // Target .timelapse-gif specifically (wrap also contains .timelapse-backdrop)
-        var img    = wrap.querySelector('.timelapse-gif');
-        var gifSrc = wrap.dataset.gif;
-        var stSrc  = wrap.dataset.static;
-
-        if (!img || !gifSrc || !stSrc) return;
-
-        if (playing) {
-          img.src = gifSrc;
-          wrap.classList.remove('is-paused');
-          wrap.dataset.userPaused = '';
-        } else {
-          img.src = stSrc;
-          wrap.classList.add('is-paused');
-        }
-      }
-
-      // Click toggles user-paused state
-      wraps.forEach(function (wrap) {
-        wrap.addEventListener('click', function () {
-          var userPaused = wrap.dataset.userPaused === 'true';
-          if (userPaused) {
-            wrap.dataset.userPaused = 'false';
-            setPlaying(wrap, true);
-          } else {
-            wrap.dataset.userPaused = 'true';
-            setPlaying(wrap, false);
-          }
-        });
-      });
-
-      // GIF autoplay observer — threshold 0.3 (30% in view starts the loop)
-      if ('IntersectionObserver' in window) {
-        var ioGif = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            var wrap      = entry.target;
-            var userPaused = wrap.dataset.userPaused === 'true';
-
-            if (entry.isIntersecting && !userPaused && !prefersReducedMotion) {
-              setPlaying(wrap, true);
-            } else if (!entry.isIntersecting) {
-              setPlaying(wrap, false);
-            }
-          });
-        }, { threshold: 0.3 });
-
-        wraps.forEach(function (wrap) {
-          wrap.dataset.userPaused = 'false';
-          ioGif.observe(wrap);
-        });
-      }
-
-      // ──────────────────────────────────────────────────────────────────
-      // Scroll-linked scale/fade for project-chapter timelapses
-      //
-      // Starting state (CSS): opacity 0, transform scale(1.04)
-      // Ending state: .is-visible → opacity 1, scale(1.0), 800ms ease-out
-      // Triggered ONCE per element when >40% is in the viewport.
-      // Under prefers-reduced-motion: CSS already sets opacity 1, scale(1.0)
-      // and no transition, so elements are immediately visible.
-      // ──────────────────────────────────────────────────────────────────
-      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-        var ioFade = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting && !entry.target.classList.contains('is-visible')) {
-              entry.target.classList.add('is-visible');
-              // Once class is added we no longer need to observe this element
-              ioFade.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.4 });
-
-        wraps.forEach(function (wrap) {
-          ioFade.observe(wrap);
-        });
-      }
-      // Under reduced-motion: .timelapse-wrap CSS has opacity:1, scale(1.0),
-      // no transition — elements are visible immediately, no JS needed.
-
-    })();
-  </script>
-
+  <script src="js/main.js"></script>
 </body>
 </html>
