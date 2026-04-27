@@ -45,3 +45,6 @@ data/phase1/*/*.tif
 
 # ── Aerosol spike data ────────────────────────
 experiments/aerosol_spike/data/
+
+# ── Dust-honesty research data ────────────────
+research/dust-honesty/data/
