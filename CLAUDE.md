@@ -85,18 +85,49 @@ Full strategic framing: see `basira_master_plan.md`.
 
 ---
 
-## Current repo state
+## Current state (as of 2026-04-27)
 
-- On `main`: latest commit `db3cfa1` (2026-04-22 — mask alignment fix)
-- Phase 1 site skeleton live with per-GIF blurred Sentinel-2 context (commit `8b6aa83`)
-- No viewport-wide chapter backdrops; spec updated to reflect per-GIF masking approach
-- AI-generated imagery prohibited in surface discipline (locked in `docs/site_spec.md`)
-- Mask alignment verified across all three AOIs (preview PNGs at GIF dims, no object-fit crop)
-- Phase 1 data fully downloaded (2026-04-21): 228 Sentinel-2 scenes across three AOIs, polygon-clipped to KML geometry
-- Phase 5 multi-city work parked on `wip/phase5-multicity` (commit `8ea085b`)
-- Superseded scripts archived under `src/archive/` with `git mv` history preserved
-- Historical docs under `docs/archive/`
-- `outputs/*.png` and `outputs/*.pdf` now gitignored; `outputs/phase1/` and `data/phase1/*/*.tif` also gitignored (regenerable)
+**Project shape — pivoted today.** Basira's Phase 1 deliverable is no longer
+a single cinematic site. It's a portfolio-with-research-engine: cinematic
+homepage as table of contents, real research pages underneath. The
+homepage at root `index.html` stays as-is for now; new research pages live
+at `/research/<slug>/`.
+
+**Umbrella question for all research:** *"What can satellites honestly say
+about Saudi Arabia's transformation, and what are they missing?"*
+
+**First two research pieces, locked sequence B → A:**
+
+1. **Research piece B (dust-honesty)** — IN PROGRESS, spike complete.
+   Question: how does Sen2Cor's known underestimation of aerosols over
+   deserts (Goyens 2024) translate into NDVI bias for change monitoring
+   over Riyadh, and how often does it matter? Sources: Sentinel-2 L2A
+   (subject), TROPOMI UVAI + VIIRS Deep Blue AOD (validation), HLS NDVI
+   (cross-check). Method: adapt Lolli 2024 DBB index, recalibrate for AP.
+   7 sub-questions (SQ1-SQ7). Estimated 9 sessions.
+   - Spike done 2026-04-27, commit `a6e6202`. UVAI dust/clear ratio ~48×.
+   - Signal is unmistakable; B's findings will be real.
+   - Lives at `experiments/aerosol_spike/` until promoted to research/.
+
+2. **Research piece A (churn, hardened)** — QUEUED. Inherits B's dust-flag
+   pipeline. Re-runs Phase 4 churn analysis with dust correction applied.
+   Approximately 5 sessions after B.
+
+**Cut from scope:**
+- Vision 2030 progress audit — political risk vs target sector, deferred.
+- MODIS as primary source — being decommissioned (Terra Dec 2025, Aqua Aug
+  2026). Replaced by VIIRS + TROPOMI.
+- Bird migration / cross-domain — wrong fit for my positioning.
+
+**Site state:** Root `index.html` is the cinematic homepage with three
+timelapse chapters (Qiddiya, KSP, Diriyah) using Lorem placeholder prose.
+Live at https://a7zain.github.io/basira/. NO prose extraction this session;
+deferred until research pages exist and we know what voice frames them.
+
+**Flags before next session:**
+- Run `earthengine authenticate` once locally — required before B session 1
+- TROPOMI via Sentinel Hub strips qa_value; production needs raw netCDF via
+  Copernicus CDSE OData (SQ3 concern, not session 1)
 
 ## What works right now
 

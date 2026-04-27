@@ -3,6 +3,14 @@
 **Last updated:** 2026-04-25
 **Status:** Locked. Any change to the visual direction or page structure is a deliberate decision, not a drift.
 
+> **AMENDMENT 2026-04-27 — Architecture expanded.** This spec defined Tier 1:
+> the 8-chapter cinematic homepage. Tier 1 remains locked as written. Tier 2
+> (research pages) is added below. Surface discipline rules in Tier 1 still
+> apply: dashboards, hotspot grids, ML anomalies, and analytics do NOT belong
+> in Tier 1. They belong in Tier 2 research pages where the surface is
+> appropriate to that work. The cinematic frame is the on-ramp; research
+> pages are the substance.
+
 ---
 
 ## Direction
@@ -253,6 +261,62 @@ Non-exhaustive list of things that will not be added to the main cinematic scrol
 - Any CTA other than the two exit-ramp links at the end of Chapter 5
 
 If a future session wants to add any of these, the default answer is no and the burden is on the argument for inclusion, not exclusion.
+
+## Tier 2 — research pages (added 2026-04-27)
+
+### Purpose
+
+Each research page answers one question, in the voice of someone who did the
+work, with charts and caveats. Long-form. ~1500-2000 words. 4-6 figures.
+Standalone shareable URL. Lives at `/research/<slug>/`.
+
+### Voice rules (binding)
+
+- **First-person, same voice as Tier 1.** No "we" unless I had a co-author.
+- **Honest about limits.** Every methodological choice surfaces its trade-offs.
+- **Numbers in the prose, not just figures.** A reader who skims the prose
+  alone should still leave with the headline number.
+- **Citations to published work where I built on it.** Goyens, Lolli, Sayer,
+  whoever. Not a paper, but credible enough that a researcher could trace
+  the lineage.
+- **No Lorem.** A research page either ships with real prose or doesn't ship.
+
+### Surface rules (binding)
+
+- **Charts must be readable.** Labels, units, error bars where appropriate.
+  Desaturated minimal chart aesthetic from Tier 1 does NOT apply here —
+  research pages prioritize legibility over poetry.
+- **One hero figure at the top.** The single image that, if a reader sees
+  only that, communicates the finding.
+- **Methodology section is not optional.** Even if brief.
+- **Caveats section is not optional.** What this analysis cannot say.
+- **Data + code link at the bottom** if available.
+
+### Structure (template)
+
+1. **Title** — punchy, claim-shaped, not academic
+2. **Standfirst** — 2-3 sentences, the finding in plain language
+3. **Hero figure**
+4. **The question** — why this matters, what's not yet answered
+5. **What I did** — methodology in plain language, ~300-500 words
+6. **What I found** — the headline number(s), supporting figures
+7. **What this means** — implication, ~200-300 words
+8. **What this doesn't say** — caveats, limitations, what would strengthen it
+9. **References + data + code** — links, if available
+
+### What stays out of Tier 2
+
+- Vague speculation. If a finding requires "could be" or "might suggest" as
+  the load-bearing claim, the analysis isn't done.
+- Self-promotion. The research page is about the question, not about me.
+  My positioning is implied by the work, not stated.
+- Sponsored or partnered framing. Even if SARsatX or anyone else gets
+  involved later, research pages stay independent in framing.
+
+### Pipeline
+
+Current and queued research pages tracked in `basira_master_plan.md`, not here.
+This spec governs HOW a research page is built, not WHICH ones get built.
 
 ## Revision notes
 

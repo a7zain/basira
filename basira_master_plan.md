@@ -111,6 +111,60 @@ Approximate timeline: 4–6 weeks from the cleanup completion date
 
 ---
 
+## Architecture (revised 2026-04-27)
+
+The Phase 1 deliverable is a **portfolio-with-research-engine**, not a single
+cinematic site. Two-tier structure:
+
+**Tier 1 — Cinematic homepage** (`/`)
+The 8-chapter scroll site as originally locked in `docs/site_spec.md`. Acts as
+table of contents and voice anchor. Each project chapter (Qiddiya, KSP,
+Diriyah) gets an exit ramp to its corresponding research deep-dive.
+
+**Tier 2 — Research deep-dives** (`/research/<slug>/`)
+Long-form articles: ~1500-2000 words each, 4-6 figures, methodology + caveats
++ findings. Each is a standalone shareable URL. Reads like a paper, written
+like long-form journalism. Pudding.cool / NYT Interactives / Reuters Graphics
+as the reference aesthetic.
+
+### Umbrella question
+
+All research pieces sit under one umbrella:
+
+> *"What can satellites honestly say about Saudi Arabia's transformation,
+> and what are they missing?"*
+
+The umbrella is binding. Future research pieces have to fit it or they
+don't ship as part of Basira.
+
+### Research pipeline
+
+| Slug | Title | Status | Why |
+|---|---|---|---|
+| `dust-honesty` | How honest can satellites be about a country covered in dust? | In progress | Regional extension of Goyens 2024 with NDVI-bias dimension. Foundation for downstream pieces. |
+| `riyadh-churn` | What did Riyadh actually do, 2020-2026? | Queued | Inherits dust-honesty's flag pipeline. Hardened Phase 4 finding. |
+| (future) | TBD — irrigated vs natural greening, temporal resolution sufficiency, expansion frontier, long-baseline Landsat | Backlog | Each candidate evaluated against umbrella before scheduling. |
+
+### What this changes vs original Phase 1 plan
+
+- **Timeline:** 4-6 weeks → 4-6 months for first two research pieces.
+- **Reader model:** 60-90s scan → 5-15 minute read.
+- **Differentiator:** "I can play satellite data as video" → "I find findings
+  others miss because I question the data itself."
+- **LinkedIn:** Each research page is a shareable URL with a citable claim.
+- **Reusability:** Future research pieces add to the umbrella without
+  homepage redesign.
+
+### What this does NOT change
+
+- Upstream/downstream company vision: same.
+- Saudi-first positioning: same, sharpened.
+- Eventual commercialization story: same.
+- Cinematic homepage as voice anchor: same — the prose just gets written
+  later, after the research pieces exist.
+
+---
+
 ## Design principles
 
 A few principles that have emerged over the project so far and should 
