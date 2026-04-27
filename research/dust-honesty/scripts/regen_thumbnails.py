@@ -8,9 +8,12 @@ crop each tile to the largest all-valid axis-aligned interior rectangle
 of its source raster ("inscribed rectangle"). All visible pixels are
 real Sentinel-2 reflectance — we just trim the polygon-shaped hole away.
 
-Stretch is computed once across the full sample (per-band 2/98 percentile
-over all valid pixels in all 30 scenes), then applied uniformly so dust
-contrast is comparable across tiles.
+Stretch is computed PER AOI (per-band 2/98 percentile over all valid
+pixels of that AOI's tiles, after the inscribed-rectangle crop). Within
+an AOI all tiles share one stretch — that's what makes within-AOI
+atmospheric variation comparable. Across AOIs stretches differ; the
+three AOIs have very different baseline albedo profiles, and Ahmed
+labels by comparing within an AOI not across.
 """
 
 from __future__ import annotations
@@ -73,11 +76,12 @@ def main():
     if len(df) != 30:
         print(f"WARNING: expected 30 scenes, got {len(df)}")
 
-    crops: list[tuple[np.ndarray, np.ndarray, np.ndarray, str]] = []
-    sample_pixels = {"r": [], "g": [], "b": []}
+    crops: list[tuple[np.ndarray, np.ndarray, np.ndarray, str, str]] = []
+    aoi_pixels: dict[str, dict[str, list[np.ndarray]]] = {}
 
     for _, row in df.iterrows():
-        path = REPO / "data" / "phase1" / row["AOI"] / f"{row['date']}.tif"
+        aoi = row["AOI"]
+        path = REPO / "data" / "phase1" / aoi / f"{row['date']}.tif"
         r, g, b = read_scene(path)
         m = valid_mask(r, g, b)
         if not m.any():
@@ -87,40 +91,48 @@ def main():
         rc = r[r0:r1, c0:c1]
         gc = g[r0:r1, c0:c1]
         bc = b[r0:r1, c0:c1]
-        # any zero inside the inscribed rect would be a bug; inscribed rect is all-valid by construction
-        title = f"{row['date']}  {row['AOI']}"
-        crops.append((rc, gc, bc, title))
-        # sample for stretch (cap to keep memory sane)
+        # inscribed rect is all-valid by construction
+        title = f"{row['date']}  {aoi}"
+        crops.append((rc, gc, bc, title, aoi))
+        bucket = aoi_pixels.setdefault(aoi, {"r": [], "g": [], "b": []})
         n = min(rc.size, 20000)
         idx = np.random.default_rng(0).choice(rc.size, n, replace=False)
-        sample_pixels["r"].append(rc.flat[idx])
-        sample_pixels["g"].append(gc.flat[idx])
-        sample_pixels["b"].append(bc.flat[idx])
+        bucket["r"].append(rc.flat[idx])
+        bucket["g"].append(gc.flat[idx])
+        bucket["b"].append(bc.flat[idx])
         h, w = rc.shape
-        print(f"  {row['AOI']:18s} {row['date']}  src={r.shape}  crop={rc.shape}  ({h*w/r.size:.0%} of raster)")
+        print(f"  {aoi:18s} {row['date']}  src={r.shape}  crop={rc.shape}  ({h*w/r.size:.0%} of raster)")
 
-    # Global 2/98 stretch per band, computed once across the whole sample
-    lo_hi = {}
-    for band, samples in sample_pixels.items():
-        vals = np.concatenate(samples)
-        lo_hi[band] = (float(np.percentile(vals, 2)), float(np.percentile(vals, 98)))
-    print(f"\nGlobal stretch (2/98 percentile, per-stack):")
-    for band, (lo, hi) in lo_hi.items():
-        print(f"  {band}: [{lo:.4f}, {hi:.4f}]")
+    # Per-AOI 2/98 stretch per band
+    aoi_lo_hi: dict[str, dict[str, tuple[float, float]]] = {}
+    for aoi, bands in aoi_pixels.items():
+        aoi_lo_hi[aoi] = {}
+        for band, samples in bands.items():
+            vals = np.concatenate(samples)
+            aoi_lo_hi[aoi][band] = (float(np.percentile(vals, 2)), float(np.percentile(vals, 98)))
+
+    print("\nPer-AOI stretch (2/98 percentile, computed within each AOI):")
+    for aoi, lh in aoi_lo_hi.items():
+        r_lo, r_hi = lh["r"]
+        g_lo, g_hi = lh["g"]
+        b_lo, b_hi = lh["b"]
+        print(f"  {aoi}: R [{r_lo:.4f}, {r_hi:.4f}], "
+              f"G [{g_lo:.4f}, {g_hi:.4f}], "
+              f"B [{b_lo:.4f}, {b_hi:.4f}]")
 
     def stretch(band_arr, lo, hi):
         return np.clip((band_arr - lo) / (hi - lo + 1e-6), 0, 1)
 
     # Render
     cols, rows = 5, 6
-    # Sized to roughly match a typical 4:3 tile aspect
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 3))
-    for ax, (rc, gc, bc, title) in zip(axes.flat, crops):
+    for ax, (rc, gc, bc, title, aoi) in zip(axes.flat, crops):
+        lh = aoi_lo_hi[aoi]
         rgb = np.stack(
             [
-                stretch(rc, *lo_hi["r"]),
-                stretch(gc, *lo_hi["g"]),
-                stretch(bc, *lo_hi["b"]),
+                stretch(rc, *lh["r"]),
+                stretch(gc, *lh["g"]),
+                stretch(bc, *lh["b"]),
             ],
             axis=-1,
         )
