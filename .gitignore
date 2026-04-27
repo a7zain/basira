@@ -42,3 +42,6 @@ data/phase1/*/*.tif
 # Private strategic context (added 2026-04-20 Pass 3)
 .private/
 
+
+# ── Aerosol spike data ────────────────────────
+experiments/aerosol_spike/data/
