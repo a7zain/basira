@@ -31,6 +31,10 @@ _KML_MAP = {
             "Qiddiya entertainment district — Six Flags, Aquarabia, Falcons Flight"
         ),
     },
+    # Tightened 2026-04-28 from 29.93 km² to 16.6 km² to match actual
+    # King Salman Park master plan boundary; original bbox included
+    # surrounding urban perimeter and former Riyadh Air Base runway
+    # features. New bbox: (46.703744, 24.700466, 46.744036, 24.737314).
     "KSP": {
         "key": "king_salman_park",
         "name": "King Salman Park",
