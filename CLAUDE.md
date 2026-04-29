@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 **Project:** Basira (بصيرة) — Saudi satellite change monitoring
-**Last updated:** 2026-04-28
+**Last updated:** 2026-04-29
 **Purpose of this doc:** Minimum context needed to be immediately useful
 in a fresh chat. Not a changelog.
 
@@ -90,7 +90,7 @@ Full strategic framing: see `basira_master_plan.md`.
 
 ---
 
-## Current state (as of 2026-04-28, evening)
+## Current state (as of 2026-04-29, evening)
 
 **Project shape.** Basira's Phase 1 deliverable is a portfolio-with-
 research-engine. The cinematic homepage at root `index.html` stays as-is
@@ -141,17 +141,24 @@ over Riyadh, and how often does it matter? Sources: Sentinel-2 L2A
   sample. No threshold shipped, `dbb_index.py` unchanged,
   `is_dust_flagged` not written. The stop rule worked as designed.
 
-- **SQ1C (UVAI-anchored expansion of calibration set)** — BLOCKED.
-  Strategy: pull TROPOMI monthly UVAI 2020-2026 for Riyadh, identify
-  high-UVAI months, pull Sentinel-2 monthly mosaics for those months
-  at all 3 sub-AOIs, generate thumbnails. Critical: UVAI selects WHICH
-  months to pull but does NOT label scenes (would make SQ3 validation
-  circular). Target: n_pos ≥ 12 in expanded set.
-  Status: fetcher script `research/dust-honesty/scripts/fetch_uvai_monthly.py`
-  written and uncommitted. **Did not run successfully** — Sentinel Hub /
-  CDSE returned 503 across 30+ minutes (confirmed external outage,
-  reproduced from cellular). Claude Code rate limit also hit, resets
-  1:50pm Riyadh on 2026-04-28. Both blockers external.
+- **Piece B (dust-honesty), SQ1D in flight.** Lolli 2024 audit (during
+  this session) revealed SQ1's `dbb_index.py` was inspired-not-faithful:
+  single-image visible-vs-SWIR ratio on L2A inputs vs Lolli's actual
+  per-band TOA differential normalized by L2A reference. Pivoted to
+  faithful Lolli port via Google Earth Engine (CDSE has been 503 for
+  2+ days; GEE is structurally better fit anyway — no downloads, server-
+  side compute, consolidates with VIIRS toolchain).
+
+  Reference scenes locked: qiddiya_core 2024-01-20 (UVAI 0.310, post-
+  construction-active surface), diriyah_gate 2020-04-25 (UVAI 0.082,
+  surface-stable AOI), king_salman_park pending re-run on tightened
+  bbox (next session). Sensitivity-check alternates noted: 2021-01-10
+  for both Qiddiya and KSP, atmosphere-cleanest dates pre-construction-
+  surge.
+
+  Old SQ1 calibration CSV (`sq1_dbb_values.csv`) preserved as
+  inspired-not-faithful baseline; new faithful-Lolli output will be
+  separate file for comparison.
 
 - **SQ2-SQ7** — QUEUED behind SQ1B re-run on expanded calibration set.
 
@@ -182,30 +189,42 @@ This must appear in any SQ1B / SQ1C / B-final writeup:
 
 ## Flags before next session
 
-- **CDSE outage check first.** Before re-running SQ1C, run:
-  `curl -s -o /dev/null -w "%{http_code}\n" https://sh.dataspace.copernicus.eu`
-  Expect 200 or 302. If 503, wait — don't burn Claude Code allowance.
-- **Claude Code rate limit resets 1:50pm Riyadh on 2026-04-28.**
-- **GEE project registered as `basira-494617`, Community Tier (150
-  EECU/mo).** `GEE_PROJECT=basira-494617` saved to `.env`. Tested
-  end-to-end (`ee.Number(1).add(1).getInfo()` → 2). VIIRS Deep Blue
-  unblocked for SQ3.
-- **Lolli 2024 PDF still not retrieved** — get it offline before any
-  formulation-sensitive claim ships. Direction-of-signal sanity check
-  passed in SQ1; not a session-blocker, but resolve before B-final.
+- **Decision: commit or curate the 9 uncommitted SQ1D scripts.** Currently
+  uncommitted: sq1d_select_references.py, sq1d_uvai_check.py,
+  sq1d_rerank_by_window.py, sq1d_ksp_uvai_search.py,
+  sq1d_qiddiya_uvai_search.py, sq1d_ksp_thumbnails.py,
+  sq1d_qiddiya_thumbnails.py, sq1d_ksp_bbox_verify.py, plus the
+  sq1d_ksp_bbox_proposal renderer. Decide next session: commit all
+  as research-history (preserves reproducibility), or curate to a
+  clean subset (cleaner repo, but loses some exploratory artifacts).
+  Bias toward commit-all unless there's a strong reason to curate.
+
+- **KSP bbox change → next-session re-runs needed (piece B):**
+  1. Re-run UVAI all-months search on new KSP bbox
+  2. Re-render KSP reference candidate thumbnails on new bbox
+  3. Re-thumbnail the 10 KSP test scenes from SQ1 sample on new bbox
+  4. Relabel the 10 KSP test scenes (with TROPOMI UVAI cross-check
+     baked in this time)
+  5. Lock new KSP reference scene
+  6. Then proceed to Part B (faithful Lolli formula computation on
+     all 30 scenes against locked references)
+
+- **KSP bbox change → tech debt (piece A):**
+  Phase 4 KSP greening result (3.82x new-to-lost green ratio) was
+  computed on the old 29.93 km² bbox. Not invalidated, but no longer
+  measures what its label claims. Decide before piece A ships: either
+  re-run Phase 4 KSP on new 16.6 km² bbox, or document both versions
+  with the bbox-change note. Defer decision to piece A's next session.
+
+- **GEE project `basira-494617`, Community Tier (150 EECU/mo).**
+  `GEE_PROJECT=basira-494617` in `.env`. Tested end-to-end
+  (`ee.Number(1).add(1).getInfo()` → 2). Now load-bearing for piece B
+  (SQ1D onward). VIIRS Deep Blue unblocked for SQ3.
 - **TROPOMI via Sentinel Hub strips qa_value** — production needs raw
   netCDF via Copernicus CDSE OData. SQ3 concern, not yet.
 - **Sentinel Hub PU consumption** — track via SH dashboard. Free tier
-  is 30k/month; SQ1 + thumbnail re-renders consumed under 200 PU; SQ1C
-  budget when it runs is ~200 PU more. Plenty of headroom.
-- **Resume plan for SQ1C** when CDSE is up and CC allowance is back:
-  the existing fetcher script in `research/dust-honesty/scripts/fetch_uvai_monthly.py`
-  should work as-is. Run it standalone first (outside Claude Code) to
-  confirm CDSE is reachable, THEN re-fire the SQ1C prompt for the
-  rest of the pipeline.
-- **Fallback if CDSE stays down**: pull TROPOMI directly from CDSE
-  OData (raw netCDF). Heavier prompt, but bypasses Sentinel Hub
-  entirely.
+  is 30k/month; SQ1 + thumbnail re-renders consumed under 200 PU.
+  Secondary post-GEE pivot but still credentialed.
 
 ---
 
@@ -330,12 +349,54 @@ misdiagnosed as a script issue. External blockers are not script bugs.
 
 ---
 
+## Key learnings & principles (SQ1D-surfaced, 2026-04-28)
+
+- **Visual labels can fail at construction-active AOIs.** SQ1D Part A.5
+  surfaced that every visually-clean labeled date at original-KSP-bbox
+  had TROPOMI UVAI mean ≥ 1.25 — substantial absorbing aerosol present
+  on every scene labeled "clean." Probable cause: megaproject construction
+  substrate visually mimics haze in RGB thumbnails. Inverse error of the
+  2024-08 KSP precedent (where dust was misread as construction).
+
+  Workflow rule: at construction-active AOIs, visual labels must be
+  cross-checked against TROPOMI UVAI before being used as calibration
+  ground truth. Visual-only labeling sufficient at surface-stable AOIs
+  (Diriyah Gate verified) but does not transfer unaudited to construction-
+  active AOIs (KSP, Qiddiya).
+
+- **Reference scene selection rule for piece B.** Cleanest atmospheric
+  column from a date with surface state representative of the test scenes.
+  At construction-active AOIs, this means trading some atmospheric purity
+  for surface-temporal proximity. Pure UVAI minimization picks 2020-2021
+  references but those don't survive Lolli's per-pixel L2A normalizer
+  against late-stack test scenes. Confirmed via 4-scene RGB comparison
+  thumbnails.
+
+- **Swath-edge candidate filter rule.** Sentinel-2 scenes at Sentinel-2
+  swath edge (acquisition times far from ~07:30 Riyadh) appear in
+  metadata but render mostly black over AOIs. Future widen-searches
+  should filter for typical-acquisition-time scenes before evaluating
+  candidate UVAI.
+
+- **AOI definitions need visual verification, not just centroid checks.**
+  KSP bbox was named correctly but covered ~2x the actual park area,
+  encompassing surrounding urban perimeter and pre-2022 runway features.
+  Caught during SQ1D reference thumbnail review. Lesson: when defining
+  an AOI from public landmark names, render a recent thumbnail of the
+  bbox before locking and confirm the named feature is dominant in the
+  rendered area.
+
+---
+
 ## Active credentials and paths
 
 - Copernicus Dataspace: ahmadxgpx@gmail.com
-- Sentinel Hub OAuth: stored in `.env` (gitignored)
-- Earth Engine project: `basira-494617`, Community Tier, stored as
-  `GEE_PROJECT=basira-494617` in `.env`
+- Earth Engine project: `basira-494617`, Community Tier (150 EECU/mo),
+  stored as `GEE_PROJECT=basira-494617` in `.env`. **Load-bearing for
+  piece B (SQ1D onward).**
+- Sentinel Hub OAuth: stored in `.env` (gitignored). Active but
+  secondary post-GEE pivot (2026-04-28); still used for Process API
+  one-off TROPOMI pulls.
 - GitHub: `a7zain/basira` (repo renamed from `sar-change-detection`)
 - Local path: `/Users/a7zain/basira`
 - Conda env: `sarsat`
@@ -353,6 +414,20 @@ misdiagnosed as a script issue. External blockers are not script bugs.
 - If SQ1C-with-expanded-calibration still doesn't yield a stable
   threshold: reconsider DBB formulation (verify Lolli first, consider
   pixel-level vs scene-mean DBB, evaluate alternative indices).
+- **KAUST AERONET validation chapter (committed for piece B).** Active
+  AERONET stations in/near KSA during 2020-2026: KAUST Campus (Thuwal,
+  22.3N 39.1E, operational through 2024), Mezaira UAE, Bahrain. Solar
+  Village (Riyadh, 24.91N 46.41E — only ~25 km from current AOIs) is
+  dead since January 2013, so no AERONET ground truth exists for the
+  exact Riyadh atmospheric column during the study window.
+
+  Plan: piece B's primary calibration stays at the 3 Riyadh AOIs against
+  TROPOMI UVAI as ground truth. KAUST Thuwal added as SQ8 — external
+  validation chapter using AERONET coarse-mode AOD as gold-standard
+  ground truth. KAUST surface differs from Riyadh (coastal, not bright
+  desert), so this is also a generalization test, not pure replication.
+  Ahmed flagged this as a hard commitment, not optional.
+  Defer until SQ1D-SQ7 ship; do not let it expand current scope.
 
 ---
 
