@@ -139,8 +139,32 @@ From paper §2.4.2 last paragraph:
 
 For our Riyadh AOIs (bright desert substrate, no biomass burning regime, dust-dominated atmosphere), the expectation is `DBB(heavy_dust) > DBB(light_haze) > DBB(clean)`, with clean scenes near zero (relative to the locked reference). Bright-desert reflectance behaviour vs. Lolli's Mediterranean-urban substrate is exactly what SQ1B/SQ8 are meant to test — this is why we recalibrate on AP rather than borrowing thresholds from the paper.
 
+## 7. Open: solar-zenith dependency in TOA differential
+
+The numerator of Eq. 1 is `ρ_k^TOA(test) − ρ̄_k^TOA(ref)`, both terms TOA reflectances. To first order this cancels surface albedo (the reference subtracts off whatever the surface looks like through a clear atmosphere). What it does *not* cancel is the path-radiance and gas-absorption contribution to TOA reflectance that varies with solar zenith angle. A scene acquired at high sun (steep solar elevation, short atmospheric path) and the same scene acquired at low sun (shallow solar elevation, long atmospheric path) have systematically different TOA reflectance even at constant surface and constant aerosol load — because Rayleigh and gas optical paths scale with `1/cos(SZA)`.
+
+Diriyah Gate is the surface-stable AOI in our calibration set, and its primary reference is **2020-04-25** (April, near-equinox-to-summer, high-sun in Riyadh). The faithful-DBB output on the 6 Diriyah test scenes (`sq1d_dbb_faithful.csv`) shows exactly the seasonal pattern the SZA argument predicts:
+
+| Test date | Months from 2020-04-25 | Approx. SZA regime | DBB |
+|---|---:|---|---:|
+| 2020-04-25 | 0 (self-ref) | high-sun | +0.0000 |
+| 2023-05-05 | ~13 (≈+10 days from ref calendar) | high-sun | +0.0060 |
+| 2024-08-02 | ~52 (~3 months past solstice) | high-sun | +0.0274 |
+| 2021-11-21 | ~19 (≈7 months from ref) | low-sun | −0.0971 |
+| 2025-02-08 | ~58 (≈10 months from ref calendar; mid-winter) | low-sun | −0.0986 |
+| 2022-12-11 | ~32 (~6 months from ref) | low-sun, deepest winter | −0.2752 |
+
+The high-sun cluster sits near zero (correctly identifying these scenes as clean against the equally clean reference). The low-sun cluster is strongly negative — a winter-vs-summer artefact that has nothing to do with atmospheric aerosol load. On a surface-stable AOI this is unambiguous because there is no construction substrate or vegetation evolution to confound the seasonal signal.
+
+This means scene-mean DBB has a non-zero seasonal bias that scales with the angular distance between the test acquisition's solar position and the reference acquisition's solar position. For the Riyadh AOIs, the latitude is ~24.7°N, so SZA varies from ~5° at summer solstice noon to ~50° at winter solstice noon — substantial.
+
+**Treatment in this work:** none, beyond documenting it here. The SQ1B threshold-tuning re-run (queued behind Part B output) will train its threshold on the existing label set, which itself was assigned month-by-month visually; if the labels and the DBB values share the same SZA-driven distortion they may approximately cancel inside the threshold fit, but this is not guaranteed. Worth a paragraph in piece B's discussion section.
+
+**Marked open question for piece B discussion section.** Formal investigation — e.g., regressing the Diriyah residuals against `1/cos(SZA_test) − 1/cos(SZA_ref)` and reporting the slope, or porting Lolli's formula to Sentinel-2 L2A surface reflectance directly to bypass the TOA-path issue — is deferred to a separate sub-question or appendix and is **not in current SQ1B scope**.
+
 ## 8. What this spec does NOT cover
 
 - The threshold tuning that turns scene-mean DBB into a clean/light_haze/heavy_dust flag — that is SQ1B (re-run after Part B).
-- Sensitivity analysis using alternate references — Part B' (next session).
+- Sensitivity analysis using alternate references — Part B' (output: `sq1d_dbb_faithful_alt.csv`; primary-vs-alternate Spearman ρ = 0.97 KSP / 0.92 Qiddiya — ordering stable across reference choice).
 - AERONET validation at KAUST — SQ8 (deferred until SQ1B re-run, SQ2–SQ7 ship).
+- Formal solar-zenith correction or reanalysis of Diriyah seasonality (see §7).

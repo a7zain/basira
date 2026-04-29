@@ -1,5 +1,5 @@
 """
-SQ1D Part B — Faithful Lolli 2024 DBB on the 30-scene calibration set.
+SQ1D Part B / B' — Faithful Lolli 2024 DBB on the calibration set.
 
 Implements the formula in research/dust-honesty/docs/sq1d_lolli_formula.md:
 
@@ -11,11 +11,22 @@ Per-scene scalar = spatial mean of DBB over (valid_test ∩ valid_ref ∩ not_wa
 
 Test side  : COPERNICUS/S2_HARMONIZED (L1C TOA), lowest-cloud scene per
              (calendar-month, sub_aoi). SCL mask from matching L2A.
-Reference  : PRIMARY date from sq1d_references.json. Both L1C (numerator)
-             and L2A (denominator + SCL + water mask) on the exact date.
+Reference  : per-AOI date from sq1d_references.json (primary or
+             sensitivity alternate, controlled by --ref-mode). Both L1C
+             (numerator) and L2A (denominator + SCL + water mask).
 
-Output: research/dust-honesty/data/sq1d_dbb_faithful.csv
+Usage:
+    python sq1d_lolli_faithful.py --ref-mode primary    (default)
+    python sq1d_lolli_faithful.py --ref-mode alternate
+
+Output:
+    --ref-mode primary   → research/dust-honesty/data/sq1d_dbb_faithful.csv
+    --ref-mode alternate → research/dust-honesty/data/sq1d_dbb_faithful_alt.csv
+
+In alternate mode, AOIs whose `sensitivity_alternate` field is null in
+sq1d_references.json (currently diriyah_gate) are skipped with a log line.
 """
+import argparse
 import csv
 import json
 import os
@@ -34,15 +45,17 @@ REFS_JSON = DATA / "sq1d_references.json"
 KSP_CSV = DATA / "sq1d_ksp_relabel.csv"
 QID_CSV = DATA / "sq1d_qiddiya_relabel.csv"
 DIR_CSV = DATA / "sq1_manual_labels.csv"
-OUT_CSV = DATA / "sq1d_dbb_faithful.csv"
+
+OUT_CSV_BY_MODE = {
+    "primary": DATA / "sq1d_dbb_faithful.csv",
+    "alternate": DATA / "sq1d_dbb_faithful_alt.csv",
+}
 
 BANDS = ["B2", "B3", "B4", "B11", "B12"]
 SCALE_M = 20  # see Choice 3 in spec doc
 SCALE_DIV = 10000.0
 
 # SCL valid classes (Choice 4): 4 veg, 5 not-veg, 6 water, 7 unclassified, 11 snow.
-# Excluded: 0 nodata, 1 saturated/defective, 2 dark, 3 cloud_shadow,
-#           8 cloud_med, 9 cloud_high, 10 thin_cirrus.
 SCL_VALID = [4, 5, 6, 7, 11]
 WATER_RHO12_THRESHOLD = 0.01
 
@@ -73,10 +86,25 @@ def load_calibration_set():
     return rows
 
 
-def load_references():
+def load_references(mode):
+    """Return {sub_aoi: ref_date_or_None}.
+
+    primary   : 'primary' field per AOI (always present).
+    alternate : 'sensitivity' field per AOI (None for surface-stable AOIs).
+    """
     with open(REFS_JSON) as f:
         cfg = json.load(f)
-    return {aoi: meta["primary"]["date"] for aoi, meta in cfg["aois"].items()}
+
+    out = {}
+    for aoi, meta in cfg["aois"].items():
+        if mode == "primary":
+            out[aoi] = meta["primary"]["date"]
+        elif mode == "alternate":
+            sens = meta.get("sensitivity")
+            out[aoi] = sens["date"] if sens else None
+        else:
+            raise ValueError(f"unknown mode: {mode}")
+    return out
 
 
 def month_bounds(yyyy_mm):
@@ -117,7 +145,6 @@ def matching_l2a(l1c_img, geom):
     start = date.format("YYYY-MM-dd").getInfo()
     end = date.advance(1, "day").format("YYYY-MM-dd").getInfo()
     sr = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED").filterDate(start, end).filterBounds(geom)
-    # match on system:index (S2_SR shares granule IDs with S2 since 2017)
     exact = sr.filter(ee.Filter.eq("system:index", sys_idx))
     if exact.size().getInfo() >= 1:
         return exact.first()
@@ -140,56 +167,57 @@ def reflectance(img):
 
 
 def compute_dbb(test_l1c, ref_l1c, ref_l2a, test_l2a, geom):
-    """Return dict with dbb_faithful (scene mean), n_valid_pixels, n_total_pixels."""
+    """Return dict with dbb_faithful (scene mean), n_valid_pixels, n_total_pixels.
+
+    n_valid_pixels: count of pixels passing valid_test ∩ valid_ref ∩ not_water.
+    n_total_pixels: count of all pixels in the AOI bbox at SCALE_M (image footprint).
+
+    Both counts are computed at the same scale on the same `valid` image
+    using sum (1-pixels) and count (all pixels), so n_valid ≤ n_total
+    by construction.
+    """
     rho_test_toa = reflectance(test_l1c)
     rho_ref_toa = reflectance(ref_l1c)
     rho_ref_sr = reflectance(ref_l2a)
 
-    # Per-band normalized differential
     diff = rho_test_toa.subtract(rho_ref_toa)
-    # avoid divide-by-zero / negative SR
     sr_positive = rho_ref_sr.gt(0).reduce(ee.Reducer.min())  # 1 iff all 5 bands positive
-    per_band = diff.divide(rho_ref_sr)  # band-wise division, only valid where sr_positive
-
-    # DBB per pixel = mean across the 5 bands
+    per_band = diff.divide(rho_ref_sr)
     dbb_pixel = per_band.reduce(ee.Reducer.mean()).rename("dbb")
 
-    # Masks
     valid_test = scl_valid_mask(test_l2a)
     valid_ref = scl_valid_mask(ref_l2a)
     not_water = rho_ref_sr.select("B12").gte(WATER_RHO12_THRESHOLD)
-    valid = valid_test.And(valid_ref).And(not_water).And(sr_positive)
+    valid = valid_test.And(valid_ref).And(not_water).And(sr_positive).rename("valid")
 
     dbb_masked = dbb_pixel.updateMask(valid)
 
-    stats = dbb_masked.reduceRegion(
-        reducer=ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True),
+    mean_stat = dbb_masked.reduceRegion(
+        reducer=ee.Reducer.mean(),
         geometry=geom,
         scale=SCALE_M,
         maxPixels=1e9,
-        bestEffort=True,
     ).getInfo()
 
-    # total pixels in AOI (pre-mask) at SCALE_M
-    total = dbb_pixel.unmask(0).reduceRegion(
-        reducer=ee.Reducer.count(),
+    # Both counts via the same `valid` image, same scale, no bestEffort.
+    valid_unmasked = valid.unmask(0)
+    counts = valid_unmasked.reduceRegion(
+        reducer=ee.Reducer.sum().combine(ee.Reducer.count(), sharedInputs=True),
         geometry=geom,
         scale=SCALE_M,
         maxPixels=1e9,
-        bestEffort=True,
     ).getInfo()
 
     return {
-        "dbb_faithful": stats.get("dbb_mean"),
-        "n_valid_pixels": stats.get("dbb_count"),
-        "n_total_pixels": total.get("dbb"),
+        "dbb_faithful": mean_stat.get("dbb"),
+        "n_valid_pixels": int(counts.get("valid_sum") or 0),
+        "n_total_pixels": int(counts.get("valid_count") or 0),
     }
 
 
-def process_one(row, refs):
+def process_one(row, ref_date):
     sub_aoi = row["sub_aoi"]
     test_ym = row["date"]
-    ref_date = refs[sub_aoi]
 
     bbox = get_bbox(sub_aoi)
     geom = ee.Geometry.Rectangle(list(bbox))
@@ -256,40 +284,61 @@ def per_aoi_label_summary(rows):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ref-mode", choices=["primary", "alternate"], default="primary",
+                        help="Reference scene selection: primary (default) or sensitivity alternate.")
+    args = parser.parse_args()
+    mode = args.ref_mode
+    out_path = OUT_CSV_BY_MODE[mode]
+
     load_dotenv(ROOT / ".env")
     ee.Initialize(project=os.environ["GEE_PROJECT"])
 
-    cal = load_calibration_set()
-    assert len(cal) == 30, f"Expected 30 calibration rows, got {len(cal)}"
-    refs = load_references()
+    cal_full = load_calibration_set()
+    assert len(cal_full) == 30, f"Expected 30 calibration rows, got {len(cal_full)}"
+    refs = load_references(mode)
 
-    print(f"Calibration set: {len(cal)} scenes")
-    print(f"References (PRIMARY): {refs}")
+    # Filter out AOIs with no reference defined for this mode.
+    skipped_aois = sorted({a for a, d in refs.items() if d is None})
+    cal = [r for r in cal_full if refs.get(r["sub_aoi"]) is not None]
+    for aoi in skipped_aois:
+        n_skip = sum(1 for r in cal_full if r["sub_aoi"] == aoi)
+        print(f"skipping {aoi} in {mode} mode — no alternate reference defined "
+              f"({n_skip} rows dropped)")
+
+    print(f"Mode: {mode}")
+    print(f"Output: {out_path}")
+    print(f"Calibration rows to process: {len(cal)} (of {len(cal_full)} total)")
+    print(f"References ({mode.upper()}): {refs}")
     print()
 
     out_rows = []
     for i, row in enumerate(cal, 1):
-        print(f"[{i:2d}/{len(cal)}] {row['sub_aoi']} {row['date']} ({row['final_label']}) ... ", end="", flush=True)
+        ref_date = refs[row["sub_aoi"]]
+        print(f"[{i:2d}/{len(cal)}] {row['sub_aoi']} {row['date']} ({row['final_label']}) ref={ref_date} ... ", end="", flush=True)
         try:
-            res = process_one(row, refs)
+            res = process_one(row, ref_date)
             out_rows.append(res)
             v = res["dbb_faithful"]
-            print(f"DBB={v:+.4f} n={res['n_valid_pixels']}" if v is not None else f"FAIL {res['notes']}")
+            if v is not None:
+                print(f"DBB={v:+.4f} n_valid={res['n_valid_pixels']} n_total={res['n_total_pixels']}")
+            else:
+                print(f"FAIL {res['notes']}")
         except Exception as e:
             print(f"ERROR {e}")
-            out_rows.append({**row, "ref_date": refs.get(row["sub_aoi"]),
+            out_rows.append({**row, "ref_date": ref_date,
                              "dbb_faithful": None, "n_valid_pixels": 0,
                              "n_total_pixels": 0, "notes": f"exception:{e}"})
 
     fieldnames = ["date", "sub_aoi", "final_label", "ref_date",
                   "dbb_faithful", "n_valid_pixels", "n_total_pixels", "notes"]
-    with open(OUT_CSV, "w", newline="") as f:
+    with open(out_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
         for r in out_rows:
             w.writerow({k: r.get(k) for k in fieldnames})
 
-    print(f"\nWrote {OUT_CSV}")
+    print(f"\nWrote {out_path}")
     per_aoi_label_summary(out_rows)
 
 
