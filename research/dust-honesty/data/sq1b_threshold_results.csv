@@ -1,0 +1,6 @@
+variant,source,n_pos,n_neg,auc,threshold_youden,ci_low,ci_high,ci_halfwidth,ci_passes,auc_passes,ships,notes
+V1,primary,1,23,1.0,0.17531248618017825,0.12091353794437659,0.17531248618017825,0.02719947411790083,False,True,False,n_pos=1<5_unstable_bootstrap;degenerate_boot_iters=757
+V2,primary,6,23,0.6884057971014492,0.04772222577257068,-0.06404288605734915,0.17531248618017825,0.1196776861187637,False,False,False,degenerate_boot_iters=1
+V3,primary,4,7,0.8392857142857143,0.05583758695978895,-0.06396206738765825,0.05583758695978895,0.0598998271737236,False,True,False,n_pos=4<5_unstable_bootstrap;degenerate_boot_iters=9
+V4,primary,4,12,0.8229166666666667,0.0274462541574082,-0.06404288605734915,0.0274462541574082,0.045744570107378674,False,True,False,n_pos=4<5_unstable_bootstrap;degenerate_boot_iters=37
+V1_alt,alternate,1,18,1.0,0.24200804436023482,0.1779461419673667,0.24200804436023482,0.032030951196434065,False,True,False,n_pos=1<5_unstable_bootstrap;degenerate_boot_iters=701
