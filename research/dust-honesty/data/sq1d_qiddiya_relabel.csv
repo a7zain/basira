@@ -1,14 +1,14 @@
 date,sub_aoi,old_label,ai_prelabel,ai_confidence,ai_reasoning,final_label
-2020-01,qiddiya_core,clean,,,,
-2020-07,qiddiya_core,clean,,,,
-2021-03,qiddiya_core,clean,,,,
-2021-08,qiddiya_core,clean,,,,
-2022-03,qiddiya_core,light_haze,,,,
-2022-04,qiddiya_core,heavy_dust,,,,
-2022-09,qiddiya_core,clean,,,,
-2023-09,qiddiya_core,light_haze,,,,
-2024-02,qiddiya_core,clean,,,,
-2024-11,qiddiya_core,clean,,,,
-2025-04,qiddiya_core,clean,,,,
-2025-07,qiddiya_core,clean,,,,
-2026-03,qiddiya_core,light_haze,,,,
+2020-01,qiddiya_core,clean,clean,high,Deep canyon shadows; sharp bright cliffs; high scene contrast.,clean
+2020-07,qiddiya_core,clean,clean,high,Sharp canyon shadows; warm tones on upper plateau are localized surface (early construction) not atmospheric.,clean
+2021-03,qiddiya_core,clean,clean,medium,Slightly washed bright cliffs but canyon shadows still sharp; marginal call.,clean
+2021-08,qiddiya_core,clean,clean,high,Sharp shadows and bright cliffs; high contrast.,clean
+2022-03,qiddiya_core,light_haze,clean,high,Sharp canyon shadows; good scene contrast.,clean
+2022-04,qiddiya_core,heavy_dust,light_haze,low,Slight softening vs 2022-03; subtle warm cast across scene; canyon shadows marginally less deep.,light_haze
+2022-09,qiddiya_core,clean,light_haze,medium,More pronounced softening; lower scene contrast; bright cliffs noticeably dimmer than neighboring months.,light_haze
+2023-09,qiddiya_core,light_haze,clean,high,Sharp canyon shadows; new construction visible; high contrast.,clean
+2024-02,qiddiya_core,clean,clean,high,Sharp shadows; heavy construction visible; high contrast.,clean
+2024-11,qiddiya_core,clean,clean,high,Very deep dark canyon shadows; crisp bright cliffs; very high contrast.,clean
+2025-04,qiddiya_core,clean,clean,high,Heavy construction; sharp edges; high contrast.,clean
+2025-07,qiddiya_core,clean,clean,high,Sharp shadows and edges; high contrast.,clean
+2026-03,qiddiya_core,light_haze,clean,high,Sharp shadows and edges; high contrast.,clean

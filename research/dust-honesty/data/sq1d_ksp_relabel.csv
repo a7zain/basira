@@ -1,12 +1,12 @@
 date,sub_aoi,old_label,ai_prelabel,ai_confidence,ai_reasoning,final_label
-2021-02,king_salman_park,clean,,,,
-2021-07,king_salman_park,clean,,,,
-2022-04,king_salman_park,heavy_dust,,,,
-2022-06,king_salman_park,clean,,,,
-2022-07,king_salman_park,clean,,,,
-2023-01,king_salman_park,clean,,,,
-2024-01,king_salman_park,light_haze,,,,
-2024-08,king_salman_park,clean,,,,
-2025-02,king_salman_park,clean,,,,
-2025-12,king_salman_park,clean,,,,
-2026-01,king_salman_park,clean,,,,
+2021-02,king_salman_park,clean,clean,high,Sharp roads and runway features; deep contrast in airfield; urban grid crisp; clean colors throughout.,clean
+2021-07,king_salman_park,clean,clean,medium,Slight warm cast on airfield consistent with surface (pre-demolition prep) not atmosphere; urban edges remain sharp and bright runway features crisp.,clean
+2022-04,king_salman_park,heavy_dust,light_haze,low,Subtle uniform warm cast extends across urban areas not just airfield; edges still readable but scene contrast slightly compressed.,light_haze
+2022-06,king_salman_park,clean,light_haze,medium,Stronger uniform yellow-warm cast; reduced overall scene contrast; urban features at bottom slightly washed.,light_haze
+2022-07,king_salman_park,clean,light_haze,low,Bright wash across airfield with reduced contrast bleeding into urban grid; could be reflective bare ground but wash extends beyond surface area.,light_haze
+2023-01,king_salman_park,clean,clean,high,Sharp building edges; distinct construction substrate colors orange and tan; clean shadows in surrounding urban grid.,clean
+2024-01,king_salman_park,light_haze,clean,high,Sharp earthworks; distinct red and orange exposed soil; urban grid crisp throughout.,clean
+2024-08,king_salman_park,clean,heavy_dust,high,Scene strongly washed with low overall contrast and slight warm tint; urban features at edges noticeably softened; consistent with August dust season in Riyadh.,heavy_dust
+2025-02,king_salman_park,clean,clean,medium,Sharp building edges and good contrast; warm tone in construction zone is localized surface not atmospheric.,clean
+2025-12,king_salman_park,clean,clean,high,Sharp construction details; good contrast across full scene.,clean
+2026-01,king_salman_park,clean,clean,high,Sharp details and high contrast similar to 2025-12.,clean

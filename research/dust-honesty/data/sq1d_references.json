@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "locked_through": "2026-04-29",
+  "selection_rule": "Cleanest UVAI from a date with surface-state representative of test scenes (not pure UVAI minimization).",
+  "aois": {
+    "qiddiya_core": {
+      "primary": {
+        "date": "2024-01-20",
+        "uvai_mean": 0.31,
+        "cloud_pct": 4.21,
+        "cloud_note": "off-AOI",
+        "rationale": "Post-construction-active surface; matches test-scene surface state at construction-active AOI."
+      },
+      "sensitivity": {
+        "date": "2021-01-10",
+        "uvai_mean": -1.166,
+        "rationale": "Atmosphere-cleanest pre-construction-surge."
+      },
+      "locked_in_session": "2026-04-28"
+    },
+    "king_salman_park": {
+      "primary": {
+        "date": "2023-10-27",
+        "uvai_mean": -0.067,
+        "cloud_pct": 0.32,
+        "rationale": "Pool B rank 1; midway through KSP construction evolution; matches surface state of post-demolition test scenes (10 of 11). Pool A candidates (2020-2021) show pre-demolition Riyadh Air Base — surface state matches only 1 test scene."
+      },
+      "sensitivity": {
+        "date": "2024-12-05",
+        "uvai_mean": 0.336,
+        "rationale": "More developed surface; catches threshold sensitivity to surface evolution within KSP construction window."
+      },
+      "bbox_note": "References computed on tightened 16.6 km² bbox (committed 119db1b). Earlier 29.93 km² bbox candidates superseded.",
+      "locked_in_session": "2026-04-29"
+    },
+    "diriyah_gate": {
+      "primary": {
+        "date": "2020-04-25",
+        "uvai_mean": 0.082,
+        "cloud_pct": 0.02,
+        "rationale": "Surface-stable AOI; cleanest UVAI suffices."
+      },
+      "sensitivity": null,
+      "sensitivity_note": "None needed — AOI is surface-stable across study window.",
+      "locked_in_session": "2026-04-28"
+    }
+  }
+}
