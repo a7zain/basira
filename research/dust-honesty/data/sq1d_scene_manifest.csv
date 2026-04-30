@@ -1,0 +1,31 @@
+aoi,month_slot,acquisition_date,system_index,cloudy_pixel_pct,processing_baseline,source,notes
+diriyah_gate,2020-04,2020-04-25,20200425T072609_20200425T073431_T38RPN,0.023000,02.09,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+diriyah_gate,2021-11,2021-11-21,20211121T073221_20211121T073219_T38RPN,0.006700,03.01,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+diriyah_gate,2022-12,2022-12-11,20221211T073219_20221211T073217_T38RPN,0.000000,05.09,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+diriyah_gate,2023-05,2023-05-05,20230505T072621_20230505T073147_T38RPN,0.000000,05.09,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+diriyah_gate,2024-08,2024-08-02,20240802T072619_20240802T073147_T38RPN,0.118726,05.11,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+diriyah_gate,2025-02,2025-02-08,20250208T072959_20250208T073146_T38RPN,0.000000,05.11,validated,no committed thumbnail (Diriyah test scenes were never re-rendered per CLAUDE.md surface-stable AOI rationale); today's deterministic pick recorded as canonical
+king_salman_park,2021-02,2021-02-04,20210204T073111_20210204T073144_T38RPN,0.009287,05.00,manually_locked,"locked from 2026-04-30 investigation; GEE backfill of 20210214T073011_20210214T073144_T38RPN (acq 2021-02-14, cloud=0.0000) caused deterministic-pick drift away from this original."
+king_salman_park,2021-07,2021-07-24,20210724T072621_20210724T073151_T38RPN,0.000000,03.01,validated,
+king_salman_park,2022-04,2022-04-30,20220430T072621_20220430T073152_T38RPN,0.000000,04.00,validated,
+king_salman_park,2022-06,2022-06-09,20220609T072621_20220609T073156_T38RPN,0.000000,04.00,validated,
+king_salman_park,2022-07,2022-07-04,20220704T072619_20220704T073152_T38RPN,0.047030,04.00,validated,
+king_salman_park,2023-01,2023-01-20,20230120T073129_20230120T073142_T38RPN,0.000000,05.09,validated,
+king_salman_park,2024-01,2024-01-05,20240105T073219_20240105T073216_T38RPN,0.504793,05.10,validated,
+king_salman_park,2024-08,2024-08-02,20240802T072619_20240802T073147_T38RPN,0.118726,05.11,validated,
+king_salman_park,2025-02,2025-02-08,20250208T072959_20250208T073146_T38RPN,0.000000,05.11,validated,
+king_salman_park,2025-12,2025-12-30,20251230T073331_20251230T074157_T38RPN,0.000000,05.11,validated,
+king_salman_park,2026-01,2026-01-04,20260104T073219_20260104T074234_T38RPN,0.000000,05.11,validated,
+qiddiya_core,2020-01,2020-01-31,20200131T073131_20200131T073131_T38RPN,0.000000,05.00,validated,
+qiddiya_core,2020-07,2020-07-04,20200704T072619_20200704T073413_T38RPN,0.206300,02.09,validated,
+qiddiya_core,2021-03,2021-03-31,20210331T072619_20210331T073145_T38RPN,0.000000,03.00,validated,
+qiddiya_core,2021-08,2021-08-23,20210823T072621_20210823T074028_T38RPN,0.027000,03.01,validated,
+qiddiya_core,2022-03,2022-03-16,20220316T072639_20220316T073144_T38RPN,0.000000,04.00,validated,
+qiddiya_core,2022-04,2022-04-30,20220430T072621_20220430T073152_T38RPN,0.000000,04.00,validated,
+qiddiya_core,2022-09,2022-09-07,20220907T072631_20220907T073159_T38RPN,0.000000,04.00,validated,
+qiddiya_core,2023-09,2023-09-12,20230912T072621_20230912T073904_T38RPN,0.071695,05.09,validated,
+qiddiya_core,2024-02,2024-02-29,20240229T072841_20240229T073147_T38RPN,0.020664,05.10,validated,
+qiddiya_core,2024-11,2024-11-05,20241105T073101_20241105T073141_T38RPN,0.000000,05.11,validated,
+qiddiya_core,2025-04,2025-04-09,20250409T072619_20250409T073148_T38RPN,0.000000,05.11,validated,
+qiddiya_core,2025-07,2025-07-03,20250703T072641_20250703T073357_T38RPN,0.039386,05.11,validated,
+qiddiya_core,2026-03,2026-03-25,20260325T072609_20260325T073824_T38RPN,0.000000,05.12,validated,
