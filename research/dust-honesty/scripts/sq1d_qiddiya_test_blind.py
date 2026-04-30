@@ -112,6 +112,48 @@ def fetch_rgb_array(date_str, geom):
     return arr.astype(np.float32) / 10000.0
 
 
+# Guard: a "good" array has >= MIN_POS_FRAC positive (non-zero, finite)
+# pixels in every band. GEE silently returns all-zero arrays when an L1C
+# scene's data footprint doesn't cover the requested geometry.
+# (Helpers ported byte-identical from sq1d_ksp_render_candidates_v2.py @ ec88f93.)
+MIN_POS_FRAC = 0.5
+
+
+def array_has_data(arr) -> tuple[bool, str]:
+    """Return (ok, reason). ok=True iff every band has >= MIN_POS_FRAC
+    positive finite pixels."""
+    fracs = []
+    for b in range(arr.shape[0]):
+        v = arr[b]
+        ok = np.isfinite(v) & (v > 0)
+        fracs.append(float(ok.mean()))
+    if min(fracs) < MIN_POS_FRAC:
+        return False, f"empty/no-data fetch (per-band positive fractions: {[f'{f:.3f}' for f in fracs]})"
+    return True, "ok"
+
+
+def render_skip_panel(date_str, reason, w, h, font):
+    """Visibly-blank slate (mid-grey) with NO-DATA banner; replaces the
+    silent-black-with-caption-only failure mode."""
+    img = Image.new("RGB", (w, h), (60, 60, 60))
+    draw = ImageDraw.Draw(img)
+    # diagonal hatch
+    for offset in range(-h, w + h, 24):
+        draw.line([(offset, 0), (offset + h, h)], fill=(85, 85, 85), width=1)
+    # banner
+    banner = f"SKIPPED: {date_str}\nNO DATA over AOI"
+    bb = draw.multiline_textbbox((0, 0), banner, font=font)
+    tw, th = bb[2] - bb[0], bb[3] - bb[1]
+    pad = 10
+    bx, by = (w - tw) // 2 - pad, (h - th) // 2 - pad
+    draw.rectangle([bx, by, bx + tw + 2 * pad, by + th + 2 * pad], fill=(20, 20, 20))
+    draw.multiline_text((bx + pad, by + pad), banner, fill=(255, 220, 100), font=font, align="center")
+    # secondary footnote with the reason
+    foot = f"reason: {reason}"
+    draw.text((10, h - 28), foot, fill=(220, 220, 220), font=font)
+    return img
+
+
 def caption(img, text, font):
     draw = ImageDraw.Draw(img)
     bb = draw.textbbox((0, 0), text, font=font)
@@ -172,10 +214,17 @@ def main():
         font = ImageFont.load_default()
 
     pngs = {}
+    skipped = {}  # ym -> reason
+    probe_w = probe_h = None
     for idx, ym in enumerate(months):
         d = scene_dates[ym]
         print(f"\nfetching {d} ({ym})...")
         a = fetch_rgb_array(d, geom)
+        ok, reason = array_has_data(a)
+        if not ok:
+            skipped[ym] = reason
+            print(f"  SKIPPED: {ym} ({d}): {reason}")
+            continue
         rgb = np.dstack([stretch_band(a[i], *RGB_LO_HI[i]) for i in range(3)])
 
         if idx == 0:
@@ -211,7 +260,19 @@ def main():
         out = OUT_DIR / f"{ym}.png"
         img.save(out)
         pngs[ym] = img
+        if probe_w is None:
+            probe_w, probe_h = img.width, img.height
         print(f"  shape {a.shape} → {out}")
+
+    # Render skip panels for any failed slots, sized to match the rendered ones.
+    for ym, reason in skipped.items():
+        if probe_w is None:
+            probe_w, probe_h = 900, 822
+        img = render_skip_panel(ym, reason, probe_w, probe_h, font)
+        out = OUT_DIR / f"{ym}.png"
+        img.save(out)
+        pngs[ym] = img
+        print(f"  wrote SKIP panel {out}")
 
     n = len(months)
     w = max(p.width for p in pngs.values())
