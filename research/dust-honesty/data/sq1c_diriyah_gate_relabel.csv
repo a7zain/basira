@@ -1,16 +1,16 @@
-date,sub_aoi,candidate_uvai,s2_system_index,ai_prelabel,ai_confidence,ai_reasoning,final_label
-2021-08-03,diriyah_gate,1.851271344546006,20210803T072621_20210803T073150_T38RPN,,,,
-2022-04-10,diriyah_gate,2.018439172563016,20220410T072621_20220410T073149_T38RPN,,,,
-2022-05-05,diriyah_gate,2.2201782297827313,20220505T072609_20220505T073142_T38RPN,,,,
-2022-05-10,diriyah_gate,2.293453392460349,20220510T072621_20220510T073151_T38RPN,,,,
-2022-05-20,diriyah_gate,2.2600237137054604,20220520T072621_20220520T073153_T38RPN,,,,
-2022-05-25,diriyah_gate,3.301210617370568,20220525T072619_20220525T073147_T38RPN,,,,
-2022-05-30,diriyah_gate,1.8411724740238407,20220530T072621_20220530T073155_T38RPN,,,,
-2022-08-18,diriyah_gate,1.973487113035887,20220818T072631_20220818T073200_T38RPN,,,,
-2022-08-23,diriyah_gate,1.6257503305572207,20220823T072619_20220823T073821_T38RPN,,,,
-2024-05-19,diriyah_gate,1.7291490269273502,20240519T072621_20240519T073503_T38RPN,,,,
-2025-04-24,diriyah_gate,1.6182539797513524,20250424T072641_20250424T074135_T38RPN,,,,
-2025-05-09,diriyah_gate,2.0905774061659166,20250509T072619_20250509T074216_T38RPN,,,,
-2025-05-16,diriyah_gate,1.6080098482524618,20250516T073031_20250516T073441_T38RPN,,,,
-2025-05-24,diriyah_gate,1.6279563326792243,20250524T072631_20250524T073832_T38RPN,,,,
-2025-08-04,diriyah_gate,1.6011059650445545,20250804T073031_20250804T073952_T38RPN,,,,
+date,sub_aoi,candidate_uvai,s2_system_index,ai_prelabel,ai_confidence,ai_reasoning,final_label,bias_exposed_during_ai_labeling
+2021-08-03,diriyah_gate,1.851271344546006,20210803T072621_20210803T073150_T38RPN,clean,high,"Urban grid sharp, deep shadows in wadi, high contrast throughout.",clean,False
+2022-04-10,diriyah_gate,2.018439172563016,20220410T072621_20220410T073149_T38RPN,light_haze,medium,Subtle but real veiling vs 2021-08-03; bright surfaces softer.,light_haze,False
+2022-05-05,diriyah_gate,2.2201782297827313,20220505T072609_20220505T073142_T38RPN,light_haze,low,"Borderline; slight contrast reduction, lean light_haze.",light_haze,False
+2022-05-10,diriyah_gate,2.293453392460349,20220510T072621_20220510T073151_T38RPN,light_haze,medium,"Visible veiling, scene washed out.",light_haze,True
+2022-05-20,diriyah_gate,2.2600237137054604,20220520T072621_20220520T073153_T38RPN,light_haze,medium,"Strong veil, yellow-tan cast, roads softer; borderline heavy.",light_haze,True
+2022-05-25,diriyah_gate,3.301210617370568,20220525T072619_20220525T073147_T38RPN,heavy_dust,high,"Strong yellow-orange scene-wide cast, edges muted, classic dust-storm signature — visual signal independently very strong.",heavy_dust,True
+2022-05-30,diriyah_gate,1.8411724740238407,20220530T072621_20220530T073155_T38RPN,light_haze,medium,Clearer than 05-25 but still soft; tail of the May 2022 event.,light_haze,False
+2022-08-18,diriyah_gate,1.973487113035887,20220818T072631_20220818T073200_T38RPN,clean,medium,"Sharp edges visible, urban grid clear.",clean,False
+2022-08-23,diriyah_gate,1.6257503305572207,20220823T072619_20220823T073821_T38RPN,clean,medium,Comparable to 08-18.,clean,False
+2024-05-19,diriyah_gate,1.7291490269273502,20240519T072621_20240519T073503_T38RPN,clean,high,"Sharp, high-contrast, vegetation visible.",clean,False
+2025-04-24,diriyah_gate,1.6182539797513524,20250424T072641_20250424T074135_T38RPN,clean,medium,"Clean appearance, edges visible.",clean,False
+2025-05-09,diriyah_gate,2.0905774061659166,20250509T072619_20250509T074216_T38RPN,clean,medium,"Sharp, comparable to 04-24.",clean,False
+2025-05-16,diriyah_gate,1.6080098482524618,20250516T073031_20250516T073441_T38RPN,clean,medium,"Clean, sharp.",clean,False
+2025-05-24,diriyah_gate,1.6279563326792243,20250524T072631_20250524T073832_T38RPN,clean,medium,Clean.,clean,False
+2025-08-04,diriyah_gate,1.6011059650445545,20250804T073031_20250804T073952_T38RPN,clean,medium,"Sharp, clean.",clean,False

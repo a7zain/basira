@@ -1,16 +1,16 @@
-date,sub_aoi,candidate_uvai,s2_system_index,ai_prelabel,ai_confidence,ai_reasoning,final_label
-2021-07-04,qiddiya_core,1.7436575372160756,20210704T072621_20210704T073150_T38RPN,,,,
-2021-07-09,qiddiya_core,1.994063357072701,20210709T072619_20210709T073706_T38RPN,,,,
-2022-04-10,qiddiya_core,2.073447693003454,20220410T072621_20220410T073149_T38RPN,,,,
-2022-08-03,qiddiya_core,1.6213385120559591,20220803T072619_20220803T073152_T38RPN,,,,
-2022-08-18,qiddiya_core,2.0620290424467456,20220818T072631_20220818T073200_T38RPN,,,,
-2023-04-30,qiddiya_core,1.6499396562576056,20230430T072619_20230430T073149_T38RPN,,,,
-2023-07-04,qiddiya_core,1.7557505714555748,20230704T072621_20230704T073148_T38RPN,,,,
-2023-07-09,qiddiya_core,1.720048632155916,20230709T072619_20230709T073152_T38RPN,,,,
-2024-03-10,qiddiya_core,2.204234518126536,20240310T072721_20240310T073146_T38RPN,,,,
-2024-04-24,qiddiya_core,1.7383120325594026,20240424T072619_20240424T073145_T38RPN,,,,
-2024-08-02,qiddiya_core,1.9339356659852651,20240802T072619_20240802T073147_T38RPN,,,,
-2025-03-30,qiddiya_core,1.6738156850367807,20250330T072619_20250330T073147_T38RPN,,,,
-2025-08-04,qiddiya_core,1.9050791358654944,20250804T073031_20250804T073952_T38RPN,,,,
-2025-09-01,qiddiya_core,1.7895125071313034,20250901T072631_20250901T073657_T38RPN,,,,
-2026-01-29,qiddiya_core,1.665758630956354,20260129T073141_20260129T074013_T38RPN,,,,
+date,sub_aoi,candidate_uvai,s2_system_index,ai_prelabel,ai_confidence,ai_reasoning,final_label,bias_exposed_during_ai_labeling
+2021-07-04,qiddiya_core,1.7436575372160756,20210704T072621_20210704T073150_T38RPN,clean,high,"Sharp limestone cliffs, deep canyon shadows, no veiling.",clean,False
+2021-07-09,qiddiya_core,1.994063357072701,20210709T072619_20210709T073706_T38RPN,clean,medium,Slightly softer than 07-04 but edges still well-defined; could be acquisition variance.,clean,False
+2022-04-10,qiddiya_core,2.073447693003454,20220410T072621_20220410T073149_T38RPN,clean,high,Sharp ridges and crisp limestone despite known +2.07 UVAI — moderate UVAI doesn't always visibly manifest.,clean,True
+2022-08-03,qiddiya_core,1.6213385120559591,20220803T072619_20220803T073152_T38RPN,clean,medium,Comparable contrast to summer 2021; edges intact.,clean,False
+2022-08-18,qiddiya_core,2.0620290424467456,20220818T072631_20220818T073200_T38RPN,light_haze,low,Slightly warmer/softer desert tone vs 08-03; subtle scene-wide quality.,light_haze,False
+2023-04-30,qiddiya_core,1.6499396562576056,20230430T072619_20230430T073149_T38RPN,clean,medium,Construction now visible (excluded as substrate); atmospheric edges in canyon area sharp.,clean,False
+2023-07-04,qiddiya_core,1.7557505714555748,20230704T072621_20230704T073148_T38RPN,clean,low,Borderline; lean clean because canyon edges remain visible.,clean,False
+2023-07-09,qiddiya_core,1.720048632155916,20230709T072619_20230709T073152_T38RPN,clean,low,Marginally warmer than 07-04 of same year; low confidence on either call.,clean,False
+2024-03-10,qiddiya_core,2.204234518126536,20240310T072721_20240310T073146_T38RPN,light_haze,low,Slightly more uniform/warm desert tone vs 04-24; ridges marginally softer.,light_haze,True
+2024-04-24,qiddiya_core,1.7383120325594026,20240424T072619_20240424T073145_T38RPN,clean,medium,Sharp edges in non-construction areas; orange exposed soil is substrate.,clean,False
+2024-08-02,qiddiya_core,1.9339356659852651,20240802T072619_20240802T073147_T38RPN,clean,low,Limestone bright but edges visible; lean clean.,clean,False
+2025-03-30,qiddiya_core,1.6738156850367807,20250330T072619_20250330T073147_T38RPN,clean,medium,"Heavy construction footprint, atmospheric content reads clean outside it.",clean,False
+2025-08-04,qiddiya_core,1.9050791358654944,20250804T073031_20250804T073952_T38RPN,light_haze,low,Limestone on right edge looks bleached/over-bright — consistent with mild scattering.,light_haze,False
+2025-09-01,qiddiya_core,1.7895125071313034,20250901T072631_20250901T073657_T38RPN,light_haze,low,"Similar to 08-04, slightly softer.",light_haze,False
+2026-01-29,qiddiya_core,1.665758630956354,20260129T073141_20260129T074013_T38RPN,clean,high,"Winter scene, deep shadows, very high contrast — clearest scene in batch.",clean,False
