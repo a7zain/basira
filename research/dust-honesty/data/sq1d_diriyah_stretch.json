@@ -1,0 +1,6 @@
+{
+  "R": [0.070, 0.513],
+  "G": [0.062, 0.454],
+  "B": [0.031, 0.387],
+  "_provenance": "Per-AOI 2/98 stretch over the Diriyah test-scene set, lifted from CLAUDE.md (recorded during the 2026-04-29 SQ1D thumbnail iteration; not hardcoded in any script prior to this file). Persisted 2026-04-30 for SQ1C reuse so the Diriyah candidate-thumbnail batch uses the identical stretch as the existing test thumbnails."
+}
