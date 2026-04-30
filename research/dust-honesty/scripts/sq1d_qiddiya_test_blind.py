@@ -39,7 +39,40 @@ LABELS_CSV = ROOT / "research/dust-honesty/data/sq1_manual_labels.csv"
 STRETCH_JSON = ROOT / "research/dust-honesty/data/sq1d_qiddiya_stretch.json"
 OUT_DIR = ROOT / "research/dust-honesty/data/sq1d_qiddiya_test_thumbnails"
 MONTAGE_PATH = ROOT / "research/dust-honesty/data/sq1d_qiddiya_test_montage.png"
+MANIFEST_CSV = ROOT / "research/dust-honesty/data/sq1d_scene_manifest.csv"
 AOI = "qiddiya_core"
+
+
+def load_manifest_lookup():
+    """Return {(aoi, month_slot): (system_index, acquisition_date)} from
+    sq1d_scene_manifest.csv, or {} if the manifest doesn't exist yet."""
+    if not MANIFEST_CSV.exists():
+        return {}
+    out = {}
+    with open(MANIFEST_CSV) as f:
+        for r in csv.DictReader(f):
+            out[(r["aoi"], r["month_slot"])] = (r["system_index"], r["acquisition_date"])
+    return out
+
+
+def assert_manifest_match(geom, acq_date, expected_sys_idx):
+    """Verify that filtering S2_HARMONIZED by `acq_date` over `geom`
+    contains the expected system:index. Raises if not, so a manifest
+    that points at a rolled-out index fails loud rather than rendering
+    the wrong scene silently."""
+    nxt = (np.datetime64(acq_date) + np.timedelta64(1, "D")).astype(str)
+    coll = (
+        ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
+        .filterBounds(geom)
+        .filterDate(acq_date, nxt)
+    )
+    ids = coll.aggregate_array("system:index").getInfo()
+    if expected_sys_idx not in ids:
+        raise RuntimeError(
+            f"manifest mismatch: expected system:index {expected_sys_idx} "
+            f"on {acq_date}, got {ids}. GEE may have rolled the index — "
+            f"investigate before re-rendering."
+        )
 
 # SQ1 original Qiddiya stretch (CLAUDE.md):
 #   R [0.279, 0.635], G [0.213, 0.520], B [0.136, 0.398]
@@ -195,14 +228,25 @@ def main():
     bbox = get_bbox(AOI)
     geom = ee.Geometry.Rectangle(list(bbox))
 
-    scene_dates = {}
+    manifest = load_manifest_lookup()
+    print(f"Manifest entries loaded: {len(manifest)} "
+          f"(source: {MANIFEST_CSV.name if MANIFEST_CSV.exists() else 'absent'})")
+
+    locked = {}        # ym -> (system_index, acquisition_date) from manifest
+    scene_dates = {}   # ym -> acquisition_date from deterministic pick (fallback)
     for ym in months:
+        m = manifest.get((AOI, ym))
+        if m:
+            locked[ym] = m
+            print(f"  {ym} → manifest {m[0]} (acq {m[1]})")
+            continue
         d = pick_scene_date(geom, ym)
         if d is None:
             print(f"\nSTOP: no eligible scene for {ym}")
             sys.exit(2)
         scene_dates[ym] = d
-        print(f"  {ym} → {d}")
+        print(f"  [MANIFEST GAP] no entry for {AOI} {ym}; using deterministic "
+              f"pick → {d} — scene NOT locked, will drift on catalog change.")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -217,13 +261,22 @@ def main():
     skipped = {}  # ym -> reason
     probe_w = probe_h = None
     for idx, ym in enumerate(months):
-        d = scene_dates[ym]
-        print(f"\nfetching {d} ({ym})...")
-        a = fetch_rgb_array(d, geom)
+        if ym in locked:
+            sys_idx, acq_date = locked[ym]
+            src_label = f"{sys_idx} (manifest-locked, acq {acq_date})"
+            d = acq_date  # keep `d` set to the acquisition date for sanity-check print
+            print(f"\nfetching {src_label} ({ym})...")
+            assert_manifest_match(geom, acq_date, sys_idx)
+            a = fetch_rgb_array(acq_date, geom)
+        else:
+            d = scene_dates[ym]
+            src_label = d
+            print(f"\nfetching {d} ({ym})...")
+            a = fetch_rgb_array(d, geom)
         ok, reason = array_has_data(a)
         if not ok:
             skipped[ym] = reason
-            print(f"  SKIPPED: {ym} ({d}): {reason}")
+            print(f"  SKIPPED: {ym} ({src_label}): {reason}")
             continue
         rgb = np.dstack([stretch_band(a[i], *RGB_LO_HI[i]) for i in range(3)])
 
