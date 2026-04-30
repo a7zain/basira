@@ -8,6 +8,15 @@ across the candidate pool, renders captioned PNGs and a montage.
 The derived stretch (R, G, B) is persisted to JSON so the test-scene
 renderer can use the identical stretch for visual comparability.
 
+Silent-failure guard (hardened 2026-04-30):
+  GEE returns a zero-filled array when an L1C scene matches filterBounds
+  at the tile level but the scene's actual data footprint doesn't cover
+  the requested geometry (partial-strip acquisition, scan gaps). Each
+  fetched array is now validated with `array_has_data()`; failed slots
+  are SKIPPED (logged + rendered as a visibly-blank slate panel marked
+  "NO DATA") rather than producing a stretchable-looking black thumbnail
+  with a caption painted on top.
+
 Outputs:
   research/dust-honesty/data/sq1d_ksp_ref_thumbnails/<date>.png
   research/dust-honesty/data/sq1d_ksp_ref_montage.png
@@ -78,6 +87,47 @@ def fetch_rgb_array(date_str, geom):
     return arr.astype(np.float32) / 10000.0
 
 
+# Guard: a "good" array has >= MIN_POS_FRAC positive (non-zero, finite)
+# pixels in every band. GEE silently returns all-zero arrays when an L1C
+# scene's data footprint doesn't cover the requested geometry.
+MIN_POS_FRAC = 0.5
+
+
+def array_has_data(arr) -> tuple[bool, str]:
+    """Return (ok, reason). ok=True iff every band has >= MIN_POS_FRAC
+    positive finite pixels."""
+    fracs = []
+    for b in range(arr.shape[0]):
+        v = arr[b]
+        ok = np.isfinite(v) & (v > 0)
+        fracs.append(float(ok.mean()))
+    if min(fracs) < MIN_POS_FRAC:
+        return False, f"empty/no-data fetch (per-band positive fractions: {[f'{f:.3f}' for f in fracs]})"
+    return True, "ok"
+
+
+def render_skip_panel(date_str, reason, w, h, font):
+    """Visibly-blank slate (mid-grey) with NO-DATA banner; replaces the
+    silent-black-with-caption-only failure mode."""
+    img = Image.new("RGB", (w, h), (60, 60, 60))
+    draw = ImageDraw.Draw(img)
+    # diagonal hatch
+    for offset in range(-h, w + h, 24):
+        draw.line([(offset, 0), (offset + h, h)], fill=(85, 85, 85), width=1)
+    # banner
+    banner = f"SKIPPED: {date_str}\nNO DATA over AOI"
+    bb = draw.multiline_textbbox((0, 0), banner, font=font)
+    tw, th = bb[2] - bb[0], bb[3] - bb[1]
+    pad = 10
+    bx, by = (w - tw) // 2 - pad, (h - th) // 2 - pad
+    draw.rectangle([bx, by, bx + tw + 2 * pad, by + th + 2 * pad], fill=(20, 20, 20))
+    draw.multiline_text((bx + pad, by + pad), banner, fill=(255, 220, 100), font=font, align="center")
+    # secondary footnote with the reason
+    foot = f"reason: {reason}"
+    draw.text((10, h - 28), foot, fill=(220, 220, 220), font=font)
+    return img
+
+
 def caption(img, text, font):
     draw = ImageDraw.Draw(img)
     bb = draw.textbbox((0, 0), text, font=font)
@@ -104,11 +154,21 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     arrs = {}
+    skipped = {}  # date -> reason
     for c in candidates:
         d = c["date"]
         print(f"\nfetching {d}...")
-        arrs[d] = fetch_rgb_array(d, geom)
-        print(f"  shape {arrs[d].shape}")
+        arr = fetch_rgb_array(d, geom)
+        print(f"  shape {arr.shape}")
+        ok, reason = array_has_data(arr)
+        if ok:
+            arrs[d] = arr
+        else:
+            skipped[d] = reason
+            print(f"  SKIPPED: {d}: {reason}")
+
+    if not arrs:
+        raise RuntimeError("All candidates were skipped — no usable data to derive stretch.")
 
     rgb_lo_hi = []
     for ch in range(3):
@@ -143,9 +203,25 @@ def main():
     except OSError:
         font = ImageFont.load_default()
 
+    # Probe one rendered shape to size the skip panels consistently.
+    probe = next(iter(arrs.values()))
+    probe_w = probe.shape[2]
+    probe_h = probe.shape[1]
+    if probe_w < 600:
+        sc = int(np.ceil(600 / probe_w))
+        probe_w *= sc
+        probe_h *= sc
+
     pngs = {}
     for c in candidates:
         d = c["date"]
+        out = OUT_DIR / f"{d}.png"
+        if d in skipped:
+            img = render_skip_panel(d, skipped[d], probe_w, probe_h, font)
+            img.save(out)
+            pngs[d] = img
+            print(f"wrote SKIP panel {out}  ({skipped[d]})")
+            continue
         a = arrs[d]
         rgb = np.dstack([stretch(a[i], *rgb_lo_hi[i]) for i in range(3)])
         rgb8 = (rgb * 255).astype(np.uint8)
@@ -157,7 +233,6 @@ def main():
             f"{d}  UVAI={float(c['uvai_mean']):+.3f}  pool {c['pool']} (rank {c['rank']})"
         )
         caption(img, label, font)
-        out = OUT_DIR / f"{d}.png"
         img.save(out)
         pngs[d] = img
         print(f"wrote {out}")
