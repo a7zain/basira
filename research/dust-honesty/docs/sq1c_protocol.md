@@ -75,6 +75,18 @@ The seasonal-balance constraint in Step C is implemented as **calendar-month bin
 
 Identical to SQ1D Pass 4 (committed in `859450e`). Locked.
 
+### 4a. Preliminary AI-only labels (2026-04-30 session 3 deviation)
+
+The SQ1C 43-scene calibration-set expansion was AI-pre-labeled by chat-Claude against the same rubric and construction-substrate exclusion rule as SQ1D Pass 5. **Researcher confirmation at full resolution was deferred to a later cleanup pass**; results from any SQ1B re-re-run that consumes this set are PRELIMINARY pending researcher review. The `final_label` column in each `sq1c_<aoi>_relabel.csv` is set to `ai_prelabel` for every row in this state.
+
+Six of the 43 SQ1C scenes had partial UVAI value exposure to chat-Claude during pre-labeling (UVAI values for the top-3 candidates per AOI surfaced in an intermediate session report before the labeling pass completed). Those rows are flagged with `bias_exposed_during_ai_labeling=True` in the relabel CSVs:
+
+- Qiddiya: 2022-04-10, 2024-03-10
+- KSP: 2025-07-15
+- Diriyah: 2022-05-10, 2022-05-20, 2022-05-25
+
+These six rows are a methodology drift from the strictly visually-blind protocol used in SQ1D Pass 5. They remain in the calibration set because excluding them would alter the rank-by-UVAI sample composition; the audit gate is the bias flag in the data, not the exclusion. For the piece B writeup: report SQ1B re-re-run results AS PRELIMINARY until researcher confirmation lands. Do not reference these results in any external communication before review.
+
 ### Stretch reuse
 
 | AOI | Stretch source |
