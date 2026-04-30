@@ -54,6 +54,10 @@ For each selected UVAI date:
 3. If no scene within ±3 days passes the cloud filter, drop the candidate. Log the drop.
 4. Record the (`uvai_date`, `s2_acquisition_date`, `day_offset`, `s2_system_index`, `cloud_pct`) tuple in `sq1c_<aoi>_positive_candidates.csv`.
 
+### Step F — Write manifest entry
+
+For each candidate scene actually pulled, append a row to `research/dust-honesty/data/sq1c_scene_manifest.csv` (same schema as `sq1d_scene_manifest.csv`) with `source='locked_at_selection'`. The manifest is the source of truth; SQ1C renderers read from it via the same lookup pattern as the SQ1D test renderers (`load_manifest_lookup()` →  `(system_index, acquisition_date)` →  date-based fetch with system:index assertion). This locks the (UVAI-anchored candidate ↔ S2 scene) tie at selection time so a future GEE catalog backfill cannot silently substitute a different scene under the same date+AOI query.
+
 ## 3. Operationalization decision (FLAGGED FOR REVIEW)
 
 The seasonal-balance constraint in Step C is implemented as **calendar-month bin match** in v0. An alternative is **`1/cos(SZA)` bin match with bin width 0.1**, which directly maps to the path-radiance term in Lolli's TOA differential and is the principled choice. We choose the cheaper v0 because:
@@ -125,10 +129,22 @@ Per AOI:
 | `research/dust-honesty/data/sq1c_<aoi>_positive_candidates.csv` | `uvai_date,s2_acquisition_date,day_offset,s2_system_index,cloud_pct,uvai_mean,uvai_max,rank` |
 | `research/dust-honesty/data/sq1c_<aoi>_test_thumbnails/<YYYY-MM-DD>.png` | one per surviving candidate |
 | `research/dust-honesty/data/sq1c_<aoi>_relabel.csv` (post-labeling) | `date,sub_aoi,candidate_uvai,ai_prelabel,ai_confidence,ai_reasoning,final_label` |
+| `research/dust-honesty/data/sq1c_scene_manifest.csv` | `aoi,month_slot,acquisition_date,system_index,cloudy_pixel_pct,processing_baseline,source,notes` — system:index lock per candidate, written at selection time (Step F), identical schema to `sq1d_scene_manifest.csv` |
 
 The `_relabel.csv` schema mirrors `sq1d_<aoi>_relabel.csv` (commits `9b73a75`, `442d7b0`) so SQ1B re-re-run can union the two label sources without schema massaging.
 
-## 8. Open questions / follow-ups
+## 8. Reproducibility note
+
+GEE's catalog can backfill processing-baseline-updated scenes, causing the deterministic-pick logic (`filter cloud<5, sort by CLOUDY_PIXEL_PERCENTAGE asc, take first`) to silently change which scene is returned for a given `(aoi, month)` bucket. Verified empirically on **2026-04-30** with KSP `2021-02`: the original calibration-set render used `20210204T073111_..._T38RPN` (cloud=0.009, processing baseline 05.00), but today's catalog has `20210214T073011_..._T38RPN` ranking ahead at cloud=0.000 — the exact-zero suggests baseline reprocessing inserted a more-recent flag-recompute that won the tiebreak.
+
+To prevent this from corrupting calibration sets that are already labeled, both SQ1D and SQ1C lock the `system:index ↔ (aoi, month_slot)` tie via sidecar manifests (`sq1d_scene_manifest.csv`, `sq1c_scene_manifest.csv`):
+
+- Renderers read the manifest first; the deterministic pick is a fallback **only** when the manifest has no entry, and the renderer logs `[MANIFEST GAP]` in that case.
+- The manifest path uses date-based fetch (`filterDate` + `mosaic` + `clip`) — byte-identical to the original committed renders — and asserts that the manifest's `system_index` is present in the catalog on the recorded `acquisition_date` before fetching. If GEE rolls a `system_index` out from under us in the future, this fails loud rather than rendering a different scene under the same filename.
+
+**Net effect:** the calibration sets used in SQ1B / SQ1B re-re-run are exactly reproducible from `manifest + scripts` at any future date, regardless of GEE catalog evolution.
+
+## 9. Open questions / follow-ups
 
 - Diriyah UVAI all-months pull (CDSE-dependent) — see §5. Closes the V4-scope gap.
 - Whether to also re-render the existing 5 Diriyah cleans into the SQ1C thumbnail format for visual-comparability with the new Diriyah positives. Defer to the labeling-session decision; surface-stable AOI so the visual rubric should be unambiguous regardless.
