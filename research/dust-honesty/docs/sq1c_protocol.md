@@ -15,14 +15,17 @@ Targets:
 - Bias toward `heavy_dust` where TROPOMI UVAI permits — those are the high-information positives for the threshold fit.
 - Keep the visually-blind labeling protocol identical to SQ1D Pass 4 to preserve label provenance for the methodology footnote.
 
+**Scope:** all three AOIs (KSP + Qiddiya + Diriyah) ship in v0; Diriyah's UVAI was unblocked via GEE source per §9.
+
 ## 2. Selection rule (UVAI-anchored, SZA-aware)
 
 ### Step A — Load all-months UVAI
 
-For each AOI load `research/dust-honesty/data/sq1d_<aoi>_uvai_all.csv`:
+For each AOI load `research/dust-honesty/data/sq1d_<aoi>_uvai_all.csv`. All three AOIs use GEE `COPERNICUS/S5P/OFFL/L3_AER_AI` as the underlying source (KSP and Qiddiya through `sq1d_ksp_uvai_search.py` / `sq1d_qiddiya_uvai_search.py`, established before this protocol; Diriyah added 2026-04-30 via `sq1d_diriyah_uvai_all_gee.py` per the source-mixing decision in §9). The Diriyah CSV carries an extra `data_source="GEE_OFFL_L3"` column for disambiguation against any future re-pulls.
+
 - KSP: `sq1d_ksp_uvai_all.csv` (320 rows, tightened bbox; commit `119db1b`).
 - Qiddiya: `sq1d_qiddiya_uvai_all.csv` (302 rows).
-- Diriyah: `sq1d_diriyah_uvai_all.csv` — **does not yet exist**. See §5.
+- Diriyah: `sq1d_diriyah_uvai_all.csv` (rows TBA at pull-time; expected ~300–400 by analogy with the other two AOIs at the same bbox class).
 
 ### Step B — Negative-class month distribution
 
@@ -98,15 +101,11 @@ Five classes: `clean / light_haze / heavy_dust / cloud / mixed`, augmented with 
 2. Researcher (Ahmed) reviews each pre-label at full resolution. Override → record both. Confirm → `final_label = ai_prelabel`.
 3. UVAI cross-check is post-merge audit only, never input. Disagreement between UVAI rank and `final_label` is the *finding*, not a bug.
 
-## 5. Diriyah handling (gated on Unit 3 of the kickoff)
+## 5. Diriyah handling
 
-Diriyah's all-months UVAI CSV does not yet exist. Today's kickoff Unit 3 attempted the pull but **CDSE returned 503** at pre-flight (consistent with the 2026-04-28 spike-note guidance: do not retry-loop). Diriyah is therefore deferred for now.
+Diriyah is included in SQ1C v0 via GEE TROPOMI UVAI per §9. Original CDSE/Sentinel-Hub-sourced Diriyah UVAI deferred until CDSE recovers AND/OR the OData spike completes (raw netCDF with `qa_value` preserved); logged as deferred work, not blocking SQ1C.
 
-**If/when CDSE recovers** (or the script gets ported to CDSE OData fallback per the 2026-04-28 spike notes — raw netCDF with `qa_value` preserved): re-run `sq1d_diriyah_uvai_all.py` (yet to be written), produce `sq1d_diriyah_uvai_all.csv`, then include Diriyah in SQ1C with the same protocol.
-
-**Until then:** SQ1C v0 ships with **KSP + Qiddiya only** (target n_pos ≥ 10 each → 20 new positives for V2-scope and V3-scope). The V4-scope SQ1B re-re-run remains gated on Diriyah inclusion. This is acceptable for piece B's first internal review; the Diriyah follow-up pass closes the gap before piece B ships externally.
-
-Note that Diriyah is the surface-stable AOI — the SZA seasonal bias from §7 is most diagnostic there, so adding Diriyah positives is high-value even though Diriyah's negative-class size (5) limits its standalone discriminative power.
+Diriyah is the surface-stable AOI — the SZA seasonal bias from `sq1d_lolli_formula.md` §7 is most diagnostic there, so adding Diriyah positives is high-value even though Diriyah's existing negative-class size (5 cleans) limits its standalone discriminative power.
 
 ## 6. PU budget estimate
 
@@ -144,7 +143,17 @@ To prevent this from corrupting calibration sets that are already labeled, both 
 
 **Net effect:** the calibration sets used in SQ1B / SQ1B re-re-run are exactly reproducible from `manifest + scripts` at any future date, regardless of GEE catalog evolution.
 
-## 9. Open questions / follow-ups
+## 9. Source-mixing note for piece B writeup
+
+**Why this is here.** CDSE/Sentinel Hub returned HTTP 503 for four consecutive days (2026-04-28 through 2026-04-30) following an announced *Major upgrade of CDSE networking on 28/04/2026*. Web search confirmed the outage is post-upgrade residual instability, not user-specific. The Diriyah all-months UVAI pull was deferred for two sessions on this. To unblock SQ1C, Diriyah switched to GEE `COPERNICUS/S5P/OFFL/L3_AER_AI`, which is the same underlying ESA Sentinel-5P L2 AER_AI product gridded to L3.
+
+**A finding worth recording.** CLAUDE.md frames TROPOMI UVAI as "accessible via Sentinel Hub Process API on CDSE." The 2026-04-30 source-check work (Unit 1 of session 2) revealed that the existing KSP and Qiddiya all-months UVAI CSVs were *already* sourced from GEE, not CDSE — the all-months batch scripts (`sq1d_ksp_uvai_search.py`, `sq1d_qiddiya_uvai_search.py`) use `ee.ImageCollection("COPERNICUS/S5P/OFFL/L3_AER_AI")`. CLAUDE.md's CDSE/SH framing for UVAI predates the all-months batch work and was not updated when the script transitioned. Net effect: **all three AOIs in SQ1C v0 share the same TROPOMI source family (GEE OFFL L3)**. The "source-mixing" framing in this section is conservative — the empirical state is source-consistent.
+
+**Validation.** The Unit 1 source-check ran 30 random KSP dates from `sq1d_ksp_uvai_all.csv` against a fresh GEE TROPOMI fetch under the SQ1C-spec reduction parameters (`bestEffort=False`, exact L3 native scale 1113.2 m). Result on n=30 overlap dates: **Pearson r = 1.0000, Spearman ρ = 1.0000**, mean(existing − refetch) = +0.0024, stdev = 0.0081. The scatter (`research/dust-honesty/data/sq1d_uvai_source_check.png`) lies on y = x. The tiny residual is consistent with `bestEffort=True/False` reducer-cell rounding differences. UVAI is used in SQ1C as a within-AOI ranker for positive-month selection, not as a cross-AOI quantitative measure, so even if a true SH-vs-GEE pipeline drift surfaced later it would not change the SQ1C calibration outcome.
+
+**Future work (deferred, not blocking).** Re-pull all three AOIs from CDSE OData (raw netCDF, preserves `qa_value`) for full source consistency *and* for the higher-fidelity quality-flag access that SQ8's KAUST AERONET validation chapter will need. Track in CLAUDE.md flags. Until then, the GEE OFFL L3 source is fit-for-purpose for SQ1B re-re-run.
+
+## 10. Open questions / follow-ups
 
 - Diriyah UVAI all-months pull (CDSE-dependent) — see §5. Closes the V4-scope gap.
 - Whether to also re-render the existing 5 Diriyah cleans into the SQ1C thumbnail format for visual-comparability with the new Diriyah positives. Defer to the labeling-session decision; surface-stable AOI so the visual rubric should be unambiguous regardless.
