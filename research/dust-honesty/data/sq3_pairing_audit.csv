@@ -1,0 +1,4 @@
+aoi,n_fired_total,n_paired,n_unpairable,retention_pct,mean_delta,ci_lo_95,ci_hi_95,ci_halfwidth,signal_class
+king_salman_park,24,14,10,58.33,+0.001571,-0.005573,+0.009662,+0.007618,tight_null
+qiddiya_core,57,16,41,28.07,-0.002373,-0.007452,+0.003644,+0.005548,tight_null
+diriyah_gate,9,8,1,88.89,-0.000229,-0.022039,+0.022397,+0.022218,wide_inconclusive
