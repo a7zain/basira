@@ -1,0 +1,229 @@
+aoi,year,month,month_slot,system_index,acquisition_date,cloudy_pct_scene,source,no_usable_scene,notes
+king_salman_park,2020,1,2020-01,20200131T073131_20200131T073131_T38RPN,2020-01-31,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2020,2,2020-02,20200215T073009_20200215T073205_T38RPN,2020-02-15,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+king_salman_park,2020,3,2020-03,20200301T072821_20200301T073633_T38RPN,2020-03-01,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2020,4,2020-04,20200425T072609_20200425T073431_T38RPN,2020-04-25,0.023000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2020,5,2020-05,20200530T072621_20200530T073207_T38RPN,2020-05-30,0.188300,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2020,6,2020-06,20200604T072619_20200604T073435_T38RPN,2020-06-04,0.177100,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2020,7,2020-07,20200704T072619_20200704T073413_T38RPN,2020-07-04,0.206300,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2020,8,2020-08,20200803T072619_20200803T073526_T38RPN,2020-08-03,0.175500,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2020,9,2020-09,20200912T072619_20200912T073659_T38RPN,2020-09-12,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2020,10,2020-10,20201002T072729_20201002T073150_T38RPN,2020-10-02,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2020,11,2020-11,20201123T072231_20201123T072226_T38RPN,2020-11-23,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2020,12,2020-12,20201211T073219_20201211T074003_T38RPN,2020-12-11,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2021,1,2021-01,20210105T073311_20210105T073312_T38RPN,2021-01-05,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2021,2,2021-02,20210204T073111_20210204T073144_T38RPN,2021-02-04,0.009287,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2021,3,2021-03,20210331T072619_20210331T073145_T38RPN,2021-03-31,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2021,4,2021-04,20210420T072609_20210420T073142_T38RPN,2021-04-20,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,5,2021-05,20210505T072611_20210505T074015_T38RPN,2021-05-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,6,2021-06,20210614T072621_20210614T073148_T38RPN,2021-06-14,0.008400,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,7,2021-07,20210724T072621_20210724T073151_T38RPN,2021-07-24,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2021,8,2021-08,20210823T072621_20210823T074028_T38RPN,2021-08-23,0.027000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,9,2021-09,20210907T072609_20210907T073555_T38RPN,2021-09-07,0.047800,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,10,2021-10,20211027T073019_20211027T073147_T38RPN,2021-10-27,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2021,11,2021-11,20211121T073221_20211121T073219_T38RPN,2021-11-21,0.006700,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2021,12,2021-12,20211201T073251_20211201T073253_T38RPN,2021-12-01,0.134800,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2022,1,2022-01,20220110T073301_20220110T073302_T38RPN,2022-01-10,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+king_salman_park,2022,2,2022-02,20220219T072941_20220219T073147_T38RPN,2022-02-19,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+king_salman_park,2022,3,2022-03,20220316T072639_20220316T073144_T38RPN,2022-03-16,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2022,4,2022-04,20220430T072621_20220430T073152_T38RPN,2022-04-30,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2022,5,2022-05,20220510T072621_20220510T073151_T38RPN,2022-05-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2022,6,2022-06,20220609T072621_20220609T073156_T38RPN,2022-06-09,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2022,7,2022-07,20220704T072619_20220704T073152_T38RPN,2022-07-04,0.047030,cal_lock_sq1d,False,locked from sq1d_manifest among 3 cand
+king_salman_park,2022,8,2022-08,20220803T072619_20220803T073152_T38RPN,2022-08-03,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2022,9,2022-09,20220907T072631_20220907T073159_T38RPN,2022-09-07,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2022,10,2022-10,20221012T072829_20221012T073143_T38RPN,2022-10-12,0.061781,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2022,11,2022-11,20221121T073129_20221121T073145_T38RPN,2022-11-21,0.008570,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2022,12,2022-12,20221211T073219_20221211T073217_T38RPN,2022-12-11,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,1,2023-01,20230120T073129_20230120T073142_T38RPN,2023-01-20,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2023,2,2023-02,20230214T073011_20230214T073142_T38RPN,2023-02-14,0.925378,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+king_salman_park,2023,3,2023-03,20230316T072641_20230316T073144_T38RPN,2023-03-16,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,4,2023-04,20230430T072619_20230430T073149_T38RPN,2023-04-30,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,5,2023-05,20230505T072621_20230505T073147_T38RPN,2023-05-05,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,6,2023-06,20230624T072621_20230624T073150_T38RPN,2023-06-24,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,7,2023-07,20230709T072619_20230709T073152_T38RPN,2023-07-09,0.081340,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+king_salman_park,2023,8,2023-08,20230818T072619_20230818T073626_T38RPN,2023-08-18,0.047060,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2023,9,2023-09,20230912T072621_20230912T073904_T38RPN,2023-09-12,0.071695,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2023,10,2023-10,20231002T072731_20231002T073145_T38RPN,2023-10-02,0.127654,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2023,11,2023-11,20231121T073211_20231121T073213_T38RPN,2023-11-21,1.555645,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2023,12,2023-12,20231201T073241_20231201T073244_T38RPN,2023-12-01,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+king_salman_park,2024,1,2024-01,20240105T073219_20240105T073216_T38RPN,2024-01-05,0.504793,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2024,2,2024-02,20240224T072909_20240224T073143_T38RPN,2024-02-24,0.336379,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+king_salman_park,2024,3,2024-03,20240310T072721_20240310T073146_T38RPN,2024-03-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2024,4,2024-04,20240404T072609_20240404T073144_T38RPN,2024-04-04,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2024,5,2024-05,20240504T072619_20240504T073147_T38RPN,2024-05-04,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2024,6,2024-06,20240623T072619_20240623T073149_T38RPN,2024-06-23,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2024,7,2024-07,20240708T072621_20240708T073143_T38RPN,2024-07-08,0.020007,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+king_salman_park,2024,8,2024-08,20240802T072619_20240802T073147_T38RPN,2024-08-02,0.118726,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2024,9,2024-09,20240916T072611_20240916T073320_T38RPN,2024-09-16,0.107856,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2024,10,2024-10,20241001T072629_20241001T073146_T38RPN,2024-10-01,0.033922,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2024,11,2024-11,20241105T073101_20241105T073141_T38RPN,2024-11-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2024,12,2024-12,20241225T073331_20241225T073325_T38RPN,2024-12-25,0.007465,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2025,1,2025-01,20250119T073129_20250119T073950_T38RPN,2025-01-19,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2025,2,2025-02,20250208T072959_20250208T073146_T38RPN,2025-02-08,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2025,3,2025-03,20250315T072711_20250315T073519_T38RPN,2025-03-15,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+king_salman_park,2025,4,2025-04,20250409T072619_20250409T073148_T38RPN,2025-04-09,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2025,5,2025-05,20250509T072619_20250509T074216_T38RPN,2025-05-09,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2025,6,2025-06,20250605T073031_20250605T073443_T38RPN,2025-06-05,0.065604,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2025,7,2025-07,20250703T072641_20250703T073357_T38RPN,2025-07-03,0.039386,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+king_salman_park,2025,8,2025-08,20250812T072631_20250812T073441_T38RPN,2025-08-12,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2025,9,2025-09,20250921T072631_20250921T073428_T38RPN,2025-09-21,0.057123,gee_pick,False,deterministic-pick across 6 candidates
+king_salman_park,2025,10,2025-10,20251011T072841_20251011T074011_T38RPN,2025-10-11,0.149601,gee_pick,False,deterministic-pick across 9 candidates
+king_salman_park,2025,11,2025-11,20251125T073139_20251125T073137_T38RPN,2025-11-25,0.089641,gee_pick,False,deterministic-pick across 8 candidates
+king_salman_park,2025,12,2025-12,20251230T073331_20251230T074157_T38RPN,2025-12-30,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2026,1,2026-01,20260104T073219_20260104T074234_T38RPN,2026-01-04,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+king_salman_park,2026,2,2026-02,20260213T074301_20260213T074302_T38RPN,2026-02-13,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+king_salman_park,2026,3,2026-03,20260325T072609_20260325T073824_T38RPN,2026-03-25,0.000000,gee_pick,False,deterministic-pick across 13 candidates
+king_salman_park,2026,4,2026-04,20260418T072321_20260418T072907_T38RPN,2026-04-18,5.369657,gee_pick,False,deterministic-pick across 10 candidates
+qiddiya_core,2020,1,2020-01,20200131T073131_20200131T073131_T38RPN,2020-01-31,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2020,2,2020-02,20200215T073009_20200215T073205_T38RPN,2020-02-15,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2020,3,2020-03,20200301T072821_20200301T073633_T38RPN,2020-03-01,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2020,4,2020-04,20200425T072609_20200425T073431_T38RPN,2020-04-25,0.023000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,5,2020-05,20200530T072621_20200530T073207_T38RPN,2020-05-30,0.188300,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,6,2020-06,20200604T072619_20200604T073435_T38RPN,2020-06-04,0.177100,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,7,2020-07,20200704T072619_20200704T073413_T38RPN,2020-07-04,0.206300,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2020,8,2020-08,20200803T072619_20200803T073526_T38RPN,2020-08-03,0.175500,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,9,2020-09,20200912T072619_20200912T073659_T38RPN,2020-09-12,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,10,2020-10,20201002T072729_20201002T073150_T38RPN,2020-10-02,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2020,11,2020-11,20201111T073139_20201111T073849_T38RPN,2020-11-11,0.022575,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2020,12,2020-12,20201211T073219_20201211T074003_T38RPN,2020-12-11,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2021,1,2021-01,20210105T073311_20210105T073312_T38RPN,2021-01-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,2,2021-02,20210214T073011_20210214T073144_T38RPN,2021-02-14,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2021,3,2021-03,20210331T072619_20210331T073145_T38RPN,2021-03-31,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2021,4,2021-04,20210420T072609_20210420T073142_T38RPN,2021-04-20,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,5,2021-05,20210505T072611_20210505T074015_T38RPN,2021-05-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,6,2021-06,20210614T072621_20210614T073148_T38RPN,2021-06-14,0.008400,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,7,2021-07,20210709T072619_20210709T073706_T38RPN,2021-07-09,0.058400,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+qiddiya_core,2021,8,2021-08,20210823T072621_20210823T074028_T38RPN,2021-08-23,0.027000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2021,9,2021-09,20210907T072609_20210907T073555_T38RPN,2021-09-07,0.047800,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,10,2021-10,20211027T073019_20211027T073147_T38RPN,2021-10-27,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,11,2021-11,20211121T073221_20211121T073219_T38RPN,2021-11-21,0.006700,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2021,12,2021-12,20211201T073251_20211201T073253_T38RPN,2021-12-01,0.134800,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2022,1,2022-01,20220110T073301_20220110T073302_T38RPN,2022-01-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,2,2022-02,20220204T073009_20220204T073142_T38RPN,2022-02-04,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2022,3,2022-03,20220316T072639_20220316T073144_T38RPN,2022-03-16,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2022,4,2022-04,20220430T072621_20220430T073152_T38RPN,2022-04-30,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 2 cand
+qiddiya_core,2022,5,2022-05,20220510T072621_20220510T073151_T38RPN,2022-05-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,6,2022-06,20220609T072621_20220609T073156_T38RPN,2022-06-09,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,7,2022-07,20220704T072619_20220704T073152_T38RPN,2022-07-04,0.047030,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,8,2022-08,20220803T072619_20220803T073152_T38RPN,2022-08-03,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+qiddiya_core,2022,9,2022-09,20220907T072631_20220907T073159_T38RPN,2022-09-07,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2022,10,2022-10,20221012T072829_20221012T073143_T38RPN,2022-10-12,0.061781,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,11,2022-11,20221121T073129_20221121T073145_T38RPN,2022-11-21,0.008570,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2022,12,2022-12,20221211T073219_20221211T073217_T38RPN,2022-12-11,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2023,1,2023-01,20230120T073129_20230120T073142_T38RPN,2023-01-20,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,2,2023-02,20230224T072911_20230224T073144_T38RPN,2023-02-24,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2023,3,2023-03,20230316T072641_20230316T073144_T38RPN,2023-03-16,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2023,4,2023-04,20230430T072619_20230430T073149_T38RPN,2023-04-30,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2023,5,2023-05,20230505T072621_20230505T073147_T38RPN,2023-05-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,6,2023-06,20230624T072621_20230624T073150_T38RPN,2023-06-24,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,7,2023-07,20230709T072619_20230709T073152_T38RPN,2023-07-09,0.081340,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+qiddiya_core,2023,8,2023-08,20230818T072619_20230818T073626_T38RPN,2023-08-18,0.047060,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,9,2023-09,20230912T072621_20230912T073904_T38RPN,2023-09-12,0.071695,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2023,10,2023-10,20231002T072731_20231002T073145_T38RPN,2023-10-02,0.127654,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,11,2023-11,20231121T073211_20231121T073213_T38RPN,2023-11-21,1.555645,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2023,12,2023-12,20231201T073241_20231201T073244_T38RPN,2023-12-01,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2024,1,2024-01,20240105T073219_20240105T073216_T38RPN,2024-01-05,0.504793,gee_pick,False,deterministic-pick across 5 candidates
+qiddiya_core,2024,2,2024-02,20240229T072841_20240229T073147_T38RPN,2024-02-29,0.020664,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2024,3,2024-03,20240310T072721_20240310T073146_T38RPN,2024-03-10,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2024,4,2024-04,20240424T072619_20240424T073145_T38RPN,2024-04-24,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2024,5,2024-05,20240504T072619_20240504T073147_T38RPN,2024-05-04,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2024,6,2024-06,20240623T072619_20240623T073149_T38RPN,2024-06-23,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2024,7,2024-07,20240708T072621_20240708T073143_T38RPN,2024-07-08,0.020007,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2024,8,2024-08,20240802T072619_20240802T073147_T38RPN,2024-08-02,0.118726,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2024,9,2024-09,20240916T072611_20240916T073320_T38RPN,2024-09-16,0.107856,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2024,10,2024-10,20241001T072629_20241001T073146_T38RPN,2024-10-01,0.033922,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2024,11,2024-11,20241105T073101_20241105T073141_T38RPN,2024-11-05,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2024,12,2024-12,20241215T073351_20241215T074322_T38RPN,2024-12-15,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+qiddiya_core,2025,1,2025-01,20250119T073129_20250119T073950_T38RPN,2025-01-19,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2025,2,2025-02,20250208T072959_20250208T073146_T38RPN,2025-02-08,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+qiddiya_core,2025,3,2025-03,20250330T072619_20250330T073147_T38RPN,2025-03-30,1.139837,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2025,4,2025-04,20250409T072619_20250409T073148_T38RPN,2025-04-09,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2025,5,2025-05,20250509T072619_20250509T074216_T38RPN,2025-05-09,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2025,6,2025-06,20250605T073031_20250605T073443_T38RPN,2025-06-05,0.065604,gee_pick,False,deterministic-pick across 8 candidates
+qiddiya_core,2025,7,2025-07,20250703T072641_20250703T073357_T38RPN,2025-07-03,0.039386,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2025,8,2025-08,20250804T073031_20250804T073952_T38RPN,2025-08-04,0.093852,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2025,9,2025-09,20250901T072631_20250901T073657_T38RPN,2025-09-01,0.555466,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2025,10,2025-10,20251011T072841_20251011T074011_T38RPN,2025-10-11,0.149601,gee_pick,False,deterministic-pick across 9 candidates
+qiddiya_core,2025,11,2025-11,20251125T073139_20251125T073137_T38RPN,2025-11-25,0.089641,gee_pick,False,deterministic-pick across 7 candidates
+qiddiya_core,2025,12,2025-12,20251230T073331_20251230T074157_T38RPN,2025-12-30,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+qiddiya_core,2026,1,2026-01,20260129T073141_20260129T074013_T38RPN,2026-01-29,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+qiddiya_core,2026,2,2026-02,20260213T072919_20260213T073923_T38RPN,2026-02-13,0.000000,gee_pick,False,deterministic-pick across 9 candidates
+qiddiya_core,2026,3,2026-03,20260325T072609_20260325T073824_T38RPN,2026-03-25,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+qiddiya_core,2026,4,2026-04,20260414T072609_20260414T073249_T38RPN,2026-04-14,27.017648,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2020,1,2020-01,20200131T073131_20200131T073131_T38RPN,2020-01-31,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,2,2020-02,20200215T073009_20200215T073205_T38RPN,2020-02-15,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2020,3,2020-03,20200301T072821_20200301T073633_T38RPN,2020-03-01,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2020,4,2020-04,20200425T072609_20200425T073431_T38RPN,2020-04-25,0.023000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2020,5,2020-05,20200530T072621_20200530T073207_T38RPN,2020-05-30,0.188300,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,6,2020-06,20200604T072619_20200604T073435_T38RPN,2020-06-04,0.177100,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,7,2020-07,20200704T072619_20200704T073413_T38RPN,2020-07-04,0.206300,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,8,2020-08,20200803T072619_20200803T073526_T38RPN,2020-08-03,0.175500,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,9,2020-09,20200912T072619_20200912T073659_T38RPN,2020-09-12,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,10,2020-10,20201002T072729_20201002T073150_T38RPN,2020-10-02,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2020,11,2020-11,20201111T073139_20201111T073849_T38RPN,2020-11-11,0.022575,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2020,12,2020-12,20201211T073219_20201211T074003_T38RPN,2020-12-11,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2021,1,2021-01,20210105T073311_20210105T073312_T38RPN,2021-01-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,2,2021-02,20210214T073011_20210214T073144_T38RPN,2021-02-14,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2021,3,2021-03,20210331T072619_20210331T073145_T38RPN,2021-03-31,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2021,4,2021-04,20210420T072609_20210420T073142_T38RPN,2021-04-20,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,5,2021-05,20210505T072611_20210505T074015_T38RPN,2021-05-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,6,2021-06,20210614T072621_20210614T073148_T38RPN,2021-06-14,0.008400,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,7,2021-07,20210724T072621_20210724T073151_T38RPN,2021-07-24,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,8,2021-08,20210803T072621_20210803T073150_T38RPN,2021-08-03,0.046500,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+diriyah_gate,2021,9,2021-09,20210907T072609_20210907T073555_T38RPN,2021-09-07,0.047800,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,10,2021-10,20211027T073019_20211027T073147_T38RPN,2021-10-27,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2021,11,2021-11,20211121T073221_20211121T073219_T38RPN,2021-11-21,0.006700,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2021,12,2021-12,20211201T073251_20211201T073253_T38RPN,2021-12-01,0.134800,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2022,1,2022-01,20220110T073301_20220110T073302_T38RPN,2022-01-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,2,2022-02,20220204T073009_20220204T073142_T38RPN,2022-02-04,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2022,3,2022-03,20220316T072639_20220316T073144_T38RPN,2022-03-16,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2022,4,2022-04,20220410T072621_20220410T073149_T38RPN,2022-04-10,0.463077,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+diriyah_gate,2022,5,2022-05,20220510T072621_20220510T073151_T38RPN,2022-05-10,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 5 cand
+diriyah_gate,2022,6,2022-06,20220609T072621_20220609T073156_T38RPN,2022-06-09,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,7,2022-07,20220704T072619_20220704T073152_T38RPN,2022-07-04,0.047030,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,8,2022-08,20220818T072631_20220818T073200_T38RPN,2022-08-18,2.866732,cal_lock_sq1c,False,locked from sq1c_manifest among 2 cand
+diriyah_gate,2022,9,2022-09,20220907T072631_20220907T073159_T38RPN,2022-09-07,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,10,2022-10,20221012T072829_20221012T073143_T38RPN,2022-10-12,0.061781,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,11,2022-11,20221121T073129_20221121T073145_T38RPN,2022-11-21,0.008570,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2022,12,2022-12,20221211T073219_20221211T073217_T38RPN,2022-12-11,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2023,1,2023-01,20230120T073129_20230120T073142_T38RPN,2023-01-20,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,2,2023-02,20230224T072911_20230224T073144_T38RPN,2023-02-24,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2023,3,2023-03,20230316T072641_20230316T073144_T38RPN,2023-03-16,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2023,4,2023-04,20230430T072619_20230430T073149_T38RPN,2023-04-30,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,5,2023-05,20230505T072621_20230505T073147_T38RPN,2023-05-05,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2023,6,2023-06,20230624T072621_20230624T073150_T38RPN,2023-06-24,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,7,2023-07,20230719T072619_20230719T073152_T38RPN,2023-07-19,0.025232,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,8,2023-08,20230818T072619_20230818T073626_T38RPN,2023-08-18,0.047060,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,9,2023-09,20230912T072621_20230912T073904_T38RPN,2023-09-12,0.071695,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,10,2023-10,20231002T072731_20231002T073145_T38RPN,2023-10-02,0.127654,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,11,2023-11,20231121T073211_20231121T073213_T38RPN,2023-11-21,1.555645,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2023,12,2023-12,20231201T073241_20231201T073244_T38RPN,2023-12-01,0.000000,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2024,1,2024-01,20240105T073219_20240105T073216_T38RPN,2024-01-05,0.504793,gee_pick,False,deterministic-pick across 5 candidates
+diriyah_gate,2024,2,2024-02,20240229T072841_20240229T073147_T38RPN,2024-02-29,0.020664,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,3,2024-03,20240310T072721_20240310T073146_T38RPN,2024-03-10,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,4,2024-04,20240404T072609_20240404T073144_T38RPN,2024-04-04,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,5,2024-05,20240519T072621_20240519T073503_T38RPN,2024-05-19,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+diriyah_gate,2024,6,2024-06,20240623T072619_20240623T073149_T38RPN,2024-06-23,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,7,2024-07,20240708T072621_20240708T073143_T38RPN,2024-07-08,0.020007,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,8,2024-08,20240802T072619_20240802T073147_T38RPN,2024-08-02,0.118726,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2024,9,2024-09,20240916T072611_20240916T073320_T38RPN,2024-09-16,0.107856,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,10,2024-10,20241001T072629_20241001T073146_T38RPN,2024-10-01,0.033922,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2024,11,2024-11,20241105T073101_20241105T073141_T38RPN,2024-11-05,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2024,12,2024-12,20241225T073331_20241225T073325_T38RPN,2024-12-25,0.007465,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2025,1,2025-01,20250119T073129_20250119T073950_T38RPN,2025-01-19,0.000000,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2025,2,2025-02,20250208T072959_20250208T073146_T38RPN,2025-02-08,0.000000,cal_lock_sq1d,False,locked from sq1d_manifest among 1 cand
+diriyah_gate,2025,3,2025-03,20250315T072711_20250315T073519_T38RPN,2025-03-15,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2025,4,2025-04,20250424T072641_20250424T074135_T38RPN,2025-04-24,0.007226,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+diriyah_gate,2025,5,2025-05,20250509T072619_20250509T074216_T38RPN,2025-05-09,0.000000,cal_lock_sq1c,False,locked from sq1c_manifest among 3 cand
+diriyah_gate,2025,6,2025-06,20250605T073031_20250605T073443_T38RPN,2025-06-05,0.065604,gee_pick,False,deterministic-pick across 8 candidates
+diriyah_gate,2025,7,2025-07,20250703T072641_20250703T073357_T38RPN,2025-07-03,0.039386,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2025,8,2025-08,20250804T073031_20250804T073952_T38RPN,2025-08-04,0.093852,cal_lock_sq1c,False,locked from sq1c_manifest among 1 cand
+diriyah_gate,2025,9,2025-09,20250921T072631_20250921T073428_T38RPN,2025-09-21,0.057123,gee_pick,False,deterministic-pick across 6 candidates
+diriyah_gate,2025,10,2025-10,20251011T072841_20251011T074011_T38RPN,2025-10-11,0.149601,gee_pick,False,deterministic-pick across 9 candidates
+diriyah_gate,2025,11,2025-11,20251125T073139_20251125T073137_T38RPN,2025-11-25,0.089641,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2025,12,2025-12,20251230T073331_20251230T074157_T38RPN,2025-12-30,0.000000,gee_pick,False,deterministic-pick across 8 candidates
+diriyah_gate,2026,1,2026-01,20260104T073219_20260104T074234_T38RPN,2026-01-04,0.000000,gee_pick,False,deterministic-pick across 7 candidates
+diriyah_gate,2026,2,2026-02,20260213T072919_20260213T073923_T38RPN,2026-02-13,0.000000,gee_pick,False,deterministic-pick across 9 candidates
+diriyah_gate,2026,3,2026-03,20260325T072609_20260325T073824_T38RPN,2026-03-25,0.000000,gee_pick,False,deterministic-pick across 9 candidates
+diriyah_gate,2026,4,2026-04,20260414T072609_20260414T073249_T38RPN,2026-04-14,27.017648,gee_pick,False,deterministic-pick across 7 candidates
