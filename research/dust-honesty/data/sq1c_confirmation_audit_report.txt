@@ -1,0 +1,69 @@
+
+--- KSP (king_salman_park) ---
+  n total      : 13
+  n confirmed  : 13
+  agreement    : 11/13 = 0.846
+  overrides    : 2
+
+--- Qiddiya (qiddiya_core) ---
+  n total      : 15
+  n confirmed  : 15
+  agreement    : 10/15 = 0.667
+  overrides    : 5
+
+--- Diriyah (diriyah_gate) ---
+  n total      : 15
+  n confirmed  : 15
+  agreement    : 10/15 = 0.667
+  overrides    : 5
+
+========================================================================
+OVERALL: n total = 43
+OVERALL: n confirmed = 43
+OVERALL: AI agreement = 31/43 = 0.721
+
+=== Disagreement table (AI != confirmed) ===
+AOI                Date        AI          Confirmed     UVAI Proto     Notes
+king_salman_park   2024-07-08  light_haze  clean        +1.76 standard  
+king_salman_park   2025-07-03  light_haze  clean        +1.84 standard  
+qiddiya_core       2022-08-18  light_haze  clean        +2.06 standard  
+qiddiya_core       2024-03-10  light_haze  clean        +2.20 cold      
+qiddiya_core       2025-08-04  light_haze  clean        +1.91 standard  
+qiddiya_core       2025-09-01  light_haze  clean        +1.79 standard  
+qiddiya_core       2026-01-29  clean       light_haze   +1.67 standard  
+diriyah_gate       2021-08-03  clean       heavy_dust   +1.85 standard  
+diriyah_gate       2022-04-10  light_haze  heavy_dust   +2.02 standard  
+diriyah_gate       2022-05-10  light_haze  heavy_dust   +2.29 cold      
+diriyah_gate       2022-05-30  light_haze  clean        +1.84 standard  
+diriyah_gate       2025-05-09  clean       light_haze   +2.09 standard  
+
+=== Cold-protocol block (6 bias_exposed rows) ===
+AOI                Date        AI          Cold        agree?    UVAI Notes
+king_salman_park   2025-07-15  light_haze  light_haze  yes      +2.25 
+qiddiya_core       2022-04-10  clean       clean       yes      +2.07 
+qiddiya_core       2024-03-10  light_haze  clean       NO       +2.20 
+diriyah_gate       2022-05-10  light_haze  heavy_dust  NO       +2.29 
+diriyah_gate       2022-05-20  light_haze  light_haze  yes      +2.26 
+diriyah_gate       2022-05-25  heavy_dust  heavy_dust  yes      +3.30 
+
+  cold rows agreement: 4 agree / 2 disagree / 0 pending. Disagreements here ARE the contamination-broke signal.
+
+=== UVAI audit per (AOI, confirmed_label) ===
+AOI                Label         n    mean     p25     p50     p75
+diriyah_gate       clean         8  +1.703  +1.616  +1.627  +1.757
+diriyah_gate       heavy_dust    4  +2.366  +1.977  +2.156  +2.545
+diriyah_gate       light_haze    3  +2.190  +2.155  +2.220  +2.240
+king_salman_park   clean         8  +1.634  +1.533  +1.593  +1.738
+king_salman_park   light_haze    5  +1.876  +1.782  +1.833  +1.888
+qiddiya_core       clean        14  +1.848  +1.725  +1.773  +1.979
+qiddiya_core       light_haze    1  +1.666  +1.666  +1.666  +1.666
+
+=== UVAI anomalies (clean & UVAI > 2.0, heavy_dust & UVAI < 1.0) ===
+AOI                Date        Label          UVAI flag               Notes
+qiddiya_core       2022-04-10  clean        +2.073 clean_high_uvai    
+qiddiya_core       2022-08-18  clean        +2.062 clean_high_uvai    
+qiddiya_core       2024-03-10  clean        +2.204 clean_high_uvai    
+
+  Anomalies are piece B discussion-section candidates (visual-vs-aerosol decoupling).
+
+Wrote audit CSV: /Users/a7zain/basira/research/dust-honesty/data/sq1c_confirmation_audit.csv

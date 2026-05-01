@@ -1,14 +1,14 @@
 date,sub_aoi,candidate_uvai,s2_system_index,ai_prelabel,ai_confidence,ai_reasoning,final_label,bias_exposed_during_ai_labeling,confirmed_label,reviewer_notes,confirmed_at,review_protocol
-2022-01-10,king_salman_park,1.5131875016542846,20220110T073301_20220110T073302_T38RPN,clean,medium,"Winter scene, urban grid sharp, runway features crisp.",clean,False,,,,
-2022-02-19,king_salman_park,1.7310718383654815,20220219T072941_20220219T073147_T38RPN,clean,medium,Comparable to 01-10; sharp edges throughout.,clean,False,,,,
-2022-07-04,king_salman_park,1.6238609703093987,20220704T072619_20220704T073152_T38RPN,light_haze,low,Summer warmth and slight bleaching of bright surfaces; could be summer sun-angle alone.,light_haze,False,,,,
-2022-07-09,king_salman_park,1.7822470656455571,20220709T072631_20220709T074256_T38RPN,light_haze,medium,Notable washed-out central area vs 07-04 of same year; contrast clearly reduced.,light_haze,False,,,,
-2023-02-14,king_salman_park,1.5396905252617972,20230214T073011_20230214T073142_T38RPN,clean,medium,"Winter, sharp; orange exposed earth mid-frame is excavation substrate (excluded).",clean,False,,,,
-2023-07-04,king_salman_park,1.8327815491069155,20230704T072621_20230704T073148_T38RPN,light_haze,medium,"Soft contrast across central park area, edges visible but reduced.",light_haze,False,,,,
-2023-07-09,king_salman_park,1.8878602809463596,20230709T072619_20230709T073152_T38RPN,light_haze,medium,Similar to 07-04 same year; consistent mid-summer pattern.,light_haze,False,,,,
-2024-02-24,king_salman_park,1.5851456982338075,20240224T072909_20240224T073143_T38RPN,clean,medium,"Winter, sharp; major earthworks visible (excluded as substrate).",clean,False,,,,
-2024-07-08,king_salman_park,1.757441129824848,20240708T072621_20240708T073143_T38RPN,light_haze,low,Summer brightness across construction areas; borderline.,light_haze,False,,,,
-2025-07-03,king_salman_park,1.8420647661439729,20250703T072641_20250703T073357_T38RPN,light_haze,low,Bright but edges generally visible; lean light_haze on summer pattern.,light_haze,False,,,,
-2025-07-15,king_salman_park,2.2544132140087227,20250715T073031_20250715T073445_T38RPN,light_haze,low,Similar to 07-03; bias-flagged.,light_haze,True,,,,
-2026-02-08,king_salman_park,1.600158286867588,20260208T073051_20260208T074027_T38RPN,clean,medium,"Winter, large park development pattern visible, edges sharp.",clean,False,,,,
-2026-02-13,king_salman_park,1.500135858766084,20260213T074301_20260213T074302_T38RPN,clean,medium,"Five days after 02-08, near-identical look.",clean,False,,,,
+2022-01-10,king_salman_park,1.5131875016542846,20220110T073301_20220110T073302_T38RPN,clean,medium,"Winter scene, urban grid sharp, runway features crisp.",clean,False,clean,,2026-05-01T15:14:59Z,standard
+2022-02-19,king_salman_park,1.7310718383654815,20220219T072941_20220219T073147_T38RPN,clean,medium,Comparable to 01-10; sharp edges throughout.,clean,False,clean,,2026-05-01T15:15:05Z,standard
+2022-07-04,king_salman_park,1.6238609703093987,20220704T072619_20220704T073152_T38RPN,light_haze,low,Summer warmth and slight bleaching of bright surfaces; could be summer sun-angle alone.,light_haze,False,light_haze,,2026-05-01T15:15:21Z,standard
+2022-07-09,king_salman_park,1.7822470656455571,20220709T072631_20220709T074256_T38RPN,light_haze,medium,Notable washed-out central area vs 07-04 of same year; contrast clearly reduced.,light_haze,False,light_haze,,2026-05-01T15:15:24Z,standard
+2023-02-14,king_salman_park,1.5396905252617972,20230214T073011_20230214T073142_T38RPN,clean,medium,"Winter, sharp; orange exposed earth mid-frame is excavation substrate (excluded).",clean,False,clean,,2026-05-01T15:15:26Z,standard
+2023-07-04,king_salman_park,1.8327815491069155,20230704T072621_20230704T073148_T38RPN,light_haze,medium,"Soft contrast across central park area, edges visible but reduced.",light_haze,False,light_haze,,2026-05-01T15:15:29Z,standard
+2023-07-09,king_salman_park,1.8878602809463596,20230709T072619_20230709T073152_T38RPN,light_haze,medium,Similar to 07-04 same year; consistent mid-summer pattern.,light_haze,False,light_haze,,2026-05-01T15:15:31Z,standard
+2024-02-24,king_salman_park,1.5851456982338075,20240224T072909_20240224T073143_T38RPN,clean,medium,"Winter, sharp; major earthworks visible (excluded as substrate).",clean,False,clean,,2026-05-01T15:15:33Z,standard
+2024-07-08,king_salman_park,1.757441129824848,20240708T072621_20240708T073143_T38RPN,light_haze,low,Summer brightness across construction areas; borderline.,light_haze,False,clean,,2026-05-01T15:15:36Z,standard
+2025-07-03,king_salman_park,1.8420647661439729,20250703T072641_20250703T073357_T38RPN,light_haze,low,Bright but edges generally visible; lean light_haze on summer pattern.,light_haze,False,clean,,2026-05-01T15:15:37Z,standard
+2025-07-15,king_salman_park,2.2544132140087227,20250715T073031_20250715T073445_T38RPN,light_haze,low,Similar to 07-03; bias-flagged.,light_haze,True,light_haze,,2026-05-01T15:15:40Z,cold
+2026-02-08,king_salman_park,1.600158286867588,20260208T073051_20260208T074027_T38RPN,clean,medium,"Winter, large park development pattern visible, edges sharp.",clean,False,clean,,2026-05-01T15:15:42Z,standard
+2026-02-13,king_salman_park,1.500135858766084,20260213T074301_20260213T074302_T38RPN,clean,medium,"Five days after 02-08, near-identical look.",clean,False,clean,,2026-05-01T15:15:43Z,standard
