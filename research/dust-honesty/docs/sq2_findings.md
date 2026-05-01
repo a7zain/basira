@@ -26,7 +26,7 @@ This note does **not** speak to NDVI bias (SQ3), HLS cross-validation (SQ4), AER
 
 **The three AOIs trace three different things.** KSP sits with its DBB distribution centered just below the V4 threshold and fires concentrated in shamal months (May–Oct = 19 of 24 fires; 0 fires Nov–Feb). That looks like a real seasonal aerosol signal, with the shoulder months (Mar–Apr, Sep–Oct) responsible for ~25% of fires.
 
-Diriyah fires concentrate tightly in Apr–Jul (9 of 9 fires) with the peak DBB scene on 2022-05-10 — the same shamal-season cluster that drove the SQ1C confirmed `heavy_dust` labels at Diriyah. **Diriyah's 11.8% rate is the cleanest measurement of how often visually-heavy atmospheric conditions translate to DBB > +0.034 at a surface-stable, desert-edge AOI.** That number is the headline aerosol-incidence figure to lead with for piece B.
+Diriyah fires concentrate tightly in Apr–Jul (9 of 9 fires) with the peak DBB scene on 2022-05-10 — the same shamal-season cluster that drove the SQ1C confirmed `heavy_dust` labels at Diriyah. **Diriyah's 11.8% is the cleanest operational fire rate available — at the only surface-stable AOI in the set, with shamal-season concentration consistent with regional climatology (peak March–August, Apr–Jun maximum).** That number is the headline aerosol-incidence figure to lead with for piece B.
 
 The Qiddiya rate is reported but flagged — see §3.
 
@@ -80,7 +80,7 @@ For piece B's methodology section: this is the third instance of GEE catalog dri
 | Qiddiya | +0.204 | 2021-07-09 | `20210709T072619_..._T38RPN` |
 | Diriyah | +0.066 | 2022-05-10 | `20220510T072621_..._T38RPN` |
 
-The KSP and Qiddiya peaks are both summer-shamal scenes; the Diriyah peak is the May-2022 cluster that included three confirmed `heavy_dust` SQ1C scenes (2022-05-10, 2022-05-20, 2022-05-25). **The Diriyah peak DBB (+0.066) is roughly one-third of the KSP and Qiddiya peaks** — consistent with Diriyah's surface-stable, desert-edge character: when the formula picks up real atmospheric loading rather than substrate evolution, the magnitudes are smaller and the dynamic range above the threshold is tighter.
+The KSP and Qiddiya peaks are both summer-shamal scenes; the Diriyah peak is the May-2022 cluster that included three confirmed `heavy_dust` SQ1C scenes (2022-05-10, 2022-05-20, 2022-05-25). That cluster is internal cross-validation: SQ1C cold-protocol blind labeling and SQ2 operational continuous DBB independently identified the same Diriyah peak event without sharing decision-time inputs. **The Diriyah peak DBB (+0.066) is roughly one-third of the KSP and Qiddiya peaks** — consistent with Diriyah's surface-stable, desert-edge character: when the formula picks up real atmospheric loading rather than substrate evolution, the magnitudes are smaller and the dynamic range above the threshold is tighter.
 
 ## 7. What this enables and what it does not
 
