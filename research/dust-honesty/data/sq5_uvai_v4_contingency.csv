@@ -1,0 +1,13 @@
+aoi,in_q4,v4_fired,n
+king_salman_park,True,True,10
+king_salman_park,True,False,8
+king_salman_park,False,True,13
+king_salman_park,False,False,42
+qiddiya_core,True,True,16
+qiddiya_core,True,False,2
+qiddiya_core,False,True,40
+qiddiya_core,False,False,16
+diriyah_gate,True,True,6
+diriyah_gate,True,False,12
+diriyah_gate,False,True,2
+diriyah_gate,False,False,54
