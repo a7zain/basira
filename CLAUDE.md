@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 **Project:** Basira (بصيرة) — Saudi satellite change monitoring
-**Last updated:** 2026-05-02 (post-SQ3-ship, conditional null at moderate loadings)
+**Last updated:** 2026-05-02 (post-SQ8-ship, operational null with quantified upper bound across the loading regime at Riyadh)
 **Purpose of this doc:** Minimum context needed to be immediately useful in a fresh chat. Not a changelog.
 
 > For employer-specific context on the current deliverable target, load `.private/context.md` at session start. That file is gitignored and contains the specific opportunity this work is shaped for.
@@ -44,230 +44,84 @@ Full strategic framing: see `basira_master_plan.md`.
 
 ---
 
-## Current state (as of 2026-05-02)
+## Current state (as of 2026-05-02, end of long session)
 
 **Project shape.** Basira's Phase 1 deliverable is a portfolio-with-research-engine. The cinematic homepage at root `index.html` stays as-is for now; new research pages live at `/research/<slug>/`. Live at https://a7zain.github.io/basira/.
 
-**First two research pieces, locked sequence B → A:**
+**Piece B (dust-honesty) — DATA + ANALYSIS COMPLETE; PIECE B PROSE IS THE NEXT ACTIVE WORK.** All six executed sub-questions have shipped findings notes; no remaining sub-question is on the piece B critical path. The umbrella question is fundamentally answered at this site at this loading regime.
 
-### Research piece B (dust-honesty) — IN PROGRESS, SQ3 conditional null landed
-
-Question: how does Sen2Cor's known underestimation of aerosols over deserts (Goyens 2024) translate into NDVI bias for change monitoring over Riyadh, and how often does it matter? Sources: Sentinel-2 L2A (subject), TROPOMI UVAI (validation, all three AOIs from GEE COPERNICUS/S5P/OFFL/L3_AER_AI), HLS NDVI (cross-check). Method: faithful port of Lolli 2024 DBB index, recalibrate for AP. 7 sub-questions (SQ1–SQ7) plus committed SQ8 (KAUST AERONET validation). Lives at `research/dust-honesty/`.
-
-**Sub-question status:**
-
-- **SQ1, SQ1B (original), SQ1D (faithful Lolli port + reference selection + visually-blind relabel + faithful compute + sensitivity)** — DONE, see prior session logs (2026-04-28, 2026-04-29) for detail.
-
-- **Scene manifest defense against GEE catalog drift** — DONE 2026-04-30 morning. `sq1d_scene_manifest.csv` locks system:index per (aoi, month_slot) for the 30-scene SQ1D set; renderers read manifest first, deterministic-pick is fallback only with WARNING log. Date-based fetch + `assert_manifest_match(system_index)` precondition is the locked pattern (single-image system:index clips drift at tile-mosaic boundaries).
-
-- **SQ1C (calibration-set expansion via UVAI-anchored positives, SZA-aware seasonal balance)** — DONE 2026-05-01 (researcher confirmation complete). Selection produced 15 candidates per AOI (45 total). S2 L2A matching at ±3d / ≤20% cloud landed 45/45 same-day matches. Render produced 43 real thumbnails + 2 KSP skip-panels caught by `array_has_data` guard. Manifest-locked at selection time via `sq1c_scene_manifest.csv`.
-
-  AI pre-labeling against the SQ1D Pass 5 rubric was completed 2026-04-30 evening (preliminary). **Researcher confirmation pass completed 2026-05-01:** all 43 rows confirmed, 12 overrides total (27.9% disagreement rate). Per-AOI: KSP 11/13 agree (84.6%), Qiddiya 10/15 agree (66.7%), Diriyah 10/15 agree (66.7%). Override direction is AOI-dependent — Qiddiya/KSP softened toward clean (construction-substrate AOIs where AI over-flagged haze), Diriyah hardened toward heavy_dust (3 added heavy_dust scenes; AI under-flagged real dust). 6 cold-protocol rows (bias_exposed during AI pre-labeling) labeled blind: 4/6 agreed with AI, 2/6 disagreed in directions consistent with the AOI-level pattern — cold-protocol audit did NOT detect bias-direction beyond the broader AOI pattern.
-
-- **SQ1D Part B re-run with bug-fixed reducer** — DONE 2026-04-30 evening. The `n_valid > n_total` count drift in the original primary CSV (root cause: bestEffort scale drift between separate `reduceRegion` calls) is now fixed. Single-image, single-reducer (sum + count), no bestEffort, identical native scale. `sq1d_dbb_faithful.csv` regenerated. Max abs delta vs old buggy CSV: 0.0165. Self-reference unit test still passes: Diriyah 2020-04-25 vs 2020-04-25 ref → DBB = 0 exactly.
-
-- **SQ1B re-re-run on confirmed labels (combined 73-scene calibration set)** — DONE 2026-05-01 evening. Stop rule unchanged (CI half-width < 0.020 AND AUC > 0.75). Cloud-labeled rows excluded.
-
-  | variant | n_pos prelim → conf | AUC prelim → conf | t_youden conf | CI_hw conf | ships prelim → conf |
-  |---|---:|---:|---:|---:|---|
-  | V1 (heavy_dust vs clean, all) | 2 → 5 | 0.924 → 0.626 | +0.034 | 0.109 | ✗ → ✗ |
-  | V2 (any-non-clean vs clean, all) | 23 → 19 | 0.711 → 0.578 | +0.034 | 0.027 | ✗ → ✗ |
-  | V3 (KSP-only any-non-clean vs clean) | 11 → 9 | 0.934 → 0.837 | +0.053 | 0.000 | ✓ → ✓ |
-  | V4 (KSP+Diriyah any-non-clean vs clean) | 17 → 16 | 0.924 → 0.853 | +0.034 | 0.012 | ✓ → ✓ |
-
-  **Headline (post-confirmation, non-preliminary): V3 (KSP-only) and V4 (KSP+Diriyah, the most defensible scope) both ship at AUC 0.837 / 0.853, CI 0.000 / 0.012. V4 is the lead calibration result. V1 collapses on n_pos=5 — this is a structural finding that the Lolli DBB index is not a univariate heavy_dust detector at Riyadh-region atmospheric loadings. V2 fails again — fourth independent line of evidence for Qiddiya bidirectional construction-substrate contamination. Every AUC dropped from preliminary to confirmed; AI pre-labeling produced cleaner class separation than reality, and that gap is itself a methodology finding for piece B.** Outputs: `sq1b_rerun_v2_confirmed_threshold_results.csv`, `sq1b_rerun_v2_confirmed_threshold_spec.md`, `sq1b_rerun_v2_confirmed_roc_curves.png`, `sq1b_rerun_v2_confirmed_bootstrap_thresholds.png`, `sq1bc_combined_calibration_confirmed.csv`. Findings note at `research/dust-honesty/docs/sq1b_confirmed_findings.md`.
-
-- **SQ2 (apply calibrated DBB flag to operational 228-scene set)** — DONE 2026-05-01 (late evening). V4 (+0.034) and V3 KSP-only (+0.053) applied to 228 (aoi, year, month) operational scenes spanning 76 months × 3 AOIs (2020-01..2026-04). Manifest-locked at first run via `sq2_scene_manifest.csv`; calibration-overlap rows inherit locked system_indexes. Self-reference unit test passed at run start (DBB = 0.00e+00 exactly). 226/228 scenes usable (99.1%); 2 KSP scenes (2020-11, 2026-04) returned `no_usable_scene=True` due to SCL valid mask returning 0 AOI-resident pixels (granule-edge effect at the bbox of those orbit tracks). Manifest distribution: 30 cal_lock_sq1d + 27 cal_lock_sq1c + 171 gee_pick = 228.
-
-  Headline V4 fire rates per AOI:
-
-  | AOI | V4 fires / usable | rate | DBB mean | DBB range |
-  |---|---:|---:|---:|---|
-  | Diriyah Gate | 9 / 76 | **11.8%** | -0.052 | [-0.28, +0.07] |
-  | King Salman Park | 24 / 74 | **32.4%** | +0.017 | [-0.23, +0.22] |
-  | Qiddiya core | 57 / 76 | **75.0%** | +0.091 | [-0.16, +0.20] |
-
-  V3 KSP-only at +0.053: 22/74 = 29.7%.
-
-  **Headline reads:** Diriyah 11.8% is the cleanest operational fire rate — surface-stable AOI, all 9 fires concentrated Apr–Jul (0/0/0/2/2/3/2/0/0/0/0/0 by calendar month) matches independent shamal climatology (peak Mar–Aug, Apr–Jun maximum). KSP 32.4% sits at calibration mean. Qiddiya 75% is the **fifth** independent line of evidence for bidirectional construction-substrate contamination (SQ1D Pass 5 + Part B' sensitivity ρ=0.92 + V2 prelim AUC drop + V2 confirmed AUC drop + SQ2 baseline DBB +0.091 well above threshold). The DBB index reads accumulating construction substrate as scene-wide haze across B11/B12 against the fixed 2024-01-20 reference; the 75% rate quantifies that drift directly. Internal cross-validation: SQ1C cold-protocol blind labeling and SQ2 continuous DBB independently identified the 2022-05-10 Diriyah peak event without sharing decision-time inputs.
-
-  Cloud-affected fraction: KSP 0/76, Qiddiya 0/76, Diriyah 1/76 (the 2026-04-14 scene at cloud_pct_aoi=80.56%, retained with `cloud_flag_present=True` rather than dropped). Operational availability bound for SQ3+: 226/228 = 99.1%.
-
-  Cross-check vs `sq1bc_combined_calibration_confirmed.csv`: 57 unique (aoi, year, month) overlap slots, 55 pass / 2 fail (within tolerance 1e-4). Failures: KSP 2021-02 delta +0.0165, KSP 2026-02 delta -0.0039. Both stay V4-negative on each side — flag classifications stable; pixel values shifted ≤1.6%. Cause: GEE processing-baseline drift on the locked `system:index` (manifest locks scene identity, not pixel content). Listed in `sq2_cross_check_failures.csv` and surfaced in §5 of `sq2_findings.md` as the third instance of GEE drift in this project.
-
-  Outputs: `sq2_apply_flag.py`, `sq2_plot_timeseries.py`, `sq2_summary_stats.py` (scripts); `sq2_scene_manifest.csv`, `sq2_dbb_operational.csv`, `sq2_cross_check_failures.csv`, `sq2_summary_stats.md`, `sq2_dbb_timeseries_<aoi>.png` × 3, `sq2_dbb_timeseries_combined.png` (data); `research/dust-honesty/docs/sq2_findings.md` (1–2 page narrative; §2 framing tightened + §6 cross-validation sentence added in `a6d4a12`). Commits: `ab00509`, `0dca7e4`, `65c23ea`, `a6d4a12`.
-
-- **SQ3 (NDVI bias on V4-flagged vs unflagged scenes per AOI)** — DONE 2026-05-02. NDVI computed via fresh GEE pass on locked `sq2_scene_manifest.csv` (226/228 usable, same denominator as SQ2). Paired temporal-neighbor differencing, ±60-day window, V4-uniform headline, bootstrap 1000-resample on pairs. Stop rule fired mid-run at S1 (Qiddiya retention 28.1% < 30%), surfaced for scope decision; researcher accepted 28.1% with explicit caveat — the structural consequence of Qiddiya's 75% V4 fire rate, not a noise problem. Resumed cleanly to S2 + S3.
-
-  | AOI | n_fired | n_paired | retention | mean Δ NDVI | 95% CI | halfwidth | signal_class |
-  |---|---:|---:|---:|---:|---|---:|---|
-  | King Salman Park | 24 | 14 | 58.3% | +0.0016 | [−0.0056, +0.0097] | 0.0076 | tight_null |
-  | Qiddiya core | 57 | 16 | 28.1% | −0.0024 | [−0.0075, +0.0036] | 0.0055 | tight_null |
-  | Diriyah Gate | 9 | 8 | 88.9% | −0.0002 | [−0.0220, +0.0224] | 0.0222 | wide_inconclusive |
-
-  **Headline (conditional null, scope-bounded):** the pre-registered Goyens-consistent prediction (negative Δ NDVI on flagged scenes) is **not confirmed** at these AOIs under this design. KSP and Qiddiya land in tight nulls (CI halfwidths 0.0076 and 0.0055, mean |Δ| < 0.003) — two orders of magnitude below typical NDVI change-detection thresholds (~0.05+). Diriyah is wide-inconclusive on n alone (n_paired=8, halfwidth 0.022) — the cleanest atmospheric AOI has the smallest pair count, which is the SQ8 AERONET hook. The honest claim is conditional: *"On Sen2Cor L2A NDVI at Riyadh-region moderate atmospheric loadings, V4-flagged scenes do not exhibit a measurable bias relative to near-temporal unflagged neighbors at change-detection magnitude."* Two candidate explanations named in the findings note (TOA vs L2A loading regime; NDVI-as-ratio cancellation) — phrased as candidates, not confirmed mechanisms.
-
-  SQ2-SQ3 chain is internally consistent: V4 detects atmospheric optical thickness (SQ2's Diriyah shamal alignment), but that thickness does not propagate to NDVI bias at change-detection magnitude (SQ3 null). Both findings are real; they describe different layers of the imaging chain — and that two-layer story is itself a piece B substance, not a defeat of the prior.
-
-  Outputs: `sq3_compute_ndvi.py`, `sq3_pair_and_diff.py`, `sq3_plot_deltas.py`, `sq3_summary.py` (scripts under `research/dust-honesty/scripts/`); `sq3_ndvi_per_scene.csv` (228 rows, 226 with NDVI), `sq3_ndvi_bias.csv` (38 pair rows), `sq3_pairing_audit.csv` (3 AOI rows); `figures/sq3/` (per-AOI Δ histograms × 3 + forest plot + retention chart); `research/dust-honesty/docs/sq3_findings.md`. Commits: `c92b757`, `0e2e783`, `4e1ba7a`, `11faffe`.
-
-- **SQ4–SQ7** — UNBLOCKED. SQ4 = HLS NDVI cross-check, positioned to test whether the SQ3 null is Sen2Cor-specific (different atmospheric correction chain — LaSRC vs Sen2Cor) or surface-driven. If LaSRC also nulls, the conditional null tightens into a cross-correction finding; if LaSRC shows the predicted bias, we've localized it to Sen2Cor. SQ4 is the next strategic-chat scoping target. SQ5–SQ7 ordering decided when SQ4 lands.
-
-- **SQ8 (KAUST AERONET validation)** — committed for piece B before publishing. Now carries an extra hook from SQ3: Diriyah's wide_inconclusive (n=8) is the obvious target for ground-truth tightening. Defer until SQ4–SQ7 ship.
-
-### Research piece A (churn, hardened) — QUEUED
-
-Inherits B's dust-flag pipeline. Re-runs Phase 4 churn analysis with dust correction applied. Approximately 5 sessions after B.
-
-### Cut from scope
-
-- Vision 2030 progress audit — political risk vs target sector, deferred.
-- MODIS as primary source — being decommissioned (Terra Dec 2025, Aqua Aug 2026). Replaced by VIIRS + TROPOMI.
-- Bird migration / cross-domain — wrong fit for my positioning.
+**Piece B headline (locked across SQ2/SQ3/SQ4/SQ4B/SQ5/SQ8):** Across two correction chains (Sen2Cor + LaSRC), two NIR bands (B8 broad + B8A narrow), paired and per-scene regression designs, and reanalysis-AOD up to Q4 dust loadings at Riyadh, AOD-dependent NDVI bias does not exist at operationally meaningful magnitude. The largest detectable AOD–NDVI relationship at this site is −0.002 NDVI per IQR of AOD, with 95% CI lower bound −0.003 — sub-operational across the loading regime spanned by the SQ2 manifest. NDVI-as-ratio cancellation between Red and NIR perturbations is the surviving mechanism after correction-chain-specific absorption (SQ4), NIR-band-shift artifacts (SQ4B), and high-AOD threshold breakdown (SQ8) are all ruled out at operational magnitude.
 
 ---
 
-## Methodology footnote (binding for B writeups)
+## Sub-question status
 
-This must appear in any SQ1B / SQ1D / B-final writeup. Two paragraphs — keep both.
+### Piece B (dust-honesty) — `research/dust-honesty/`
 
-> "The 30-scene SQ1D calibration set was originally pre-labeled by an AI assistant (Claude) against a written rubric for atmospheric clarity (clean / light_haze / heavy_dust / cloud / mixed) and reviewed by the researcher with focus on low-confidence calls. Following the SQ1D Part A.5 finding that visual labels at construction-active AOIs were contaminated by construction substrate visually mimicking haze, the 24 scenes from construction-active AOIs (Qiddiya, King Salman Park) were re-rendered with date-only captions and re-labeled visually-blind (no UVAI, no prior label visible to the labeler) using the same rubric, augmented with an explicit construction-substrate exclusion rule: 'Construction substrate (bare beige/tan ground that is sharp-edged and stable across multiple dates) is a SURFACE feature, not atmospheric. Atmospheric features must be scene-wide veiling, not localized.' The researcher confirmed all 24 AI pre-labels without override. UVAI cross-check is a separate audit step, never an input to the label."
+Question: how does Sen2Cor's known underestimation of aerosols over deserts (Goyens 2024) translate into NDVI bias for change monitoring over Riyadh, and how often does it matter? Sources: Sentinel-2 L2A (subject), TROPOMI UVAI (validation, all three AOIs from GEE COPERNICUS/S5P/OFFL/L3_AER_AI), HLS NDVI (cross-check at SQ4/SQ4B), MERRA-2 DUEXTTAU + CAMS NRT (high-AOD regression at SQ8). Method: faithful port of Lolli 2024 DBB index, recalibrated for AP.
 
-> "The SQ1C 43-scene calibration-set expansion was AI-pre-labeled by chat-Claude against the same rubric and construction-substrate exclusion rule as SQ1D Pass 5. Researcher confirmation completed 2026-05-01: 12 of 43 AI pre-labels were overridden (27.9% disagreement rate). Override direction was AOI-dependent — Qiddiya and KSP softened toward clean (AI over-flagged haze at construction-active AOIs); Diriyah hardened toward heavy_dust (AI under-flagged real dust at the desert-edge AOI). 6 of the 43 SQ1C scenes had partial UVAI value exposure to chat-Claude during pre-labeling (UVAI values for the top-3 candidates per AOI were surfaced in an intermediate session report before pre-labeling completed). These rows are flagged with `bias_exposed_during_ai_labeling=True` and were re-labeled by the researcher under a cold protocol with neither AI label nor UVAI visible. 4 of 6 cold-confirmed labels agreed with the AI pre-label; 2 disagreed in directions consistent with the AOI-level pattern. The cold-protocol audit did not detect a bias-direction beyond the broader AOI pattern. SQ1B re-re-run results derived from confirmed labels are non-preliminary; the 27.9% disagreement rate produced systematic AUC reductions vs preliminary across all four binary task variants (V1 0.924→0.626, V2 0.711→0.578, V3 0.934→0.837, V4 0.924→0.853), reflecting that AI pre-labeling produced cleaner class separation than reality."
+- **SQ1, SQ1B (original), SQ1C, SQ1D (faithful Lolli port + reference selection + visually-blind relabel + faithful compute + sensitivity)** — DONE 2026-04-28 to 2026-05-01. Confirmed labels: 73-scene calibration set, 12 researcher overrides (27.9% disagreement vs AI pre-labels), AOI-dependent bias direction (Qiddiya/KSP softened toward clean, Diriyah hardened toward heavy_dust). V4 (KSP+Diriyah any-non-clean vs clean) ships at AUC 0.853, CI half-width 0.012, threshold +0.034. Lead calibration result.
 
----
+- **SQ2 (apply calibrated DBB flag to operational 228-scene set)** — DONE 2026-05-01. V4 fire rates: Diriyah 11.8% (concentrated Apr–Jul, matches independent shamal climatology), KSP 32.4%, Qiddiya 75.0%. The 75% rate at Qiddiya is the **fifth** independent line of evidence for bidirectional construction-substrate contamination at that AOI.
 
-## Flags before next session
+- **SQ3 (NDVI bias on V4-flagged vs unflagged scenes)** — DONE 2026-05-02. Paired temporal-neighbor design, ±60-day window. KSP halfwidth 0.0076 tight_null, Qiddiya halfwidth 0.0055 tight_null (28.1% retention accepted with caveat — structural consequence of the 75% V4 fire rate, not a noise problem), Diriyah wide_inconclusive at n=8. Conditional null at moderate Riyadh-region atmospheric loadings.
 
-- **SQ3 ships as a conditional null, not a Goyens-confirmation.** Lead headline: *"V4-flagged scenes do not exhibit measurable Sen2Cor L2A NDVI bias relative to near-temporal unflagged neighbors at moderate Riyadh-region atmospheric loadings, on the paired ±60-day design."* This is not "Sen2Cor is fine" and not "Goyens overstated." The Goyens result describes a TOA / extreme-AOD regime; L2A's Sen2Cor correction may absorb the bias at moderate loadings even if it fails at high loadings. NDVI-as-ratio (Red and NIR both perturbed) is the second candidate explanation. Both phrased as candidates in the findings note, not confirmed mechanisms.
+- **SQ4 (HLS S30 NDVI cross-check, B8A LaSRC)** — DONE 2026-05-02. Reused SQ3's 38 pairs, computed Δ_HLS − Δ_Sen2Cor per pair. KSP halfwidth 0.0071 tight_null, Qiddiya halfwidth 0.0047 tight_null, Diriyah wide_inconclusive at n=8. The SQ3 conditional null is **not Sen2Cor-specific.** Coverage 100%/93.8%/100%; one Qiddiya pair lost to a fully-Fmask-rejected fully-clouded scene (honest drop). In-build correction surfaced: `coll.first()` was losing 39/65 tuples to MGRS sliver-coverage tiles; switched to `coll.mosaic()` and re-ran.
 
-- **SQ2-SQ3 internal consistency is a piece B substance finding.** Two layers of the imaging chain, both real: V4 detects atmospheric optical thickness (SQ2 Diriyah shamal alignment); that thickness does not propagate to NDVI bias at change-detection magnitude (SQ3 null). Frame as a two-layer answer, not a contradiction.
+- **SQ4B Arm A (B8 NIR sensitivity on HLS S30 LaSRC)** — DONE 2026-05-02. Same SQ3 pairs, B8 broad NIR (~833nm) instead of B8A narrow (~865nm). KSP halfwidth 0.0028 tight_null, Qiddiya halfwidth 0.0022 tight_null, Diriyah wide_inconclusive at n=8. Halfwidths 3–4× tighter than SQ4 — narrow-to-broad NIR swap on the same chain is a smaller perturbation than chain-change at fixed band. Spearman B8-vs-B8A = 0.868 across 64 shared (aoi, date) rows with ~0.02–0.03 NDVI absolute offset (narrow consistently > broad), which the per-pair Δ design absorbs cleanly. The diff_of_diffs design's insensitivity to absolute-level band offsets is itself a methodology robustness story.
 
-- **Diriyah n=8 / halfwidth 0.022 is the SQ8 hook.** The cleanest atmospheric AOI has the smallest pair count. Wider window costs surface-state fidelity; longer baseline costs construction-stability at the other AOIs. AERONET ground truth is the right path to tighten Diriyah specifically — and SQ8 was already committed before this finding.
+- **SQ4B Arm B (HLS L30 cross-correction-chain at high-AOD)** — DEFERRED to SQ4C. Pre-registered 50% L30 coverage floor failed in two of three AOIs (Qiddiya 33.3%, Diriyah 42.9%; KSP 54.2%; total 43.1%). Root cause: structural cadence mismatch (S2A+B ~5d revisit vs L8+L9 ~8d, prior of L30 within ±1d of any S2 date ~37.5%). Halt-and-defer per pre-registration discipline. The L30 coverage probe ships as recon receipt at commit `71327ec`.
 
-- **Qiddiya 28.1% retention is itself a finding, not a flaw.** The unfired-neighbor pool is small and clustered because V4 fires on 75% of Qiddiya scenes. That's the SQ2 construction-substrate finding propagating to SQ3 by design — not a sampling artifact. Reported in §5 of the findings note as a structural consequence.
+- **SQ5 (high-AOD subset analysis via TROPOMI UVAI Q4-vs-Q1 paired design)** — HALTED-WITH-RECEIPT 2026-05-02. Pre-registered 30% retention floor failed in all three AOIs (KSP 0.0%, Qiddiya 11.1%, Diriyah 11.1%). Root cause: Riyadh's UVAI seasonality clusters Q1 (low) in winter and Q4 (high) in spring/summer; the two quartiles do not temporally interleave at ±60d. Paired temporal-neighbor designs are mathematically incompatible with this site's UVAI seasonality. Goyens-regime test inherited to SQ8 with regression design. **Two findings ride out of SQ5 despite the halt:** (1) seasonal-stratification methodology finding — paired designs cannot probe high-AOD vs low-AOD contrasts at moderate-aridity Saudi sites; (2) UVAI×V4 contingency (Diriyah Q4∧¬V4 = 12 scenes is the cleanest Goyens-regime cell; Qiddiya Q4∧V4 = 16/18 scenes is a **sixth** independent line of evidence for the construction-substrate finding; KSP Q4 splits ~evenly between V4-fired and not).
 
-- **Diriyah 11.8% remains the lead operational fire rate for piece B.** Surface-stable AOI; all 9 fires concentrated Apr–Jul matching shamal climatology; peak event 2022-05-10 cross-validates with SQ1C cold-protocol heavy_dust labels for the same date.
+- **SQ8 (Goyens-regime per-scene regression at Riyadh, reanalysis-AOD primary)** — DONE 2026-05-02. AERONET R1 halt confirmed no operational station within 500km of Riyadh during the SQ2 window (Solar_Village dead 2015-10-12, ~30km in-AOI; Bahrain dead 2007-03-06, ~424km; UAE cluster ~750–800km outside the 500km outer ring). Retargeted to MERRA-2 DUEXTTAU primary (dust-specific extinction, mechanistic match to TROPOMI UVAI) with CAMS NRT total AOD as cross-check. Per-scene NDVI residual (relative to per-AOI monthly climatology) regressed on per-scene AOD, AOI fixed effects, HC3 robust SEs.
 
-- **Qiddiya 75% is a methodology finding, NOT a climatology finding.** DBB mean +0.091 (well above the +0.034 threshold) with fires distributed Feb–Nov and no shamal concentration. Fifth independent line of evidence for bidirectional construction-substrate contamination. Piece B prose must report Qiddiya's column with the methodology footnote, not the climatology framing.
+  **Pre-registered classifier and magnitude criterion BOTH fired on this result** — that disagreement is itself surfaced as a methodology observation. Classifier output: `goyens_consistent_bias_detected` (CI excludes zero, β<0, p=0.024, replicated by CAMS at p=0.017 with sign agreement and CI overlap). Magnitude criterion: `tight_null` (β × IQR = −0.0018 NDVI, 2.8× below the pre-registered 0.005 NDVI operational-significance threshold and ~25× below typical change-detection thresholds). Per-AOI regressions all individually null (p = 0.138 / 0.169 / 0.208 for KSP / Qiddiya / Diriyah). Diriyah Q4∧¬V4 anchor cell prediction CI [−0.0046, +0.0011] straddles zero. R² = 0.028 (primary), 0.013 (cross-check) — AOD explains 1–3% of residual variance.
 
-- **KSP 32.4% is the secondary operational number.** DBB mean +0.017 sits at calibration center; V3 KSP-only at the tighter +0.053 threshold drops to 29.7% — the +0.019 threshold tightening costs ~2.7 percentage points. One sentence in piece B's operational table.
+  **Framing decision (Option 4):** read as **power-confirmation of the SQ3/SQ4/SQ4B operational null, not as Goyens transfer.** The regression had sensitivity to detect a 0.002 NDVI effect, and that is what it detected. The Bayesian inverse holds: the test demonstrably has the power to detect operationally relevant magnitudes if they were present at high loadings, and they are not. Operational-magnitude criterion is the load-bearing one for the umbrella question.
 
-- **GEE baseline-reprocessing drift on locked system:index** is now mechanism #3 of GEE drift surfaced in this project (catalog backfill #1, bestEffort reducer counts #2, baseline-reprocessing #3). Two KSP cross-check rows shifted ≤1.6% in pixel value while keeping flag classifications stable. The robustness story (V4 absorbs baseline drift without flipping classifications) is a defensibility paragraph for piece B's discussion section.
+### Deferred (post-piece-B, no piece B critical path)
 
-- **V4 is the lead calibration scope, AUC 0.853, CI 0.012, threshold +0.034.** V3's CI=0.000 still needs the bootstrap-collapse disclosure when referenced.
+- **SQ4C (native L30 pair construction)** — Different pair design than SQ4B Arm B's failed reuse: Landsat pairs built on Landsat overpass dates, Sen2Cor matched via ±k-day window. Two open scoping questions: (a) value of k; (b) V4-on-Landsat vs V4-on-Sentinel-2 as trigger. SQ8's operational null obviates the urgency — adding a third correction chain doesn't change the headline.
 
-- **V1 collapse is a piece-B finding, not a setback.** With n_pos=5, AUC dropped to 0.626 — the Lolli DBB index does not univariately discriminate visual heavy_dust from visual clean at Riyadh-region atmospheric loadings.
+- **SQ8B (KAUST Thuwal AERONET as Saudi-coastal generalization test)** — Different scientific question from SQ8 (generalization across surface and coastal-vs-inland regime). KAUST is ~820km from Riyadh, coastal not bright-desert. The CLAUDE.md "hard commitment" framing pre-dating SQ8 is reconciled here: SQ8-as-shipped delivers the Riyadh Goyens question; SQ8B is the coastal generalization question that the AERONET commitment now points at. Defer until piece B prose surfaces a need.
 
-- **AOI-dependent AI bias direction is a real finding.** Qiddiya/KSP soften (AI over-flags at construction AOIs), Diriyah hardens (AI under-flags at desert-edge AOI). Methodology section material — texture that wouldn't surface from a smaller calibration set.
+- **Original-SQ5 (seasonal modulation)** and **SQ6 (per-AOI continuous bias regression)** — SQ6 partially answered by SQ8's AOI fixed effects (per-AOI betas all individually null). Both elaborate the existing finding chain; defer until piece B prose surfaces a need.
 
-- **Qiddiya 2022-04-10 is publishable on its own.** Confirmed clean despite UVAI +2.07, surviving cold-protocol blind labeling. Direct demonstration that visual atmospheric clarity and TROPOMI UVAI can decouple over bright desert surfaces (Goyens 2024 underestimation pattern). Strong candidate for piece B introduction.
+- **§7 SZA dependency formal investigation** — open question for piece B discussion section. Decision deferred. Two paths if elevated: (a) regress Diriyah residuals on `1/cos(SZA_test) − 1/cos(SZA_ref)` and report slope; (b) port Lolli to L2A SR to bypass TOA-path. Do not let this expand current scope.
 
-- **SQ4 is the next strategic-chat scoping target.** HLS NDVI cross-check, positioned to test whether SQ3's null is Sen2Cor-specific (LaSRC vs Sen2Cor) or surface-driven. If LaSRC also nulls, the SQ3 finding tightens into "the predicted bias is below detection across both major correction chains." If LaSRC shows the bias, the bias is localizable to Sen2Cor. Either outcome is publishable.
+- **Naming rationalization** — `sq1d_*` / `sq1c_*` / `sq1b_rerun_v2_*` / `sq1b_rerun_v2_confirmed_*` / `sq2_*` / `sq3_*` / `sq4_*` / `sq4b_*` / `sq5_*` / `sq8_*` are process-of-discovery names; end-state taxonomy needed (suggested grouping: calibration-sets / DBB-compute / threshold-fits / operational / NDVI-bias / cross-correction / high-AOD-regression). Owed before piece B prose; can ride along inside any execution session, not a gate on piece B prose drafting.
 
-- **Naming rationalization owed before piece B prose.** `sq1d_*` / `sq1c_*` / `sq1b_rerun_v2_*` / `sq1b_rerun_v2_confirmed_*` / `sq2_*` / `sq3_*` are process-of-discovery names. End-state taxonomy needed before a fresh reader sees the data dir; suggested grouping: calibration-sets / DBB-compute / threshold-fits / operational / NDVI-bias. Cosmetic cleanup; can ride along inside any execution session.
+- **Operational-magnitude ladder figure rename** — currently filename `sq8_loading_regime_ladder.png` but the figure is a magnitude-vs-threshold check across measurement designs (SQ3/SQ4/SQ4B/SQ8 with SQ5 as footnote annotation). The §6 prose chain (SQ2–SQ8) is a separate artifact. Rename to `sq8_operational_magnitude_ladder.png` when the next session touches piece B prose. Three minutes of work.
 
-- **CDSE OData spike still pending** for SQ8 KAUST AERONET (qa_value-aware masking, which the L3 OFFL product strips). No longer on the SQ3 critical path.
+### Open piece B prose decision (not a methodology decision)
 
-- **§7 SZA dependency formal investigation** — still open as discussion-section question. Two paths if elevated: (a) regress Diriyah residuals on `1/cos(SZA_test) − 1/cos(SZA_ref)` and report slope; (b) port Lolli to L2A SR to bypass TOA-path. Decision deferred; do not let this expand current scope.
-
-- **KAUST AERONET validation chapter (committed for piece B).** KAUST Thuwal AERONET station added as SQ8 — external validation chapter using AERONET coarse-mode AOD as gold-standard. Solar Village (Riyadh) is dead since January 2013, so no AERONET ground truth exists for the exact Riyadh atmospheric column during the study window. KAUST surface differs from Riyadh (coastal, not bright desert), so this is also a generalization test. Hard commitment, not optional. Defer until SQ4–SQ7 ship.
-
----
-
-## What NOT to do
-
-- Do not re-litigate the TPM-track vs. EO-specialist framing. Decision made 2026-04-20.
-- Do not expand Phase 1 scope. The three projects are the scope.
-- Do not suggest paid imagery (Planet, Maxar) for Phase 1. Sentinel is the constraint, deliberately.
-- Do not treat the longer-arc company vision as the active objective. North star, not map.
-- Do not re-litigate the cinematic NYT-feature direction. Locked 2026-04-21.
-- Do not re-litigate the portfolio-with-research-engine pivot. Locked 2026-04-27.
-- Do not auto-label calibration scenes from UVAI as a shortcut. UVAI selects which months to pull; visual labels remain the calibration target. Conflating the two collapses SQ3 validation into circularity.
-- Do not re-render test thumbnails with UVAI in caption. Visually-blind protocol established 2026-04-29. UVAI is post-labeling audit, never input.
-- Do not surface candidate UVAI values in chat output before AI pre-labeling completes. Methodology contamination; locked 2026-04-30.
-- **Do not reference preliminary V3/V4 numbers (AUC 0.93 / 0.92) externally.** Confirmed numbers are AUC 0.837 / 0.853. Use those.
-- **Do not frame V1 collapse or V2 failure as setbacks.** They are structural findings.
-- **Do not apply V3/V4 thresholds to AOIs not in the calibration set (KSP, KSP+Diriyah) without re-validating.** Qiddiya inclusion in SQ2 is reported with the construction-substrate methodology footnote, not as a clean dust climatology.
-- **Do not frame the Qiddiya 75% rate as climatology.** It is a methodology limit on applying a fixed-reference DBB to a surface-evolving AOI.
-- **Do not frame SQ3's conditional null as "Sen2Cor is fine" or "Goyens overstated."** It is a *scope-conditional* result: Sen2Cor L2A NDVI on V4-flagged scenes vs near-temporal unflagged neighbors does not exhibit the predicted bias at moderate Riyadh-region atmospheric loadings on the paired ±60-day design. The Goyens result describes a TOA / extreme-AOD regime; transfer is not assumed in either direction. Two candidate explanations (loading regime, NDVI-ratio cancellation) are named in the findings note as candidates only.
-- **Do not switch a sub-question's design when its stop rule fires.** The "what if we did continuous regression instead" temptation is the move the stop rule is designed to catch. New questions become new sub-questions (SQ3B, SQ4, etc.); pre-registered designs ship or halt on their own terms.
-- **Do not widen the SQ3 ±60-day pairing window post-hoc.** Surface-state fidelity is the reason for the window; trading it for retention reads as p-hacking. Diriyah's n-problem is an SQ8 hook, not a window-tuning problem.
-
----
-
-## Active credentials and infrastructure
-
-- Copernicus Dataspace: ahmadxgpx@gmail.com
-- Sentinel Hub OAuth client: active (30K PU/month free tier; secondary post-GEE pivot)
-- GEE project: `basira-494617` (Community Tier, 150 EECU/mo) — load-bearing for SQ1D, SQ1C, SQ2, SQ3, all UVAI all-months pipelines
-- GitHub: `a7zain/basira` (repo renamed from `sar-change-detection`)
-- Local path: `/Users/a7zain/basira`
-- Conda env: `sarsat`
-- Deployed dashboard: GitHub Pages at https://a7zain.github.io/basira/
+- **Qiddiya construction-substrate finding — own subsection vs threaded through SQ2 narrative?** The convergence is now **six independent lines** of evidence: (1) SQ1D Pass 5 visually-blind relabel direction; (2) SQ1D Part B' sensitivity ρ=0.92; (3) V2 prelim AUC drop; (4) V2 confirmed AUC drop; (5) SQ2 baseline DBB +0.091 well above threshold (75% V4 fire rate); (6) SQ5 R5 contingency Q4∧V4 = 16/18 = 89%. Plus SQ8's AOI fixed effects validating the AOI-baseline-difference reading at the regression level. Six-fold convergence is structurally novel for a satellite-only methodology piece; whether it warrants its own subsection or stays threaded through SQ2 depends on the piece B narrative arc. Decide when prose drafting is in flight.
 
 ---
 
 ## What works right now
 
-- **SAR pipeline** (`src/preprocess_v2.py`, `src/change_detect_v2.py`): Sentinel-1 download → GCP correction → UTM → Lee filter → log-ratio change detection → K-means (k=5)
-- **Sentinel-2 monthly time series**: 76 scenes Jan 2020 – Apr 2026, Riyadh AOI, 20m, 4 bands (B02/B03/B04/B08), UTM 38N
-- **NDVI analytics**: per-pixel time series, greening map, ROI time series, anomaly detection, hotspot ranking, pixel-level classification
-- **Web dashboard**: Leaflet.js, deployed GitHub Pages, shows greening map, ROI polygons, before/after slider, hotspots, per-cell charts
-- **Auto-generated PDF report**: `src/generate_report_pdf.py`
-- **Phase 1 pipeline**: KML-based AOI registry (with tightened KSP bbox), polygon-clipped Sentinel-2 downloader, RGB timelapse generator. Scripts: `src/phase1_aois.py`, `src/phase1_download.py`, `src/phase1_quicklook.py`, `src/phase1_timelapse.py`
-- **Phase 1 data**: 76 months × 3 AOIs, 10 m, 6 bands (B02/03/04/08/11/12), ~387 MB total
-- **Phase 1 timelapses**: RGB GIFs per AOI, fixed cross-stack contrast, 4 fps, polygon-outlined
+- **Phase 1 data**: 76 months × 3 AOIs, 10 m, 6 bands (B02/03/04/08/11/12), ~387 MB total.
+- **Phase 1 timelapses**: RGB GIFs per AOI, fixed cross-stack contrast, 4 fps, polygon-outlined.
 - **Basira cinematic site** (`index.html`): 8-chapter skeleton, per-GIF blurred Sentinel-2 context via CSS mask-image, IntersectionObserver autoplay + scale/fade. Served locally at port 8888.
 - **Wide-context backdrops** (`assets/backdrops/`) and **polygon masks** (`assets/masks/`).
-- **Aerosol infrastructure (corrected provenance):** TROPOMI UVAI all three AOIs from GEE `COPERNICUS/S5P/OFFL/L3_AER_AI` band `absorbing_aerosol_index` (KSP 320 rows, Qiddiya 302 rows, Diriyah 300 rows). VIIRS Deep Blue AOD via GEE (project `basira-494617`).
-- **SQ1D faithful-Lolli pipeline (DONE — both arms, bug-fixed reducer):**
-  - Per-AOI 2/98 stretch with no-data filter, persisted to `sq1d_<aoi>_stretch.json`.
-  - Date-only caption rendering for visually-blind labeling.
-  - AI pre-label + researcher-review workflow with explicit construction-substrate rubric.
-  - Canonical references config at `sq1d_references.json`.
-  - 24 visually-blind relabels merged into `sq1d_ksp_relabel.csv` and `sq1d_qiddiya_relabel.csv`.
-  - Faithful Lolli formula spec at `sq1d_lolli_formula.md`.
-  - Faithful Lolli compute at `sq1d_lolli_faithful.py` (single-image single-reducer count handling).
-  - 30-scene primary DBB at `sq1d_dbb_faithful.csv` (regenerated 2026-04-30 with bug-fixed reducer).
-  - 24-scene sensitivity-alternate DBB at `sq1d_dbb_faithful_alt.csv`. Primary-vs-alternate Spearman ρ = 0.97 KSP / 0.92 Qiddiya.
-- **Scene manifest pattern (DONE 2026-04-30):**
-  - `sq1d_scene_manifest.csv` (30 rows), `sq1c_scene_manifest.csv` (43 rows), `sq2_scene_manifest.csv` (228 rows).
-  - Test renderers read manifest first, deterministic-pick fallback with WARNING log.
-  - Date-based fetch + `assert_manifest_match(system_index)` is the safe pattern.
-- **SQ1C pipeline (DONE 2026-05-01 — confirmed labels):**
-  - GEE TROPOMI UVAI source-check vs existing CSVs (n=30, ρ=1.0000) at `sq1d_uvai_source_check.py`.
-  - Diriyah UVAI all-months search at `sq1d_diriyah_uvai_all_gee.py`.
-  - Per-AOI negative-class month distribution + month-bin SZA-aware seasonal balance constraint.
-  - Top-15 candidate selection per AOI at `sq1c_select_candidates.py`.
-  - S2 L2A scene matching at `sq1c_match_s2_scenes.py`.
-  - Manifest-locked candidate render at `sq1c_render_candidates.py`.
-  - Per-AOI test montages at `sq1c_<aoi>_test_montage.png`.
-  - Relabel CSVs at `sq1c_<aoi>_relabel.csv` with `final_label` (AI), `confirmed_label` (researcher), `review_protocol` (standard/cold), `reviewer_notes`, `confirmed_at`.
-  - Confirmation tooling: `sq1c_label_review.py` (per-AOI walker), `sq1c_label_comparison.py` (audit + UVAI cross-check), `sq1b_rerun_v2_confirmed.py` (confirmed-label re-re-run).
-  - Confirmation audit at `sq1c_confirmation_audit.csv` and `sq1c_confirmation_audit_report.txt`.
-- **SQ1B pipelines:**
-  - Original re-run on 30-scene primary: `sq1b_rerun.py`. Stop rule v1 (commit `3d3b511`).
-  - Re-re-run on combined 73-scene preliminary: `sq1b_rerun_v2.py`. Outputs at `sq1b_rerun_v2_*`.
-  - Re-re-run on combined 73-scene confirmed: `sq1b_rerun_v2_confirmed.py`. Outputs at `sq1b_rerun_v2_confirmed_*`. Combined dataset at `sq1bc_combined_calibration_confirmed.csv`.
-  - Confirmed-vs-preliminary comparison table emitted in `sq1b_rerun_v2_confirmed_threshold_spec.md`.
-- **SQ2 operational pipeline (DONE 2026-05-01 — late evening):**
-  - V4 (+0.034) and V3 KSP-only (+0.053) thresholds applied to 228 (aoi, year, month) operational scenes via `sq2_apply_flag.py`.
-  - Manifest-locked scene selection at `sq2_scene_manifest.csv` (30 cal_lock_sq1d + 27 cal_lock_sq1c + 171 gee_pick).
-  - Self-reference unit test at run start (DBB = 0 exactly, asserted against ref scene).
-  - AOI-local cloud handling via QA60 bits 10+11; `cloud_flag_present` column at cloud_pct_aoi > 30%.
-  - Cross-check vs `sq1bc_combined_calibration_confirmed.csv` at 1e-4 tolerance; failures logged to `sq2_cross_check_failures.csv`.
-  - Per-AOI + combined timeseries plots at `sq2_plot_timeseries.py`.
-  - Summary stats + temporal pattern + monthly-distribution histogram at `sq2_summary_stats.py`.
-  - Findings note (1–2 page narrative) at `research/dust-honesty/docs/sq2_findings.md`. §2 framing tightened + §6 cross-validation sentence added in commit `a6d4a12`.
-- **SQ3 NDVI-bias pipeline (DONE 2026-05-02 — conditional null):**
-  - Fresh GEE NDVI compute on locked SQ2 manifest at `sq3_compute_ndvi.py`. Single-image (B8−B4)/(B8+B4) at AOI mean, SCL valid mask reused from SQ2 cloud handling. Self-caught sanity_test column-name bug (manifest col is `acquisition_date`, not `scene_date`); fix landed before main loop.
-  - Output: `sq3_ndvi_per_scene.csv` (228 rows, 226 with NDVI; 2 KSP misses match SQ2's `no_usable_scene=True` rows exactly — same granule-edge effect).
-  - Pairing + bootstrap at `sq3_pair_and_diff.py`. ±60-day same-AOI nearest unflagged neighbor; deterministic earlier-date tie-break; 1000-resample bootstrap on pairs (handles neighbor reuse via pair-level resampling).
-  - Outputs: `sq3_ndvi_bias.csv` (38 pair rows), `sq3_pairing_audit.csv` (3 AOI summary rows, signal_class column).
-  - Plots at `sq3_plot_deltas.py`: per-AOI Δ histograms (3 PNGs), forest plot (1 PNG), retention bar chart (1 PNG with 70% reference line). Under `figures/sq3/`.
-  - Findings note at `research/dust-honesty/docs/sq3_findings.md` (1–2 page narrative). §3 per-AOI table with conditional-null one-liners; §4 direction-vs-Goyens framing as scope-conditional, two candidate explanations as candidates only; §5 limitations (Qiddiya retention 28.1% as structural, Diriyah n=8 as SQ8 hook, ±60-day window trade-off); §6 cross-validation hooks to SQ4 (HLS / LaSRC) and SQ8 (AERONET), SQ2-SQ3 internal consistency named.
-  - Stop-rule design proven in production: triggered at S1 on Qiddiya retention 28.1% < 30%, surfaced for scope decision rather than auto-widening window. Resumed cleanly to S2 + S3 after researcher accepted caveat.
+- **TROPOMI UVAI** all three AOIs from GEE `COPERNICUS/S5P/OFFL/L3_AER_AI` band `absorbing_aerosol_index` (KSP 320, Qiddiya 302, Diriyah 300 rows). Schema asymmetry: per-AOI CSVs lack an `aoi` column; AOI is implicit in filename and must be injected on load. Documented at SQ5.
+- **VIIRS Deep Blue AOD** via GEE (project `basira-494617`) — listed as available in earlier sessions, but no cached CSV exists in `research/dust-honesty/data/`. Fresh GEE pass would be required if invoked. Surfaced at SQ8 R3.
+- **MERRA-2 dust extinction** via GEE `NASA/GSFC/MERRA/aer/2` band `DUEXTTAU` (550nm dust optical depth). Hourly cadence. ~55×70km native resolution. Established at SQ8.
+- **CAMS Near-Real-Time AOD** via GEE `ECMWF/CAMS/NRT` band `total_aerosol_optical_depth_at_550nm_surface`. **3-hourly cadence** at validity 00/03/06/09/12/15/18/21 UTC. ~44km native resolution. Established at SQ8.
+- **HLS S30** (LaSRC-corrected Sentinel-2 surface reflectance) via GEE `NASA/HLS/HLSS30/v002`. B4 (Red), B8 (NIR broad ~833nm), B8A (NIR narrow ~865nm), Fmask. Established at SQ4/SQ4B. **Use `coll.mosaic()` not `coll.first()`** — `first()` silently drops MGRS sliver-coverage tiles.
+- **HLS L30** (LaSRC-corrected Landsat 8/9 surface reflectance) via GEE `NASA/HLS/HLSL30/v002`. B4 (Red), B5 (NIR ~865nm), Fmask. **L30 ±1d coverage on Sentinel-2 acquisition dates is ~37–54% at Riyadh** due to cadence mismatch (S2A+B ~5d vs L8+L9 ~8d). Native L30 pair construction (SQ4C) is required for usable retention.
+- **SQ1D faithful-Lolli pipeline** (DONE — both arms, bug-fixed reducer): per-AOI 2/98 stretch, persisted to `sq1d_<aoi>_stretch.json`; date-only caption rendering for visually-blind labeling; AI pre-label + researcher-review workflow with explicit construction-substrate rubric; canonical references at `sq1d_references.json`; 24 visually-blind relabels merged into `sq1d_<aoi>_relabel.csv`; faithful Lolli formula spec at `sq1d_lolli_formula.md`; faithful Lolli compute at `sq1d_lolli_faithful.py` (single-image single-reducer count handling); 30-scene primary DBB at `sq1d_dbb_faithful.csv`; 24-scene sensitivity-alternate at `sq1d_dbb_faithful_alt.csv` (Spearman ρ = 0.97 KSP / 0.92 Qiddiya).
+- **Scene manifest pattern** (DONE 2026-04-30): `sq1d_scene_manifest.csv` (30), `sq1c_scene_manifest.csv` (43), `sq2_scene_manifest.csv` (228). Test renderers read manifest first; deterministic-pick fallback with WARNING log. Date-based fetch + `assert_manifest_match(system_index)` is the safe pattern.
+- **SQ1C pipeline** (DONE 2026-05-01 — confirmed labels): GEE TROPOMI UVAI source-check, Diriyah UVAI all-months search, per-AOI negative-class month distribution + month-bin SZA-aware seasonal balance constraint, top-15 candidate selection per AOI, S2 L2A scene matching at ±3d / ≤20% cloud, manifest-locked render, per-AOI test montages, relabel CSVs, confirmation tooling (`sq1c_label_review.py`, `sq1c_label_comparison.py`, `sq1b_rerun_v2_confirmed.py`), confirmation audit at `sq1c_confirmation_audit.csv`.
+- **SQ1B pipelines**: original re-run at `sq1b_rerun.py`; re-re-run on combined preliminary at `sq1b_rerun_v2.py`; re-re-run on combined confirmed at `sq1b_rerun_v2_confirmed.py`. Combined 73-scene calibration at `sq1bc_combined_calibration_confirmed.csv`. Confirmed-vs-preliminary comparison table emitted in `sq1b_rerun_v2_confirmed_threshold_spec.md`.
+- **SQ2 operational pipeline** (DONE 2026-05-01 late evening): V4 (+0.034) and V3 KSP-only (+0.053) thresholds applied to 228 (aoi, year, month) operational scenes via `sq2_apply_flag.py`. Manifest-locked at `sq2_scene_manifest.csv` (30 cal_lock_sq1d + 27 cal_lock_sq1c + 171 gee_pick). Self-reference unit test at run start (DBB = 0 exactly). AOI-local cloud handling via QA60 bits 10+11. Cross-check vs `sq1bc_combined_calibration_confirmed.csv` at 1e-4 tolerance; failures logged to `sq2_cross_check_failures.csv`. Per-AOI + combined timeseries plots at `sq2_plot_timeseries.py`. Findings note at `research/dust-honesty/docs/sq2_findings.md` (§2 framing tightened + §6 cross-validation sentence in `a6d4a12`).
+- **SQ3 NDVI-bias pipeline** (DONE 2026-05-02): fresh GEE NDVI compute on locked SQ2 manifest at `sq3_compute_ndvi.py`; pairing + bootstrap at `sq3_pair_and_diff.py` (±60-day same-AOI nearest unflagged neighbor, 1000-resample bootstrap on pairs); plots at `sq3_plot_deltas.py`; findings note at `sq3_findings.md`. Outputs: `sq3_ndvi_per_scene.csv` (228 rows, 226 with NDVI), `sq3_ndvi_bias.csv` (38 pair rows), `sq3_pairing_audit.csv`.
+- **SQ4 HLS S30 cross-correction-chain pipeline** (DONE 2026-05-02): NDVI compute on SQ3 pair dates at `sq4_compute_hls_ndvi.py` (B8A LaSRC, mosaic() pattern, Fmask bits 1–4 masked); diff-of-diffs + bootstrap at `sq4_pair_diff.py`; figures at `sq4_summary.py`; findings note at `sq4_findings.md`. Outputs: `sq4_hls_ndvi.csv`, `sq4_diff_of_diffs.csv` (37 rows), `sq4_signal_class.csv`.
+- **SQ4B Arm A B8 NIR-sensitivity pipeline** (DONE 2026-05-02): same shape as SQ4 with B8 broad NIR, mosaic() pattern, Fmask bits 1–4. L30 coverage probe at `sq4b_probe_l30_coverage.py` ships as recon receipt for the Arm B → SQ4C deferral. Findings note at `sq4b_findings.md`. Outputs: `sq4b_b8_s30_ndvi.csv`, `sq4b_arm_a_b8_sensitivity.csv` (37 rows), `sq4b_two_by_two_summary.csv`, `sq4b_l30_coverage_probe.csv`.
+- **SQ5 halt-with-receipt** (DONE 2026-05-02): UVAI quartile labeling at `sq5_uvai_subset.py`; pair retention probe at `sq5_pair_retention_probe.py`; seasonal stratification chart at `sq5_seasonal_stratification_chart.py`; findings note at `sq5_findings.md`. No pair-and-diff scripts written — the design halted in recon. Outputs: `sq5_uvai_labels.csv`, `sq5_uvai_v4_contingency.csv`, `sq5_pair_retention_probe.csv`, `sq5_seasonal_stratification.csv`, one figure.
+- **SQ8 Goyens-regime regression pipeline** (DONE 2026-05-02): AOD fetch (MERRA-2 DUEXTTAU + CAMS NRT) at `sq8_aod_fetch.py` with **per-source temporal windows** (MERRA-2 ±60min, CAMS ±120min — CAMS is 3-hourly not hourly); per-AOI per-month NDVI climatology + residuals at `sq8_climatology_residuals.py`; OLS with AOI fixed effects + HC3 + cross-check + sensitivity at `sq8_regression.py`; figures + summary stats + findings note at `sq8_summary.py`. Outputs: `sq8_aod_per_scene.csv` (228 rows), `sq8_ndvi_residuals.csv` (226 rows, sensitivity_flag=False all), `sq8_regression_primary.csv`, `sq8_regression_crosscheck.csv`, `sq8_regression_sensitivity.csv`, `sq8_predicted_residuals.csv`, `sq8_signal_class.csv`, `sq8_summary_stats.md`, five figures, findings note.
 
 ---
 
@@ -279,6 +133,7 @@ This must appear in any SQ1B / SQ1D / B-final writeup. Two paragraphs — keep b
 - **Per-session logs**: committed to `docs/sessions/YYYY-MM-DD.md` at session end. One day = one log even if multiple chats; combine in a single file with Part 1 / Part 2 / Part 3 sections.
 - **End-of-session ritual**: at session end, Claude produces COMPLETE drop-in versions of `CLAUDE.md` and the dated `docs/sessions/YYYY-MM-DD.md` (full file replacements, not section edits). Ahmed overwrites the local files entirely, runs `git add -A && git commit && git push`, then clicks "Sync now" in the Claude Project to pull the latest from GitHub into the Project snapshot. Sync now is required because Projects don't auto-sync from GitHub — they're snapshots.
 - **Claude Code prompts**: phrased as full sequences with verification at end. Single review point at end, not interleaved approvals. Only stop for destructive/irreversible operations (force push, mass delete, credential exposure, history rewrite).
+- **Permissions config**: `.claude/settings.local.json` configured with `defaultMode: acceptEdits` plus deny rules for the patterns that have actually burned this project (worktree creation, force push, hard reset, blanket rm, `.env` reads). Auto-mode replaces `--dangerously-skip-permissions` with classifier-backed approval for routine ops; deny rules still fire even in bypass mode.
 
 ---
 
@@ -290,19 +145,23 @@ This must appear in any SQ1B / SQ1D / B-final writeup. Two paragraphs — keep b
 
 **Force-add precedent.** Files under `research/dust-honesty/data/` are covered by a broad gitignore. Calibration data that must be reproducible is force-added per `442d7b0` precedent (`git add -f`).
 
-**Self-reference unit tests.** When implementing a formula on a calibration set, design in a test where test-input == reference-input so the math reduces to a known answer (typically zero). Costs nothing; catches numerical artifacts and pairing bugs the moment the formula is implemented. Re-asserted at SQ2 run start: DBB = 0 exactly when KSP test = ref.
+**Self-reference unit tests.** When implementing a formula on a calibration set, design in a test where test-input == reference-input so the math reduces to a known answer (typically zero). Costs nothing; catches numerical artifacts and pairing bugs the moment the formula is implemented. Re-asserted at SQ2 run start: DBB = 0 exactly when KSP test = ref. Generalized at SQ3/SQ4/SQ4B/SQ8: same date queried twice must produce exactly identical output values.
 
 **Cross-check across runs.** Any time a scene has been computed in a prior pipeline, cross-check the new compute against the old at tight tolerance (1e-4 standard). Failures surface drift mechanisms; passing rows confirm value-stability. The SQ2 cross-check vs `sq1bc_combined_calibration_confirmed.csv` was the only reason GEE drift mechanism #3 surfaced.
 
-**Single-reducer counts on GEE (drift mechanism #2).** `bestEffort=True` + multiple `reduceRegion` calls on the same image can return slightly different sample counts at scale boundaries (silent drift). Standard pattern: single image, single reducer combining `sum + count`, no `bestEffort`, identical scale across runs.
+**GEE drift mechanism #1 — catalog backfill on deterministic pick.** GEE can backfill scenes with updated processing baselines that change which scene wins a deterministic-pick query. Defense pattern: lock `system:index` per (aoi, slot) in a sidecar manifest at first labeling; renderers read manifest first; deterministic-pick is fallback only with WARNING log. Date-based fetch + `assert_manifest_match(system_index)` is the safe pattern.
+
+**GEE drift mechanism #2 — `bestEffort` scale drift on multiple reducers.** `bestEffort=True` + multiple `reduceRegion` calls on the same image can return slightly different sample counts at scale boundaries (silent drift). Standard pattern: single image, single reducer combining `sum + count`, no `bestEffort`, identical scale across runs.
+
+**GEE drift mechanism #3 — baseline reprocessing on locked `system:index`.** GEE retains the right to backfill the underlying L1C/L2A pixel content for a scene whose `system:index` is already locked in a manifest. The manifest pattern protects scene IDENTITY but NOT pixel CONTENT. Surfaced 2026-05-01 via SQ2 cross-check: 2 of 57 KSP overlap rows shifted ≤1.6% in pixel value while keeping V4 flag classifications stable. Mitigation: cross-check value-stability across runs at tight tolerance, surface failures honestly, and rely on threshold margin to absorb sub-classification-flip drift. Above ~5% pixel drift, classifications would flip and a frozen GEE asset export becomes the only protection — out of scope for piece B.
+
+**GEE drift mechanism #4 — single-image queries on tile-boundary AOIs (HLS).** `coll.first()` on HLS S30 silently returns MGRS sliver-coverage tiles when an AOI sits near a tile boundary. SQ4 lost 39/65 tuples this way before the pattern was caught and replaced with `coll.mosaic()`. Standard pattern for HLS: `coll.mosaic()` not `coll.first()`. Document mosaic() vs first() rationale in script header for any HLS query.
+
+**GEE pattern note — reanalysis temporal cadence is per-source.** MERRA-2 aerosol is hourly (8760 timesteps/year). CAMS NRT is 3-hourly at validity 00/03/06/09/12/15/18/21 UTC (2920 timesteps/year). A naive ±60min matching window around an S2 acquisition (typical 07:30 UTC over Riyadh) fails CAMS entirely. Per-source windows are required: MERRA-2 ±60min, CAMS ±120min. Surfaced at SQ8 mid-run; not strictly a drift mechanism but the same shape — a default that looks safe and isn't.
+
+**Single-reducer counts on GEE.** Reiterate: single image, single reducer (sum + count combined), no `bestEffort`, identical scale across runs. Mechanism #2 prevention.
 
 **Skip-with-marker over raise-loudly for batch operations.** A failed slot in a batch render either should raise loudly with full context (killing the batch) or render a visibly-blank panel with a labeled skip reason (preserving batch). The unacceptable middle ground is silent failure.
-
-**GEE catalog backfill drift (drift mechanism #1).** GEE can backfill scenes with updated processing baselines that change which scene wins a deterministic-pick query. Defense pattern: lock `system:index` per (aoi, slot) in a sidecar manifest at first labeling; renderers read manifest first; deterministic-pick is fallback only with WARNING log. Date-based fetch + `assert_manifest_match(system_index)` is the safe pattern.
-
-**GEE baseline-reprocessing drift on locked system:index (drift mechanism #3).** GEE retains the right to backfill the underlying L1C/L2A pixel content for a scene whose `system:index` is already locked in a manifest. The manifest pattern protects scene IDENTITY but NOT pixel CONTENT. Surfaced 2026-05-01 via SQ2 cross-check: 2 of 57 KSP overlap rows shifted ≤1.6% in pixel value while keeping V4 flag classifications stable. Mitigation: cross-check value-stability across runs at tight tolerance, surface failures honestly, and rely on threshold margin to absorb sub-classification-flip drift. Above ~5% pixel drift, classifications would flip and a frozen GEE asset export becomes the only protection — out of scope for piece B.
-
-**CLAUDE.md infrastructure descriptions can drift from scripts.** Scripts are source of truth for infrastructure; this doc's "What works right now" section needs verification when describing data sources, not assumption.
 
 **CDSE multi-day 503 pattern (post-upgrade residue).** Networking-layer upgrades at CDSE scale routinely leave SH-fronted endpoints flaky for several days while underlying catalog/object-storage stabilizes. Pre-flight `curl -s -o /dev/null -w "%{http_code}\n" https://sh.dataspace.copernicus.eu` before any agentic prompt that depends on CDSE.
 
@@ -314,16 +173,40 @@ This must appear in any SQ1B / SQ1D / B-final writeup. Two paragraphs — keep b
 
 **Cold-protocol audits can return null results.** 4/6 cold-confirmed labels agreed with AI; 2/6 disagreed in directions consistent with the AOI-level pattern. The bias_exposure during pre-labeling did not produce a detectably different judgment pattern at this n. Negative results from contamination audits are still results — methodology footnote stays, but no separate finding to report.
 
-**Long prompts to long work.** Single autonomous Claude Code prompt with recon-before-build, full multi-script execution, atomic commits, single review point at end — load-bearing protocol for any multi-step SQ. Confirmed working at SQ1C tooling build, SQ1C confirmation rerun, SQ2 operational, and SQ3 NDVI-bias. Interleaved approval gates burn momentum; recon-build-verify in one shot does not.
+**Long prompts to long work.** Single autonomous Claude Code prompt with recon-before-build, full multi-script execution, atomic commits, single review point at end — load-bearing protocol for any multi-step SQ. Confirmed working at SQ1C tooling build, SQ1C confirmation rerun, SQ2 operational, SQ3 NDVI-bias, SQ4 HLS cross-check, SQ4B B8 sensitivity, SQ5 halt-with-receipt, SQ8 reanalysis regression. Interleaved approval gates burn momentum; recon-build-verify in one shot does not.
 
-**Internal cross-validation between methods.** When two methods that didn't share decision-time inputs agree on the same finding, that's load-bearing for piece B's discussion section. SQ1C cold-protocol blind labeling and SQ2 continuous DBB independently identified the 2022-05-10 Diriyah peak event — name this kind of agreement explicitly when it surfaces; it doesn't surface often.
+**Internal cross-validation between methods.** When two methods that didn't share decision-time inputs agree on the same finding, that's load-bearing for piece B's discussion section. SQ1C cold-protocol blind labeling and SQ2 continuous DBB independently identified the 2022-05-10 Diriyah peak event — name this kind of agreement explicitly when it surfaces; it doesn't surface often. SQ3/SQ4/SQ4B/SQ8 jointly establishing the operational null across paired and per-scene designs is a stronger version of the same pattern.
 
-**Stop rules are scope-decision points, not failures.** SQ3's stop rule fired at Qiddiya 28.1% retention. The agent halted, surfaced the choice (widen window / drop AOI / change design / accept caveat) without picking, and waited for the researcher's call. That's the stop rule working *as designed*, not a problem to route around. Halting in the middle of the run is the cheapest possible scope review. Pattern: when designing a sub-question, write the stop rule as a multi-option scope decision rather than a binary fail/pass — the agent's job at threshold is to pause and surface, not to choose.
+**Stop rules are scope-decision points, not failures.** Proven across four sub-questions in different shapes:
+- SQ3: paired retention < 30% (Qiddiya 28.1%) → halt, surface four scope options, accept caveat.
+- SQ4B: pre-registered 50% L30 coverage floor failed in two AOIs → halt, surface, defer Arm B → SQ4C.
+- SQ5: pre-registered 30% retention floor failed in all three AOIs → halt-with-receipt, defer Goyens-regime test → SQ8.
+- SQ8: AERONET R1 (no station within 500km) → halt, surface, retarget to reanalysis primary.
 
-**The "different question" temptation when a stop rule fires.** When an analysis hits a stop-rule edge, the tempting move is to switch to a different design that bypasses the constraint (e.g. SQ3 paired-difference → continuous DBB-vs-NDVI regression). That switch is exactly what the stop rule is designed to catch: it conflates "we got a borderline retention" with "we should answer a different question." Pre-registered designs ship or halt on their own terms; new questions become new sub-questions (SQ3B, SQ4, etc.). Confirmed at SQ3: continuous-regression option offered, recommended-against, sub-question integrity preserved.
+Halting in the middle of the run is the cheapest possible scope review. Pattern: when designing a sub-question, write the stop rule as a multi-option scope decision rather than a binary fail/pass — the agent's job at threshold is to pause and surface, not to choose.
 
-**Recon-before-build catches infra mismatches in 4 commands.** SQ3 prompt's R1–R4 recon block resolved NDVI-not-in-CSV, EECU estimate, column names, and denominator count before any new code was written. Saved a build pass that would have referenced `scene_date` (manifest col is `acquisition_date`) and assumed NDVI columns that didn't exist. Standard for any sub-question that touches an existing pipeline.
+**The "different question" temptation when a stop rule fires.** When an analysis hits a stop-rule edge, the tempting move is to switch to a different design that bypasses the constraint (e.g. SQ3 paired-difference → continuous DBB-vs-NDVI regression; SQ4B L30 coverage → native-L30 dates; SQ5 retention → Q4-vs-Q3 contrast). That switch is exactly what the stop rule is designed to catch: it conflates "we got a borderline retention" with "we should answer a different question." Pre-registered designs ship or halt on their own terms; new questions become new sub-questions (SQ3B, SQ4C, SQ8, SQ8B). Confirmed at SQ3, SQ4B, SQ5, SQ8 — all four halts produced sub-question deferrals rather than mid-run design switches.
 
-**Conditional nulls are findings, not setbacks.** SQ3's tight nulls at KSP and Qiddiya, with halfwidths 0.0076 and 0.0055 well below NDVI change-detection thresholds, are scope-bounded informative results. The honest framing names what the result *does* say (no measurable bias at this design at this loading regime on this correction chain) and what it *does not* say (Sen2Cor is universally fine; Goyens is wrong). The Goyens result describes a TOA / extreme-AOD regime; transfer to L2A at moderate loadings is not assumed in either direction. SQ4 (LaSRC cross-check) and SQ8 (AERONET ground truth) are the right ways to extend; window-widening or design-switching are not.
+**Recon-before-build catches infra mismatches in 4 commands.** SQ3's R1–R4 recon block resolved NDVI-not-in-CSV, EECU estimate, column names, and denominator count before any new code was written. Saved a build pass that would have referenced `scene_date` (manifest col is `acquisition_date`) and assumed NDVI columns that didn't exist. Generalized at SQ4 (HLS coverage probe), SQ4B (L30 coverage probe), SQ5 (UVAI quartile + retention probe), SQ8 (AERONET station survey + reanalysis source check). Standard for any sub-question that touches an existing pipeline.
 
-**Credential hygiene.** Sentinel Hub OAuth credentials, GEE project name, and any API tokens stay in `.env` only. `.env` is gitignored. `.private/context.md` for SARsatX-specific framing also gitignored.
+**Conditional nulls are findings, not setbacks.** SQ3's tight nulls at halfwidths 0.0076 and 0.0055 were scope-bounded informative results. The same pattern repeats at SQ4 (LaSRC chain), SQ4B (B8 broad NIR), SQ8 (high-AOD regression). Honest framing names what the result *does* say (no measurable bias at this design at this loading regime on this correction chain on this NIR band) and what it *does not* say (Sen2Cor is universally fine; Goyens is wrong). Goyens describes a TOA / extreme-AOD regime; transfer to L2A at moderate-to-high loadings is not assumed in either direction. The scope-conditional framing tightens, layer by layer, into the unconditional null in piece B's headline.
+
+**Halt-with-receipt as a sub-question shape.** SQ4B Arm B → SQ4C deferral preserved the L30 coverage probe in git history (commit `71327ec`). SQ5 halt preserved UVAI quartile labels, retention probe, contingency table, and seasonal stratification figure as committed receipts. The receipts are themselves piece B substance — SQ5's seasonal-stratification methodology finding and Q4∧¬V4 anchor cell would not exist without the halt being shipped as a finding rather than discarded. Pattern: when a sub-question halts on a structural constraint, the recon artifacts ride into the ship as findings, not just diagnostics.
+
+**Dual-criterion pre-registration.** At pooled-n high-statistical-power low-R² regression designs, a significance criterion (CI excludes zero) and a magnitude criterion (|β × IQR| exceeds operational threshold) can return divergent classifications on operationally small effects. SQ8 surfaced this explicitly: classifier fired `goyens_consistent_bias_detected`, magnitude fired `tight_null`, both reported without override. Pattern for any future regression-style sub-question: pre-register both criteria, expect potential disagreement, decide which is load-bearing for the umbrella question (operational-magnitude is load-bearing for change-monitoring use cases). Document the disagreement when it occurs as a methodology observation rather than resolving by override.
+
+**Power-confirmation reading of significant-but-tiny regression effects.** When a regression detects a statistically significant effect that is 25× below the operational-significance threshold, the Bayesian-inverse reading is that the test had power to find a small effect if one existed and that is what it found. This strengthens, rather than undermines, an operational null established by other designs. SQ8's −0.0018 NDVI per IQR AOD is read as power-confirmation of SQ3/SQ4/SQ4B's operational null, not as Goyens transfer. Frame this way when significance and magnitude criteria disagree at high n with low R².
+
+**The diagnosis is often the finding.** Qiddiya 28.1% retention at SQ3 was a direct downstream consequence of SQ2's construction-substrate finding. SQ4B Arm B's coverage failure was a structural cadence mismatch (S2A+B vs L8+L9). SQ5's retention failure was Riyadh's UVAI seasonality. SQ8's AERONET halt was the absence of operational stations within 500km. In each case, the diagnosis carries forward as a finding (or as methodology context for the next sub-question). Pattern: when a stop rule fires, look upstream — the cause may already be a documented finding from a previous SQ, or it may be the new finding the halt is delivering.
+
+**Pair-level bootstrap for paired difference designs.** Bootstrap on **pairs** (not scenes) is correct when neighbors can be reused across pairings — pair-level resampling handles the dependence at inference time. Standard at SQ3, SQ4, SQ4B. Carries forward to any future paired sub-question.
+
+**Two-layer findings hold up better than one-layer findings.** SQ2 (V4 detects atmospheric optical thickness) plus SQ3 (that thickness does not propagate to NDVI bias on Sen2Cor L2A) plus SQ4 (the null is not Sen2Cor-specific) plus SQ4B (the null is not NIR-band-shift-driven) plus SQ8 (the null holds at high reanalysis-AOD via regression with quantified upper bound) is a five-layer answer to the umbrella question. Each layer rules out a candidate explanation and tightens the scope claim. Frame as a multi-layer chain in piece B prose, not as a sequence of independent findings.
+
+**The smallest-n AOI is often the cleanest atmospheric prior.** Diriyah has the lowest V4 fire rate (11.8%), the smallest paired set (n=8 across SQ3/SQ4/SQ4B), and the cleanest Goyens-regime test cell (Q4∧¬V4 = 12 from SQ5 R5 contingency). The AOI most worth measuring is the AOI we can measure least precisely from satellite-only paired designs. SQ8B (KAUST coastal generalization) and any future ground-truth campaign should anchor at Diriyah.
+
+**Self-caught bugs validate the verification loop.** SQ3's `scene_date` vs `acquisition_date` typo failed loudly with `KeyError`, never reached output. Generalizes: design diagnostics that *fail loudly* on the first wrong assumption rather than silently producing plausible-looking output. Sanity tests at SQ4/SQ4B/SQ8 (same date queried twice must produce identical output) catch corruption in the same shape.
+
+**CLAUDE.md infrastructure descriptions can drift from scripts.** Scripts are source of truth for infrastructure; this doc's "What works right now" section needs verification when describing data sources, not assumption. Drift caught at SQ8 (VIIRS Deep Blue AOD listed as available, no cached CSV exists). Drift caught at SQ8 R1 (AERONET Solar_Village date listed as Jan 2013; actual last data 2015-10-12). Updates land at end-of-session ritual.
+
+**Credential hygiene.** Sentinel Hub OAuth credentials, GEE project name, and any API tokens stay in `.env` only. `.env` is gitignored. `.private/context.md` for SARsatX-specific framing also gitignored. Permissions config `.claude/settings.local.json` deny rules block `cat .env*` even in bypass mode.
