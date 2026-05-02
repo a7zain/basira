@@ -1,0 +1,4 @@
+aoi,n_sq3_pairs,n_pairs_with_hls,mean_diff,ci_lo_95,ci_hi_95,ci_halfwidth,signal_class
+king_salman_park,14,14,-0.006162,-0.013611,+0.000593,+0.007102,tight_null
+qiddiya_core,16,15,-0.002082,-0.006889,+0.002603,+0.004746,tight_null
+diriyah_gate,8,8,-0.000899,-0.014138,+0.013383,+0.013760,wide_inconclusive
