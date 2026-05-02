@@ -1,0 +1,5 @@
+variant,aoi,beta,se,p,ci_lo_95,ci_hi_95,n
+climatology_stable,all,-0.010122,0.004480,0.023851,-0.018903,-0.001342,224
+aoi_stratified_king_salman_park,king_salman_park,-0.008508,0.005733,0.137814,-0.019744,+0.002729,74
+aoi_stratified_qiddiya_core,qiddiya_core,-0.008251,0.005996,0.168810,-0.020004,+0.003501,75
+aoi_stratified_diriyah_gate,diriyah_gate,-0.013239,0.010504,0.207544,-0.033827,+0.007349,75

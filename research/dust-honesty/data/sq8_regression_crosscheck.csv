@@ -1,0 +1,5 @@
+source,aod_band,coefficient,beta,se_robust,t,p,ci_lo_95,ci_hi_95,robust_method,n,r2
+crosscheck,cams_total_aod_550,Intercept,+0.002945,0.002050,+1.4363,0.150919,-0.001074,+0.006963,HC3,226,0.0126
+crosscheck,cams_total_aod_550,C(aoi)[T.king_salman_park],+0.000158,0.001790,+0.0881,0.929772,-0.003351,+0.003667,HC3,226,0.0126
+crosscheck,cams_total_aod_550,C(aoi)[T.qiddiya_core],+0.000014,0.001823,+0.0077,0.993875,-0.003560,+0.003588,HC3,226,0.0126
+crosscheck,cams_total_aod_550,aod,-0.007307,0.003059,-2.3889,0.016897,-0.013302,-0.001312,HC3,226,0.0126
