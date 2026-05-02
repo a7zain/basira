@@ -1,0 +1,13 @@
+aoi,chain,nir,n,mean_delta,ci_halfwidth,in_scope
+king_salman_park,Sen2Cor,B8 (broad ~833nm),14,+0.001571,0.007618,yes (from SQ3)
+king_salman_park,Sen2Cor,B8A (narrow ~865nm),,,,"no (S2 L2A delivers B8 as primary NIR; B8A is supplementary, not exercised in SQ3)"
+king_salman_park,LaSRC (HLS S30),B8 (broad ~833nm),14,-0.001093,0.006256,"yes (this run, SQ4B Arm A)"
+king_salman_park,LaSRC (HLS S30),B8A (narrow ~865nm),14,-0.004592,0.003216,yes (from SQ4)
+qiddiya_core,Sen2Cor,B8 (broad ~833nm),16,-0.002373,0.005548,yes (from SQ3)
+qiddiya_core,Sen2Cor,B8A (narrow ~865nm),,,,"no (S2 L2A delivers B8 as primary NIR; B8A is supplementary, not exercised in SQ3)"
+qiddiya_core,LaSRC (HLS S30),B8 (broad ~833nm),15,-0.000492,0.004231,"yes (this run, SQ4B Arm A)"
+qiddiya_core,LaSRC (HLS S30),B8A (narrow ~865nm),15,-0.003779,0.002120,yes (from SQ4)
+diriyah_gate,Sen2Cor,B8 (broad ~833nm),8,-0.000229,0.022218,yes (from SQ3)
+diriyah_gate,Sen2Cor,B8A (narrow ~865nm),,,,"no (S2 L2A delivers B8 as primary NIR; B8A is supplementary, not exercised in SQ3)"
+diriyah_gate,LaSRC (HLS S30),B8 (broad ~833nm),8,-0.001138,0.009156,"yes (this run, SQ4B Arm A)"
+diriyah_gate,LaSRC (HLS S30),B8A (narrow ~865nm),8,-0.001127,0.009482,yes (from SQ4)
