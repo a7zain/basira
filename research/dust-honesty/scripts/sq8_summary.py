@@ -367,98 +367,151 @@ def fig_merra2_vs_cams(df):
 
 
 def fig_loading_regime_ladder():
-    """Single visual summary of SQ3/SQ4/SQ4B/SQ5/SQ8 across the loading
-    regime, per AOI. Reads the canonical signal_class CSVs from each
-    sub-question."""
-    # Load each layer's per-AOI mean Δ (from prior SQ outputs)
+    """Single-panel horizontal operational-significance check across four
+    measurement designs at Riyadh.
+
+    Data-column choice (documented for the future reader):
+      SQ3   column: paired_audit.mean_delta = NDVI(V4-fired) − NDVI(unflagged
+                    neighbor) per AOI on Sen2Cor B8. The original
+                    bias-direction probe.
+      SQ4   column: signal_class.mean_diff = Δ NDVI(LaSRC B8A) − Δ NDVI
+                    (Sen2Cor B8) per pair, per AOI. The cross-correction-
+                    chain bias estimate (apples-to-apples vs SQ3).
+      SQ4B  column: signal_class.mean_diff = Δ NDVI(LaSRC B8) − Δ NDVI
+                    (Sen2Cor B8) per pair, per AOI. The cross-NIR-band
+                    bias estimate.
+      SQ8   column: β × IQR(MERRA-2 DUEXTTAU) = pooled-AOI fixed-effects
+                    NDVI bias prediction from Q1→Q4 AOD. Single bar
+                    (pooled across AOIs by design).
+
+    All four columns are plotted on the same NDVI-units y-axis. The
+    operational-significance band ±0.005 NDVI is shaded across the panel.
+    SQ5 (paired Q4-vs-Q1 quartile design) halted on Riyadh's UVAI
+    seasonal stratification and is named in a footnote rather than as a
+    measurement column — its contribution to the chain is the design
+    pivot to SQ8, not a comparable bias estimate.
+    """
     sq3 = pd.read_csv(DATA / "sq3_pairing_audit.csv")
     sq4 = pd.read_csv(DATA / "sq4_signal_class.csv")
-    sq4b_a = pd.read_csv(DATA / "sq4b_arm_a_signal_class.csv")
-    sq5_ret = pd.read_csv(DATA / "sq5_pair_retention_probe.csv")
+    sq4b = pd.read_csv(DATA / "sq4b_arm_a_signal_class.csv")
+    prim_aod = load_primary_aod_coef()
 
-    # SQ8 per-AOI predicted Δ at Q4-vs-Q1 AOD using the pooled regression
-    pred = load_predicted()
-    pred_by_aoi = defaultdict(dict)
-    for r in pred:
-        if r["prediction_point"] == "q1_aod":
-            pred_by_aoi[r["aoi"]]["q1"] = r
-        elif r["prediction_point"] == "q4_aod":
-            pred_by_aoi[r["aoi"]]["q4"] = r
-    sq8_delta = {}
-    for aoi, parts in pred_by_aoi.items():
-        if "q1" in parts and "q4" in parts:
-            d_pred = parts["q4"]["predicted_residual"] - parts["q1"]["predicted_residual"]
-            d_lo = parts["q4"]["ci_lo_95_pred"] - parts["q1"]["ci_hi_95_pred"]
-            d_hi = parts["q4"]["ci_hi_95_pred"] - parts["q1"]["ci_lo_95_pred"]
-            sq8_delta[aoi] = (d_pred, d_lo, d_hi)
+    # Pooled MERRA-2 IQR for SQ8 column
+    aod = pd.read_csv(AOD_CSV)
+    iqr = float(aod["merra2_duexttau_550"].dropna().quantile(0.75)
+                - aod["merra2_duexttau_550"].dropna().quantile(0.25))
+    sq8_mean = prim_aod["beta"] * iqr
+    sq8_lo = prim_aod["ci_lo"] * iqr
+    sq8_hi = prim_aod["ci_hi"] * iqr
 
-    layers = [
-        ("SQ3 — Sen2Cor B8\nmoderate loadings", "mean_delta", "ci_halfwidth", sq3),
-        ("SQ4 — LaSRC B8A\nmoderate loadings", "mean_diff", "ci_halfwidth", sq4),
-        ("SQ4B — LaSRC B8\nmoderate loadings", "mean_diff", "ci_halfwidth", sq4b_a),
+    # ---- layout ----
+    fig, ax = plt.subplots(figsize=(13, 6))
+
+    # Operational band (±0.005)
+    ax.axhspan(-0.005, +0.005, color="#fff3cd", alpha=0.6, zorder=0,
+               label="±0.005 NDVI operational-significance band")
+    # Zero reference
+    ax.axhline(0, color="gray", lw=0.6, ls="--", alpha=0.7, zorder=1)
+
+    # Column-group x positions: 3 sub-bars per probe, gap between probes
+    sub_offsets = [-0.30, 0.00, +0.30]   # KSP, Qiddiya, Diriyah within group
+    group_centers = {"SQ3": 0, "SQ4": 1.6, "SQ4B": 3.2, "SQ8": 4.8}
+    bar_width = 0.25
+
+    paired_columns = [
+        ("SQ3", sq3, "mean_delta", "ci_lo_95", "ci_hi_95"),
+        ("SQ4", sq4, "mean_diff", "ci_lo_95", "ci_hi_95"),
+        ("SQ4B", sq4b, "mean_diff", "ci_lo_95", "ci_hi_95"),
     ]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14, 5), sharey=True)
-    layer_labels = [lab for lab, _, _, _ in layers]
-    layer_labels.append("SQ5 — paired Q4-vs-Q1\nhalt receipt")
-    layer_labels.append("SQ8 — pooled regression\nper IQR AOD")
-
-    for ax, aoi in zip(axes, AOIS):
-        means = []
-        hws = []
-        labels = []
-        for lab, mean_col, hw_col, dfL in layers:
-            row = dfL[dfL["aoi"] == aoi]
+    for label, df_src, mean_col, lo_col, hi_col in paired_columns:
+        center = group_centers[label]
+        for off, aoi in zip(sub_offsets, AOIS):
+            row = df_src[df_src["aoi"] == aoi]
             if row.empty:
                 continue
-            m = float(row[mean_col].iloc[0])
-            hw = float(row[hw_col].iloc[0])
-            means.append(m)
-            hws.append(hw)
-            labels.append(lab)
-        # SQ5 halt: plot a sentinel point at zero with no error bar, marker '×'
-        ret_row = sq5_ret[sq5_ret["aoi"] == aoi]
-        if not ret_row.empty:
-            labels.append(layer_labels[3])
-            means.append(np.nan)
-            hws.append(np.nan)
-        # SQ8 IQR-scaled prediction
-        if aoi in sq8_delta:
-            d_pred, d_lo, d_hi = sq8_delta[aoi]
-            labels.append(layer_labels[4])
-            means.append(d_pred)
-            hws.append((d_hi - d_lo) / 2.0)
-
-        xs = np.arange(len(means))
-        for x, m, hw, lab in zip(xs, means, hws, labels):
-            if np.isnan(m):
-                ax.scatter(x, 0, color="gray", marker="x", s=120,
-                           label="halt receipt" if x == 3 else None)
-                ax.text(x, 0.018,
-                        f"{ret_row['retention_pct'].iloc[0]:.1f}% ret",
-                        ha="center", fontsize=8, color="gray")
-                continue
+            mean = float(row[mean_col].iloc[0])
+            lo = float(row[lo_col].iloc[0])
+            hi = float(row[hi_col].iloc[0])
             color = AOI_COLORS[aoi]
-            ax.errorbar(x, m, yerr=hw, fmt="o", color=color, ecolor=color,
-                        elinewidth=2, capsize=5, markersize=8)
+            x = center + off
+            ax.bar(x, mean, width=bar_width,
+                   color=color, alpha=0.85,
+                   edgecolor="white", linewidth=0.6, zorder=2)
+            ax.errorbar(x, mean, yerr=[[mean - lo], [hi - mean]],
+                        fmt="none", ecolor="black", elinewidth=1.0,
+                        capsize=4, capthick=1.0, zorder=3)
 
-        ax.axhline(0, color="gray", lw=0.5, ls="--")
-        ax.axhline(-0.005, color="orange", lw=0.5, ls=":", alpha=0.5)
-        ax.axhline(0.005, color="orange", lw=0.5, ls=":", alpha=0.5)
-        ax.set_xticks(xs)
-        ax.set_xticklabels(labels, fontsize=8, rotation=15, ha="right")
-        ax.set_ylim(-0.030, 0.030)
-        ax.set_title(AOI_LABELS[aoi])
-        ax.grid(axis="y", alpha=0.3)
+    # SQ8 single pooled bar (diamond marker on a 0-centered bar with CI whiskers)
+    sq8_x = group_centers["SQ8"]
+    ax.bar(sq8_x, sq8_mean, width=bar_width * 1.4,
+           color="#5c4033", alpha=0.85, edgecolor="white", linewidth=0.6,
+           zorder=2, hatch="////")
+    ax.errorbar(sq8_x, sq8_mean, yerr=[[sq8_mean - sq8_lo],
+                                       [sq8_hi - sq8_mean]],
+                fmt="D", ecolor="black", color="#5c4033",
+                markersize=10, markeredgecolor="white", markeredgewidth=1.0,
+                elinewidth=1.4, capsize=5, capthick=1.2, zorder=4,
+                label="SQ8: pooled (n=224, AOI fixed effects)")
 
-    axes[0].set_ylabel("Δ NDVI / paired or per-IQR-AOD (units of NDVI)")
-    fig.suptitle(
-        "SQ8 — loading-regime ladder across SQ3 / SQ4 / SQ4B / SQ5 / SQ8\n"
-        "orange dotted = ±0.005 NDVI operational-significance threshold; "
-        "all measured cells fall within ±0.005",
-        y=0.99,
+    # AOI legend (only for paired columns)
+    for aoi in AOIS:
+        ax.bar(np.nan, np.nan, color=AOI_COLORS[aoi], alpha=0.85,
+               label=AOI_LABELS[aoi])
+
+    # ---- axes / labels ----
+    ax.set_xticks([group_centers[k] for k in ["SQ3", "SQ4", "SQ4B", "SQ8"]])
+    ax.set_xticklabels([
+        "SQ3\nV4-paired (Sen2Cor B8)",
+        "SQ4\nLaSRC-paired (B8A)",
+        "SQ4B\nB8-paired (LaSRC B8)",
+        "SQ8\nreanalysis regression",
+    ], fontsize=10)
+    ax.set_ylabel("Estimated NDVI bias magnitude (NDVI units)")
+    ax.set_ylim(-0.030, +0.030)
+    # Faint band-edge labels at right margin
+    xmax = group_centers["SQ8"] + 0.7
+    ax.set_xlim(group_centers["SQ3"] - 0.7, xmax)
+    ax.text(xmax - 0.05, +0.005, " +0.005",
+            ha="right", va="bottom", fontsize=8, color="#7a5a00")
+    ax.text(xmax - 0.05, -0.005, " −0.005",
+            ha="right", va="top", fontsize=8, color="#7a5a00")
+    ax.grid(axis="y", alpha=0.3, zorder=0)
+
+    handles, labels = ax.get_legend_handles_labels()
+    # Reorder: AOIs, then SQ8, then op-band
+    order_keys = list(AOI_LABELS.values()) + [
+        "SQ8: pooled (n=224, AOI fixed effects)",
+        "±0.005 NDVI operational-significance band",
+    ]
+    handle_map = dict(zip(labels, handles))
+    ordered_handles = [handle_map[k] for k in order_keys if k in handle_map]
+    ordered_labels = [k for k in order_keys if k in handle_map]
+    ax.legend(ordered_handles, ordered_labels, loc="upper left",
+              fontsize=8.5, frameon=True, framealpha=0.95)
+
+    # Title + subtitle
+    fig.suptitle("Loading-regime ladder: NDVI bias estimates across four "
+                 "measurement designs at Riyadh",
+                 fontsize=12, y=0.985)
+    ax.set_title(
+        "Shaded band: pre-registered operational-significance threshold "
+        "(±0.005 NDVI). All probes' point estimates fall inside the band.",
+        fontsize=10, loc="left", pad=8,
     )
-    fig.tight_layout(rect=[0, 0, 1, 0.96])
+
+    # SQ5 footnote below x-axis
+    fig.text(
+        0.5, 0.015,
+        "SQ5: paired Q4-vs-Q1 quartile AOD design halted on Riyadh's UVAI "
+        "seasonal stratification (retention <30% in all AOIs); the "
+        "Goyens-regime test inherited to SQ8 with the regression design "
+        "shown in the rightmost column.",
+        ha="center", va="bottom", fontsize=8.5, style="italic",
+        wrap=True,
+    )
+
+    fig.tight_layout(rect=[0, 0.06, 1, 0.95])
     out = FIG / "sq8_loading_regime_ladder.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
