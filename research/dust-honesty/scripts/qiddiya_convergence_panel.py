@@ -126,7 +126,7 @@ def panel5_retention():
 
 
 def panel6_q4_v4():
-    df = pd.read_csv(DATA / "sq5_uvai_v4_contingency.csv")
+    df = pd.read_csv(DATA / "halts" / "uvai_sq5" / "uvai_v4_contingency.csv")
     out = {}
     for aoi in AOI_ORDER:
         sub = df[df["aoi"] == aoi]

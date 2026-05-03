@@ -56,7 +56,7 @@ CROSS_CSV = DATA / "sq8_regression_crosscheck.csv"
 SENS_CSV = DATA / "sq8_regression_sensitivity.csv"
 PRED_CSV = DATA / "sq8_predicted_residuals.csv"
 CLASS_CSV = DATA / "sq8_signal_class.csv"
-UVAI_CSV = DATA / "sq5_uvai_labels.csv"
+UVAI_CSV = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
 
 OUT_MD = DATA / "sq8_summary_stats.md"
 

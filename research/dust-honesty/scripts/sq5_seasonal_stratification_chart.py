@@ -23,11 +23,11 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-FIG = ROOT / "research/dust-honesty/figures/sq5"
+FIG = ROOT / "research/dust-honesty/figures/halts/uvai_sq5"
 FIG.mkdir(parents=True, exist_ok=True)
 
-SRC = DATA / "sq5_seasonal_stratification.csv"
-OUT = FIG / "sq5_seasonal_stratification.png"
+SRC = DATA / "halts" / "uvai_sq5" / "seasonal_stratification.csv"
+OUT = FIG / "seasonal_stratification.png"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_LABELS = {

@@ -58,8 +58,8 @@ UVAI_FILES = {
     "qiddiya_core":     DATA / "calibration" / "uvai_qiddiya_sq1d.csv",
     "diriyah_gate":     DATA / "calibration" / "uvai_diriyah_sq1d.csv",
 }
-OUT_LABELS = DATA / "sq5_uvai_labels.csv"
-OUT_CONTINGENCY = DATA / "sq5_uvai_v4_contingency.csv"
+OUT_LABELS = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
+OUT_CONTINGENCY = DATA / "halts" / "uvai_sq5" / "uvai_v4_contingency.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 

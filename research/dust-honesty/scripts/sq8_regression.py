@@ -58,7 +58,7 @@ DATA = ROOT / "research/dust-honesty/data"
 
 RES_CSV = DATA / "sq8_ndvi_residuals.csv"
 AOD_CSV = DATA / "sq8_aod_per_scene.csv"
-UVAI_CSV = DATA / "sq5_uvai_labels.csv"
+UVAI_CSV = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
 
 OUT_PRIMARY = DATA / "sq8_regression_primary.csv"
 OUT_CROSS = DATA / "sq8_regression_crosscheck.csv"

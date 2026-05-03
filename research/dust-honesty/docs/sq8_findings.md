@@ -35,7 +35,7 @@ Estimated <5 EECU for 228 dates × 2 sources × small-AOI reducers. Actual in-bu
 
 ### §2.4 R4 — column compatibility
 
-All upstream files confirmed: `sq3_ndvi_per_scene.csv`, `operational/dbb_operational_sq2.csv`, `operational/manifest_operational_sq2.csv`, `sq5_uvai_labels.csv`, `sq5_uvai_v4_contingency.csv`. Join keys `(aoi, acquisition_date)` consistent across SQ3/SQ5/SQ8.
+All upstream files confirmed: `sq3_ndvi_per_scene.csv`, `operational/dbb_operational_sq2.csv`, `operational/manifest_operational_sq2.csv`, `halts/uvai_sq5/uvai_labels.csv`, `halts/uvai_sq5/uvai_v4_contingency.csv`. Join keys `(aoi, acquisition_date)` consistent across SQ3/SQ5/SQ8.
 
 ### §2.5 R5 — climatology design diagnostic
 
@@ -80,7 +80,7 @@ The primary regression is pooled across all three AOIs with AOI fixed effects. T
 
 Q1 AOD = 0.1404, Q4 AOD = 0.3159 (pooled MERRA-2 DUEXTTAU 25th and 75th percentiles).
 
-**Diriyah Q4 ∧ ¬V4 anchor cell** (pre-registered cleanest Goyens-regime cell: high-UVAI Diriyah scenes where V4 did not fire, n = 12 per `sq5_uvai_v4_contingency.csv`):
+**Diriyah Q4 ∧ ¬V4 anchor cell** (pre-registered cleanest Goyens-regime cell: high-UVAI Diriyah scenes where V4 did not fire, n = 12 per `halts/uvai_sq5/uvai_v4_contingency.csv`):
 
 | metric | value |
 |---|---:|

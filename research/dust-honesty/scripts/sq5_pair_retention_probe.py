@@ -34,9 +34,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-LABELS_CSV = DATA / "sq5_uvai_labels.csv"
-OUT_RETENTION = DATA / "sq5_pair_retention_probe.csv"
-OUT_SEASONAL = DATA / "sq5_seasonal_stratification.csv"
+LABELS_CSV = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
+OUT_RETENTION = DATA / "halts" / "uvai_sq5" / "pair_retention_probe.csv"
+OUT_SEASONAL = DATA / "halts" / "uvai_sq5" / "seasonal_stratification.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 WINDOW_DAYS = 60
