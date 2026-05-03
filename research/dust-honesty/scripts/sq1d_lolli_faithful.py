@@ -20,8 +20,8 @@ Usage:
     python sq1d_lolli_faithful.py --ref-mode alternate
 
 Output:
-    --ref-mode primary   → research/dust-honesty/data/sq1d_dbb_faithful.csv
-    --ref-mode alternate → research/dust-honesty/data/sq1d_dbb_faithful_alt.csv
+    --ref-mode primary   → research/dust-honesty/data/dbb_compute/dbb_calibration_sq1d.csv
+    --ref-mode alternate → research/dust-honesty/data/dbb_compute/dbb_calibration_alt_sq1d.csv
 
 In alternate mode, AOIs whose `sensitivity_alternate` field is null in
 sq1d_references.json (currently diriyah_gate) are skipped with a log line.
@@ -47,8 +47,8 @@ QID_CSV = DATA / "calibration" / "relabel_qiddiya_sq1d.csv"
 DIR_CSV = DATA / "calibration" / "manual_labels_sq1.csv"
 
 OUT_CSV_BY_MODE = {
-    "primary": DATA / "sq1d_dbb_faithful.csv",
-    "alternate": DATA / "sq1d_dbb_faithful_alt.csv",
+    "primary": DATA / "dbb_compute" / "dbb_calibration_sq1d.csv",
+    "alternate": DATA / "dbb_compute" / "dbb_calibration_alt_sq1d.csv",
 }
 
 BANDS = ["B2", "B3", "B4", "B11", "B12"]

@@ -143,7 +143,7 @@ For our Riyadh AOIs (bright desert substrate, no biomass burning regime, dust-do
 
 The numerator of Eq. 1 is `ρ_k^TOA(test) − ρ̄_k^TOA(ref)`, both terms TOA reflectances. To first order this cancels surface albedo (the reference subtracts off whatever the surface looks like through a clear atmosphere). What it does *not* cancel is the path-radiance and gas-absorption contribution to TOA reflectance that varies with solar zenith angle. A scene acquired at high sun (steep solar elevation, short atmospheric path) and the same scene acquired at low sun (shallow solar elevation, long atmospheric path) have systematically different TOA reflectance even at constant surface and constant aerosol load — because Rayleigh and gas optical paths scale with `1/cos(SZA)`.
 
-Diriyah Gate is the surface-stable AOI in our calibration set, and its primary reference is **2020-04-25** (April, near-equinox-to-summer, high-sun in Riyadh). The faithful-DBB output on the 6 Diriyah test scenes (`sq1d_dbb_faithful.csv`) shows exactly the seasonal pattern the SZA argument predicts:
+Diriyah Gate is the surface-stable AOI in our calibration set, and its primary reference is **2020-04-25** (April, near-equinox-to-summer, high-sun in Riyadh). The faithful-DBB output on the 6 Diriyah test scenes (`dbb_compute/dbb_calibration_sq1d.csv`) shows exactly the seasonal pattern the SZA argument predicts:
 
 | Test date | Months from 2020-04-25 | Approx. SZA regime | DBB |
 |---|---:|---|---:|
@@ -165,6 +165,6 @@ This means scene-mean DBB has a non-zero seasonal bias that scales with the angu
 ## 8. What this spec does NOT cover
 
 - The threshold tuning that turns scene-mean DBB into a clean/light_haze/heavy_dust flag — that is SQ1B (re-run after Part B).
-- Sensitivity analysis using alternate references — Part B' (output: `sq1d_dbb_faithful_alt.csv`; primary-vs-alternate Spearman ρ = 0.97 KSP / 0.92 Qiddiya — ordering stable across reference choice).
+- Sensitivity analysis using alternate references — Part B' (output: `dbb_compute/dbb_calibration_alt_sq1d.csv`; primary-vs-alternate Spearman ρ = 0.97 KSP / 0.92 Qiddiya — ordering stable across reference choice).
 - AERONET validation at KAUST — SQ8 (deferred until SQ1B re-run, SQ2–SQ7 ship).
 - Formal solar-zenith correction or reanalysis of Diriyah seasonality (see §7).

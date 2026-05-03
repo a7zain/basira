@@ -38,8 +38,8 @@ import pandas as pd
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "research" / "dust-honesty" / "data"
 
-PRIMARY_CSV = DATA / "sq1d_dbb_faithful.csv"
-ALT_CSV = DATA / "sq1d_dbb_faithful_alt.csv"
+PRIMARY_CSV = DATA / "dbb_compute" / "dbb_calibration_sq1d.csv"
+ALT_CSV = DATA / "dbb_compute" / "dbb_calibration_alt_sq1d.csv"
 
 OUT_RESULTS_CSV = DATA / "sq1b_threshold_results.csv"
 OUT_ROC_PNG = DATA / "sq1b_roc_curves.png"

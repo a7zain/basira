@@ -37,7 +37,7 @@ SQ1C_RELABEL = {
     "qiddiya_core":     DATA / "calibration" / "relabel_qiddiya_sq1c.csv",
     "diriyah_gate":     DATA / "calibration" / "relabel_diriyah_sq1c.csv",
 }
-OUT_CSV = DATA / "sq1c_dbb_faithful.csv"
+OUT_CSV = DATA / "dbb_compute" / "dbb_calibration_sq1c.csv"
 
 
 def load_sq1c_set():

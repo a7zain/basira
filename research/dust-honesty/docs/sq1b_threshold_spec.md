@@ -1,6 +1,6 @@
 # SQ1B re-run on faithful Lolli DBB — threshold tuning spec & results
 
-**Inputs:** `research/dust-honesty/data/sq1d_dbb_faithful.csv` (Part B primary, 30 rows) and `sq1d_dbb_faithful_alt.csv` (Part B' alternate references, 24 rows).
+**Inputs:** `research/dust-honesty/data/dbb_compute/dbb_calibration_sq1d.csv` (Part B primary, 30 rows) and `dbb_compute/dbb_calibration_alt_sq1d.csv` (Part B' alternate references, 24 rows).
 **Output table:** `sq1b_threshold_results.csv`.
 **Figures:** `sq1b_roc_curves.png`, `sq1b_bootstrap_thresholds.png`.
 **Companion:** `sq1d_lolli_formula.md` (formula spec). `SQ1B_RESULTS.md` (predecessor on inspired-not-faithful values, commit `3d3b511`).
@@ -69,7 +69,7 @@ AUC = 0.823, threshold = +0.0274, 95% CI = [−0.064, +0.027], CI half-width = 0
 
 ## 5. Sensitivity check (alternate references)
 
-By the stop-rule selection rule (largest passing variant; if none pass, highest-AUC variant), the chosen variant is **V1** (AUC = 1.000). V1 was re-run on `sq1d_dbb_faithful_alt.csv` filtered to its positive class (heavy_dust) and clean negatives.
+By the stop-rule selection rule (largest passing variant; if none pass, highest-AUC variant), the chosen variant is **V1** (AUC = 1.000). V1 was re-run on `dbb_compute/dbb_calibration_alt_sq1d.csv` filtered to its positive class (heavy_dust) and clean negatives.
 
 Diriyah has no alternate reference, so V1_alt operates on KSP + Qiddiya only (1 heavy_dust positive, 18 cleans — same scenes as V1_primary minus the 5 Diriyah cleans).
 

@@ -81,8 +81,8 @@ def panel1_override_to_clean():
 
 
 def panel2_spearman():
-    p = pd.read_csv(DATA / "sq1d_dbb_faithful.csv")
-    a = pd.read_csv(DATA / "sq1d_dbb_faithful_alt.csv")
+    p = pd.read_csv(DATA / "dbb_compute" / "dbb_calibration_sq1d.csv")
+    a = pd.read_csv(DATA / "dbb_compute" / "dbb_calibration_alt_sq1d.csv")
     out = {}
     for aoi in AOI_ORDER:
         pa = p[p["sub_aoi"] == aoi].copy()

@@ -20,8 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-SQ1D_DBB = DATA / "sq1d_dbb_faithful.csv"
-SQ1C_DBB = DATA / "sq1c_dbb_faithful.csv"
+SQ1D_DBB = DATA / "dbb_compute" / "dbb_calibration_sq1d.csv"
+SQ1C_DBB = DATA / "dbb_compute" / "dbb_calibration_sq1c.csv"
 
 SQ1D_LABELS = {
     "king_salman_park": (DATA / "calibration" / "relabel_ksp_sq1d.csv", "date", "final_label"),
