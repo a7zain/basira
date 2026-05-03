@@ -46,19 +46,19 @@ from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-FIG = ROOT / "research/dust-honesty/figures/sq8"
+FIG = ROOT / "research/dust-honesty/figures/high_aod_regression"
 FIG.mkdir(parents=True, exist_ok=True)
 
-AOD_CSV = DATA / "sq8_aod_per_scene.csv"
-RES_CSV = DATA / "sq8_ndvi_residuals.csv"
-PRIM_CSV = DATA / "sq8_regression_primary.csv"
-CROSS_CSV = DATA / "sq8_regression_crosscheck.csv"
-SENS_CSV = DATA / "sq8_regression_sensitivity.csv"
-PRED_CSV = DATA / "sq8_predicted_residuals.csv"
-CLASS_CSV = DATA / "sq8_signal_class.csv"
+AOD_CSV = DATA / "high_aod_regression" / "aod_per_scene_sq8.csv"
+RES_CSV = DATA / "high_aod_regression" / "ndvi_residuals_sq8.csv"
+PRIM_CSV = DATA / "high_aod_regression" / "regression_primary_sq8.csv"
+CROSS_CSV = DATA / "high_aod_regression" / "regression_crosscheck_sq8.csv"
+SENS_CSV = DATA / "high_aod_regression" / "regression_sensitivity_sq8.csv"
+PRED_CSV = DATA / "high_aod_regression" / "predicted_residuals_sq8.csv"
+CLASS_CSV = DATA / "high_aod_regression" / "signal_class_sq8.csv"
 UVAI_CSV = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
 
-OUT_MD = DATA / "sq8_summary_stats.md"
+OUT_MD = DATA / "high_aod_regression" / "summary_stats_sq8.md"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_LABELS = {
@@ -182,7 +182,7 @@ def fig_aod_distribution(df):
     fig.suptitle("SQ8 — per-AOI reanalysis AOD distribution\n"
                  "dashed = mean, dotted = median")
     fig.tight_layout()
-    out = FIG / "sq8_aod_distribution.png"
+    out = FIG / "aod_distribution_sq8.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -264,7 +264,7 @@ def fig_residual_vs_aod(df, prim, q1_aod, q4_aod):
     fig.text(0.5, -0.02, footer, ha="center", va="top",
              fontsize=8, style="italic", wrap=True)
     fig.tight_layout(rect=[0, 0.05, 1, 0.97])
-    out = FIG / "sq8_residual_vs_aod_primary.png"
+    out = FIG / "residual_vs_aod_primary_sq8.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -329,7 +329,7 @@ def fig_diriyah_anchor(df):
     ax.legend(loc="lower left", fontsize=9)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    out = FIG / "sq8_diriyah_anchor.png"
+    out = FIG / "diriyah_anchor_sq8.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -359,7 +359,7 @@ def fig_merra2_vs_cams(df):
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    out = FIG / "sq8_merra2_vs_cams_scatter.png"
+    out = FIG / "merra2_vs_cams_scatter_sq8.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -512,7 +512,7 @@ def fig_loading_regime_ladder():
     )
 
     fig.tight_layout(rect=[0, 0.06, 1, 0.95])
-    out = FIG / "sq8_operational_magnitude_ladder.png"
+    out = FIG / "operational_magnitude_ladder_sq8.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")

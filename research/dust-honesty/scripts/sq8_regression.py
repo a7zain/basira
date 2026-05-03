@@ -56,15 +56,15 @@ from statsmodels.formula.api import ols
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-RES_CSV = DATA / "sq8_ndvi_residuals.csv"
-AOD_CSV = DATA / "sq8_aod_per_scene.csv"
+RES_CSV = DATA / "high_aod_regression" / "ndvi_residuals_sq8.csv"
+AOD_CSV = DATA / "high_aod_regression" / "aod_per_scene_sq8.csv"
 UVAI_CSV = DATA / "halts" / "uvai_sq5" / "uvai_labels.csv"
 
-OUT_PRIMARY = DATA / "sq8_regression_primary.csv"
-OUT_CROSS = DATA / "sq8_regression_crosscheck.csv"
-OUT_SENS = DATA / "sq8_regression_sensitivity.csv"
-OUT_PRED = DATA / "sq8_predicted_residuals.csv"
-OUT_CLASS = DATA / "sq8_signal_class.csv"
+OUT_PRIMARY = DATA / "high_aod_regression" / "regression_primary_sq8.csv"
+OUT_CROSS = DATA / "high_aod_regression" / "regression_crosscheck_sq8.csv"
+OUT_SENS = DATA / "high_aod_regression" / "regression_sensitivity_sq8.csv"
+OUT_PRED = DATA / "high_aod_regression" / "predicted_residuals_sq8.csv"
+OUT_CLASS = DATA / "high_aod_regression" / "signal_class_sq8.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 

@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
 NDVI_CSV = DATA / "ndvi_bias" / "ndvi_per_scene_sq3.csv"
-OUT_CSV = DATA / "sq8_ndvi_residuals.csv"
+OUT_CSV = DATA / "high_aod_regression" / "ndvi_residuals_sq8.csv"
 
 SENSITIVITY_FLOOR = 3
 

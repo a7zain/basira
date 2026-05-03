@@ -20,7 +20,7 @@ Joined manifest + NDVI cache + UVAI: 221 candidate scenes (out of 228 manifest r
 | Qiddiya core | 74 | +0.611 | +1.624 | 18 | 18 | −0.042 | +1.845 | **+1.887** |
 | Diriyah Gate | 74 | +0.447 | +1.501 | 18 | 18 | −0.178 | +1.761 | **+1.939** |
 
-UVAI gap of +1.8–1.9 between Q4 and Q1 is large — these are real loading-regime contrasts, not noise quartiles. Receipt: `sq5_uvai_labels.csv`.
+UVAI gap of +1.8–1.9 between Q4 and Q1 is large — these are real loading-regime contrasts, not noise quartiles. Receipt: `halts/uvai_sq5/uvai_labels.csv`.
 
 ### R2 — pair retention probe (HARD HALT, all three AOIs)
 
@@ -30,7 +30,7 @@ UVAI gap of +1.8–1.9 between Q4 and Q1 is large — these are real loading-reg
 | Qiddiya core | 18 | 2 | 11.1% | 30% | **HALT** |
 | Diriyah Gate | 18 | 2 | 11.1% | 30% | **HALT** |
 
-Receipt: `sq5_pair_retention_probe.csv`. Seasonal-stratification table in `sq5_seasonal_stratification.csv`; visual in `figures/sq5/sq5_seasonal_stratification.png`.
+Receipt: `halts/uvai_sq5/pair_retention_probe.csv`. Seasonal-stratification table in `halts/uvai_sq5/seasonal_stratification.csv`; visual in `figures/halts/uvai_sq5/seasonal_stratification.png`.
 
 ### R5 — UVAI × V4 contingency (PASSED, diagnostic only — feeds §4.2)
 
@@ -40,7 +40,7 @@ Receipt: `sq5_pair_retention_probe.csv`. Seasonal-stratification table in `sq5_s
 | Qiddiya core | **16** | 2 | 40 | 16 |
 | Diriyah Gate | 6 | **12** | 2 | 54 |
 
-Confirms UVAI subsetting is NOT redundant with V4 subsetting. The two highlighted cells (Qiddiya 16/18 = 89% of Q4 fires V4; Diriyah Q4 ∧ ¬V4 = 12 scenes) are piece-B substance — see §4.2. Receipt: `sq5_uvai_v4_contingency.csv`.
+Confirms UVAI subsetting is NOT redundant with V4 subsetting. The two highlighted cells (Qiddiya 16/18 = 89% of Q4 fires V4; Diriyah Q4 ∧ ¬V4 = 12 scenes) are piece-B substance — see §4.2. Receipt: `halts/uvai_sq5/uvai_v4_contingency.csv`.
 
 ### R3, R4 (collected during recon)
 

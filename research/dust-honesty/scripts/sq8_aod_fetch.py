@@ -76,7 +76,7 @@ from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
 MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
-OUT_CSV = DATA / "sq8_aod_per_scene.csv"
+OUT_CSV = DATA / "high_aod_regression" / "aod_per_scene_sq8.csv"
 
 MERRA2_ASSET = "NASA/GSFC/MERRA/aer/2"
 MERRA2_BAND = "DUEXTTAU"
