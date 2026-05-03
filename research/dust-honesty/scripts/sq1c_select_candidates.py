@@ -29,20 +29,22 @@ DATA = ROOT / "research/dust-honesty/data"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 
+_AOI_ABBREV = {"king_salman_park": "ksp", "qiddiya_core": "qiddiya", "diriyah_gate": "diriyah"}
+
 NEGATIVE_CLASS_SOURCE = {
-    "king_salman_park": (DATA / "sq1d_ksp_relabel.csv", "date", "final_label"),
-    "qiddiya_core":     (DATA / "sq1d_qiddiya_relabel.csv", "date", "final_label"),
-    "diriyah_gate":     (DATA / "sq1_manual_labels.csv", "date", "label"),
+    "king_salman_park": (DATA / "calibration" / "relabel_ksp_sq1d.csv", "date", "final_label"),
+    "qiddiya_core":     (DATA / "calibration" / "relabel_qiddiya_sq1d.csv", "date", "final_label"),
+    "diriyah_gate":     (DATA / "calibration" / "manual_labels_sq1.csv", "date", "label"),
 }
 
 UVAI_CSV = {
-    "king_salman_park": DATA / "sq1d_ksp_uvai_all.csv",
-    "qiddiya_core":     DATA / "sq1d_qiddiya_uvai_all.csv",
-    "diriyah_gate":     DATA / "sq1d_diriyah_uvai_all.csv",
+    "king_salman_park": DATA / "calibration" / "uvai_ksp_sq1d.csv",
+    "qiddiya_core":     DATA / "calibration" / "uvai_qiddiya_sq1d.csv",
+    "diriyah_gate":     DATA / "calibration" / "uvai_diriyah_sq1d.csv",
 }
 
 OUT_CSV = {
-    aoi: DATA / f"sq1c_{aoi}_positive_candidates.csv" for aoi in AOIS
+    aoi: DATA / "calibration" / f"candidates_{_AOI_ABBREV[aoi]}_sq1c.csv" for aoi in AOIS
 }
 
 TOP_N = 15

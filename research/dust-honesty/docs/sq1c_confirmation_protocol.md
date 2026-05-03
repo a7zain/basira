@@ -129,7 +129,7 @@ UVAI values are first surfaced HERE, never during labeling.
 `confirmed_label` (instead of `final_label`) from the SQ1C rows; SQ1D rows
 continue to use their existing labels (already researcher-confirmed in
 SQ1D Pass 5). Outputs go to a parallel set of files prefixed
-`sq1b_rerun_v2_confirmed_*` and `sq1bc_combined_calibration_confirmed.csv`,
+`sq1b_rerun_v2_confirmed_*` and `calibration/combined_calibration_confirmed.csv`,
 so the preliminary results from session 3 are preserved untouched for
 audit.
 

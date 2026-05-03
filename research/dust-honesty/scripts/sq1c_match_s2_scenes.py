@@ -34,7 +34,8 @@ from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
-CANDS = {a: DATA / f"sq1c_{a}_positive_candidates.csv" for a in AOIS}
+_AOI_ABBREV = {"king_salman_park": "ksp", "qiddiya_core": "qiddiya", "diriyah_gate": "diriyah"}
+CANDS = {a: DATA / "calibration" / f"candidates_{_AOI_ABBREV[a]}_sq1c.csv" for a in AOIS}
 
 CLOUD_MAX = 20.0
 WINDOW_DAYS = 3

@@ -9,7 +9,7 @@ Joins:
     sq1c_<aoi>_relabel.csv files for final_label, ai_confidence,
     bias_exposed_during_ai_labeling.
 
-Output: research/dust-honesty/data/sq1bc_combined_calibration.csv
+Output: research/dust-honesty/data/calibration/_archive/combined_calibration_preliminary.csv
 Schema: row_id, source, aoi, date, sub_aoi, dbb_faithful,
         n_valid_pixels, n_total_pixels, final_label, ai_confidence,
         bias_exposed_during_ai_labeling, in_v3_scope, in_v4_scope
@@ -24,18 +24,18 @@ SQ1D_DBB = DATA / "sq1d_dbb_faithful.csv"
 SQ1C_DBB = DATA / "sq1c_dbb_faithful.csv"
 
 SQ1D_LABELS = {
-    "king_salman_park": (DATA / "sq1d_ksp_relabel.csv", "date", "final_label"),
-    "qiddiya_core":     (DATA / "sq1d_qiddiya_relabel.csv", "date", "final_label"),
-    "diriyah_gate":     (DATA / "sq1_manual_labels.csv", "date", "label"),  # AOI col
+    "king_salman_park": (DATA / "calibration" / "relabel_ksp_sq1d.csv", "date", "final_label"),
+    "qiddiya_core":     (DATA / "calibration" / "relabel_qiddiya_sq1d.csv", "date", "final_label"),
+    "diriyah_gate":     (DATA / "calibration" / "manual_labels_sq1.csv", "date", "label"),  # AOI col
 }
 
 SQ1C_RELABEL = {
-    "king_salman_park": DATA / "sq1c_king_salman_park_relabel.csv",
-    "qiddiya_core":     DATA / "sq1c_qiddiya_core_relabel.csv",
-    "diriyah_gate":     DATA / "sq1c_diriyah_gate_relabel.csv",
+    "king_salman_park": DATA / "calibration" / "relabel_ksp_sq1c.csv",
+    "qiddiya_core":     DATA / "calibration" / "relabel_qiddiya_sq1c.csv",
+    "diriyah_gate":     DATA / "calibration" / "relabel_diriyah_sq1c.csv",
 }
 
-OUT_CSV = DATA / "sq1bc_combined_calibration.csv"
+OUT_CSV = DATA / "calibration" / "_archive" / "combined_calibration_preliminary.csv"
 
 FIELDS = [
     "row_id", "source", "aoi", "date", "sub_aoi",

@@ -26,9 +26,9 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-KSP_CSV = ROOT / "research/dust-honesty/data/sq1d_ksp_uvai_all.csv"
-OUT_DIR = ROOT / "research/dust-honesty/data/sq1d_ksp_ref_thumbnails"
-MONTAGE_PATH = ROOT / "research/dust-honesty/data/sq1d_ksp_ref_montage.png"
+KSP_CSV = ROOT / "research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv"
+OUT_DIR = ROOT / "research/dust-honesty/data/calibration/thumbnails/ksp_ref_sq1d"
+MONTAGE_PATH = ROOT / "research/dust-honesty/figures/calibration/montages/ref_ksp_sq1d.png"
 AOI = "king_salman_park"
 
 # Pre-known fixed candidates

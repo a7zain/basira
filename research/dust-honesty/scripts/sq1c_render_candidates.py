@@ -47,22 +47,25 @@ from src.phase1_aois import get_bbox  # noqa: E402
 DATA = ROOT / "research/dust-honesty/data"
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 
-CAND_CSV = {a: DATA / f"sq1c_{a}_positive_candidates.csv" for a in AOIS}
+_AOI_ABBREV = {"king_salman_park": "ksp", "qiddiya_core": "qiddiya", "diriyah_gate": "diriyah"}
+FIGS = ROOT / "research/dust-honesty/figures"
+
+CAND_CSV = {a: DATA / "calibration" / f"candidates_{_AOI_ABBREV[a]}_sq1c.csv" for a in AOIS}
 STRETCH_JSON = {
-    "king_salman_park": DATA / "sq1d_ksp_stretch.json",
-    "qiddiya_core":     DATA / "sq1d_qiddiya_stretch.json",
-    "diriyah_gate":     DATA / "sq1d_diriyah_stretch.json",
+    "king_salman_park": DATA / "calibration" / "stretch_ksp_sq1d.json",
+    "qiddiya_core":     DATA / "calibration" / "stretch_qiddiya_sq1d.json",
+    "diriyah_gate":     DATA / "calibration" / "stretch_diriyah_sq1d.json",
 }
-THUMB_DIR = {a: DATA / f"sq1c_{a}_test_thumbnails" for a in AOIS}
-MONTAGE_PATH = {a: DATA / f"sq1c_{a}_test_montage.png" for a in AOIS}
-MANIFEST_CSV = DATA / "sq1c_scene_manifest.csv"
+THUMB_DIR = {a: DATA / "calibration" / "thumbnails" / f"{_AOI_ABBREV[a]}_test_sq1c" for a in AOIS}
+MONTAGE_PATH = {a: FIGS / "calibration" / "montages" / f"test_{_AOI_ABBREV[a]}_sq1c.png" for a in AOIS}
+MANIFEST_CSV = DATA / "calibration" / "manifest_sq1c.csv"
 
 # Reference SQ1D test thumbnail per AOI (used for pre-flight visual check)
 SQ1D_REF_THUMB = {
-    "king_salman_park": DATA / "sq1d_ksp_test_thumbnails" / "2021-07.png",  # clean
-    "qiddiya_core":     DATA / "sq1d_qiddiya_test_thumbnails" / "2020-01.png",  # clean
+    "king_salman_park": DATA / "calibration" / "thumbnails" / "ksp_test_sq1d" / "2021-07.png",  # clean
+    "qiddiya_core":     DATA / "calibration" / "thumbnails" / "qiddiya_test_sq1d" / "2020-01.png",  # clean
     # diriyah has no SQ1D test thumbnails — fall back to first KSP
-    "diriyah_gate":     DATA / "sq1d_ksp_test_thumbnails" / "2021-07.png",
+    "diriyah_gate":     DATA / "calibration" / "thumbnails" / "ksp_test_sq1d" / "2021-07.png",
 }
 
 # Visibly-blank guard (ported from sq1d_ksp_render_candidates_v2.py @ ec88f93)

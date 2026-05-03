@@ -6,9 +6,9 @@ Inputs:
   research/dust-honesty/data/sq2_dbb_operational.csv (V4 flag per row)
   research/dust-honesty/data/sq3_ndvi_per_scene.csv (NDVI per scene; for
     SQ5 candidate filter — must have NDVI to be a candidate)
-  research/dust-honesty/data/sq1d_ksp_uvai_all.csv      (KSP UVAI)
-  research/dust-honesty/data/sq1d_qiddiya_uvai_all.csv  (Qiddiya UVAI)
-  research/dust-honesty/data/sq1d_diriyah_uvai_all.csv  (Diriyah UVAI)
+  research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv      (KSP UVAI)
+  research/dust-honesty/data/calibration/uvai_qiddiya_sq1d.csv  (Qiddiya UVAI)
+  research/dust-honesty/data/calibration/uvai_diriyah_sq1d.csv  (Diriyah UVAI)
 
 Outputs:
   research/dust-honesty/data/sq5_uvai_labels.csv
@@ -54,9 +54,9 @@ MANIFEST = DATA / "sq2_scene_manifest.csv"
 DBB_CSV = DATA / "sq2_dbb_operational.csv"
 NDVI_CSV = DATA / "sq3_ndvi_per_scene.csv"
 UVAI_FILES = {
-    "king_salman_park": DATA / "sq1d_ksp_uvai_all.csv",
-    "qiddiya_core":     DATA / "sq1d_qiddiya_uvai_all.csv",
-    "diriyah_gate":     DATA / "sq1d_diriyah_uvai_all.csv",
+    "king_salman_park": DATA / "calibration" / "uvai_ksp_sq1d.csv",
+    "qiddiya_core":     DATA / "calibration" / "uvai_qiddiya_sq1d.csv",
+    "diriyah_gate":     DATA / "calibration" / "uvai_diriyah_sq1d.csv",
 }
 OUT_LABELS = DATA / "sq5_uvai_labels.csv"
 OUT_CONTINGENCY = DATA / "sq5_uvai_v4_contingency.csv"

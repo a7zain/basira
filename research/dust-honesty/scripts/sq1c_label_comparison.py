@@ -40,14 +40,20 @@ AOIS = [
     ("diriyah_gate",     "Diriyah"),
 ]
 
-OUT_CSV = DATA / "sq1c_confirmation_audit.csv"
+OUT_CSV = DATA / "calibration" / "confirmation_audit_sq1c.csv"
+
+AOI_ABBREV = {
+    "king_salman_park": "ksp",
+    "qiddiya_core": "qiddiya",
+    "diriyah_gate": "diriyah",
+}
 
 CLEAN_UVAI_FLAG = 2.0   # confirmed clean but UVAI > this is interesting
 HEAVY_UVAI_FLAG = 1.0   # confirmed heavy_dust but UVAI < this is interesting
 
 
 def load_aoi(aoi: str):
-    path = DATA / f"sq1c_{aoi}_relabel.csv"
+    path = DATA / "calibration" / f"relabel_{AOI_ABBREV[aoi]}_sq1c.csv"
     with open(path) as f:
         return list(csv.DictReader(f))
 

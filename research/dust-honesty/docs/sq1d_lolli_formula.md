@@ -89,7 +89,7 @@ Rationale: matches Phase 1's monthly-slot semantics; the lowest-cloud rule mirro
 
 ### Choice 2 — Reference scenes
 
-Use the **PRIMARY** references from `sq1d_references.json` (Phase B' will repeat with sensitivity alternates next session):
+Use the **PRIMARY** references from `calibration/references_sq1d.json` (Phase B' will repeat with sensitivity alternates next session):
 
 | AOI | Primary ref date |
 |---|---|
@@ -99,7 +99,7 @@ Use the **PRIMARY** references from `sq1d_references.json` (Phase B' will repeat
 
 For the reference, select the S2 scene **on that exact date**, lowest cloud cover if multiple tiles overlap.
 
-Rationale: the references are already date-locked in `sq1d_references.json` per the 2026-04-28/29 selection rule (cleanest UVAI from a date with surface-state representative of test scenes). The "AOD < 0.07" original criterion is replaced by our UVAI-based selection rule because no AERONET ground truth exists at any of the three Riyadh AOIs — this substitution is documented in CLAUDE.md and the SQ8 plan.
+Rationale: the references are already date-locked in `calibration/references_sq1d.json` per the 2026-04-28/29 selection rule (cleanest UVAI from a date with surface-state representative of test scenes). The "AOD < 0.07" original criterion is replaced by our UVAI-based selection rule because no AERONET ground truth exists at any of the three Riyadh AOIs — this substitution is documented in CLAUDE.md and the SQ8 plan.
 
 ### Choice 3 — Resolution
 

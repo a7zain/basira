@@ -16,11 +16,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-KSP_CSV = DATA / "sq1d_ksp_relabel.csv"
-QIDDIYA_CSV = DATA / "sq1d_qiddiya_relabel.csv"
-KSP_UVAI_CSV = DATA / "sq1d_ksp_uvai_all.csv"
-QIDDIYA_UVAI_CSV = DATA / "sq1d_qiddiya_uvai_all.csv"
-REFS_JSON = DATA / "sq1d_references.json"
+KSP_CSV = DATA / "calibration" / "relabel_ksp_sq1d.csv"
+QIDDIYA_CSV = DATA / "calibration" / "relabel_qiddiya_sq1d.csv"
+KSP_UVAI_CSV = DATA / "calibration" / "uvai_ksp_sq1d.csv"
+QIDDIYA_UVAI_CSV = DATA / "calibration" / "uvai_qiddiya_sq1d.csv"
+REFS_JSON = DATA / "calibration" / "references_sq1d.json"
 
 KSP_PRELABELS = {
     "2021-02": ("clean", "high",

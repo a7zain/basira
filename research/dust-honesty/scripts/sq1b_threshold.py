@@ -47,8 +47,8 @@ SEED = 20260427
 
 
 def load_joined() -> pd.DataFrame:
-    labels = pd.read_csv(DATA / "sq1_manual_labels.csv")
-    values = pd.read_csv(DATA / "sq1_dbb_values.csv")
+    labels = pd.read_csv(DATA / "calibration" / "manual_labels_sq1.csv")
+    values = pd.read_csv(DATA / "calibration" / "_archive" / "dbb_values_sq1.csv")
     df = labels.merge(values[["scene_id", "dbb_mean"]], on="scene_id")
     return df
 

@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-OUT_PATH = ROOT / "research/dust-honesty/data/sq1d_ksp_bbox_proposal.png"
+OUT_PATH = ROOT / "research/dust-honesty/figures/calibration/_archive/bbox_proposal_ksp_sq1d.png"
 
 # Wikipedia: 24°43'08"N 46°43'26"E => 24.71889N 46.72389E, 16.6 km^2.
 CENTER_LAT = 24.71889

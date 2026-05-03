@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-OUT_CSV = ROOT / "research/dust-honesty/data/sq1d_qiddiya_uvai_all.csv"
+OUT_CSV = ROOT / "research/dust-honesty/data/calibration/uvai_qiddiya_sq1d.csv"
 AOI = "qiddiya_core"
 START_YM = (2020, 1)
 END_YM = (2026, 4)

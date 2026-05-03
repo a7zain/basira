@@ -33,9 +33,9 @@ from sq1d_lolli_faithful import (  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
 SQ1C_RELABEL = {
-    "king_salman_park": DATA / "sq1c_king_salman_park_relabel.csv",
-    "qiddiya_core":     DATA / "sq1c_qiddiya_core_relabel.csv",
-    "diriyah_gate":     DATA / "sq1c_diriyah_gate_relabel.csv",
+    "king_salman_park": DATA / "calibration" / "relabel_ksp_sq1c.csv",
+    "qiddiya_core":     DATA / "calibration" / "relabel_qiddiya_sq1c.csv",
+    "diriyah_gate":     DATA / "calibration" / "relabel_diriyah_sq1c.csv",
 }
 OUT_CSV = DATA / "sq1c_dbb_faithful.csv"
 

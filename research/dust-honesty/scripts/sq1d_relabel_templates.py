@@ -17,10 +17,10 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-LABELS_CSV = ROOT / "research/dust-honesty/data/sq1_manual_labels.csv"
+LABELS_CSV = ROOT / "research/dust-honesty/data/calibration/manual_labels_sq1.csv"
 OUTPUTS = {
-    "king_salman_park": ROOT / "research/dust-honesty/data/sq1d_ksp_relabel.csv",
-    "qiddiya_core": ROOT / "research/dust-honesty/data/sq1d_qiddiya_relabel.csv",
+    "king_salman_park": ROOT / "research/dust-honesty/data/calibration/relabel_ksp_sq1d.csv",
+    "qiddiya_core": ROOT / "research/dust-honesty/data/calibration/relabel_qiddiya_sq1d.csv",
 }
 FIELDS = [
     "date",

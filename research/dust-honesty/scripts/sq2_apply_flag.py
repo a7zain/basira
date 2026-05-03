@@ -60,10 +60,10 @@ from sq1d_lolli_faithful import (  # noqa: E402
 )
 
 DATA = ROOT / "research/dust-honesty/data"
-REFS_JSON = DATA / "sq1d_references.json"
-COMBINED_CAL_CSV = DATA / "sq1bc_combined_calibration_confirmed.csv"
-SQ1D_MANIFEST = DATA / "sq1d_scene_manifest.csv"
-SQ1C_MANIFEST = DATA / "sq1c_scene_manifest.csv"
+REFS_JSON = DATA / "calibration" / "references_sq1d.json"
+COMBINED_CAL_CSV = DATA / "calibration" / "combined_calibration_confirmed.csv"
+SQ1D_MANIFEST = DATA / "calibration" / "manifest_sq1d.csv"
+SQ1C_MANIFEST = DATA / "calibration" / "manifest_sq1c.csv"
 
 OUT_MANIFEST = DATA / "sq2_scene_manifest.csv"
 OUT_DBB = DATA / "sq2_dbb_operational.csv"

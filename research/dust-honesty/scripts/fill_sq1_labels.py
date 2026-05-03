@@ -17,7 +17,7 @@ import csv
 import sys
 from pathlib import Path
 
-CSV_PATH = Path("research/dust-honesty/data/sq1_manual_labels.csv")
+CSV_PATH = Path("research/dust-honesty/data/calibration/manual_labels_sq1.csv")
 
 # scene_id -> label
 LABELS = {

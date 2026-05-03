@@ -26,8 +26,8 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-OUT_DIR = ROOT / "research/dust-honesty/data/sq1d_qiddiya_ref_thumbnails"
-MONTAGE_PATH = ROOT / "research/dust-honesty/data/sq1d_qiddiya_ref_montage.png"
+OUT_DIR = ROOT / "research/dust-honesty/data/calibration/thumbnails/qiddiya_ref_sq1d"
+MONTAGE_PATH = ROOT / "research/dust-honesty/figures/calibration/montages/ref_qiddiya_sq1d.png"
 AOI = "qiddiya_core"
 
 CANDIDATES = [

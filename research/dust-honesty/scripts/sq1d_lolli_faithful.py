@@ -41,10 +41,10 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-REFS_JSON = DATA / "sq1d_references.json"
-KSP_CSV = DATA / "sq1d_ksp_relabel.csv"
-QID_CSV = DATA / "sq1d_qiddiya_relabel.csv"
-DIR_CSV = DATA / "sq1_manual_labels.csv"
+REFS_JSON = DATA / "calibration" / "references_sq1d.json"
+KSP_CSV = DATA / "calibration" / "relabel_ksp_sq1d.csv"
+QID_CSV = DATA / "calibration" / "relabel_qiddiya_sq1d.csv"
+DIR_CSV = DATA / "calibration" / "manual_labels_sq1.csv"
 
 OUT_CSV_BY_MODE = {
     "primary": DATA / "sq1d_dbb_faithful.csv",

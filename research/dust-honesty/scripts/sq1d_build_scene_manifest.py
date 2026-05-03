@@ -46,18 +46,18 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-KSP_CSV = DATA / "sq1d_ksp_relabel.csv"
-QID_CSV = DATA / "sq1d_qiddiya_relabel.csv"
-DIR_CSV = DATA / "sq1_manual_labels.csv"
+KSP_CSV = DATA / "calibration" / "relabel_ksp_sq1d.csv"
+QID_CSV = DATA / "calibration" / "relabel_qiddiya_sq1d.csv"
+DIR_CSV = DATA / "calibration" / "manual_labels_sq1.csv"
 
-KSP_THUMB_DIR = DATA / "sq1d_ksp_test_thumbnails"
-QID_THUMB_DIR = DATA / "sq1d_qiddiya_test_thumbnails"
+KSP_THUMB_DIR = DATA / "calibration" / "thumbnails" / "ksp_test_sq1d"
+QID_THUMB_DIR = DATA / "calibration" / "thumbnails" / "qiddiya_test_sq1d"
 
-KSP_STRETCH = DATA / "sq1d_ksp_stretch.json"
-QID_STRETCH = DATA / "sq1d_qiddiya_stretch.json"
-DIR_STRETCH = DATA / "sq1d_diriyah_stretch.json"
+KSP_STRETCH = DATA / "calibration" / "stretch_ksp_sq1d.json"
+QID_STRETCH = DATA / "calibration" / "stretch_qiddiya_sq1d.json"
+DIR_STRETCH = DATA / "calibration" / "stretch_diriyah_sq1d.json"
 
-OUT_CSV = DATA / "sq1d_scene_manifest.csv"
+OUT_CSV = DATA / "calibration" / "manifest_sq1d.csv"
 
 # Tolerance for pixel comparison (PNG codec drift)
 PIXEL_FRAC_TOL = 0.01     # ≤1% of pixels may differ

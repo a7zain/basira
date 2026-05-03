@@ -5,7 +5,7 @@ Find low-aerosol reference candidates over king_salman_park by scanning
 TROPOMI UVAI for every cloud-free (<5%) Sentinel-2 L1C scene from
 2020-01 through 2026-04.
 
-Output: research/dust-honesty/data/sq1d_ksp_uvai_all.csv
+Output: research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv
 """
 import csv
 import math
@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-OUT_CSV = ROOT / "research/dust-honesty/data/sq1d_ksp_uvai_all.csv"
+OUT_CSV = ROOT / "research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv"
 AOI = "king_salman_park"
 START_YM = (2020, 1)
 END_YM = (2026, 4)  # inclusive

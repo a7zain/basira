@@ -26,8 +26,8 @@ import pandas as pd
 import rasterio
 
 REPO = Path(__file__).resolve().parents[3]
-SAMPLE_CSV = REPO / "research" / "dust-honesty" / "data" / "sq1_dbb_values.csv"
-OUT = REPO / "research" / "dust-honesty" / "figures" / "sq1_thumbnails.png"
+SAMPLE_CSV = REPO / "research" / "dust-honesty" / "data" / "calibration" / "_archive" / "dbb_values_sq1.csv"
+OUT = REPO / "research" / "dust-honesty" / "figures" / "calibration" / "_archive" / "thumbnails_sq1.png"
 
 
 def largest_interior_rect(mask: np.ndarray) -> tuple[int, int, int, int]:

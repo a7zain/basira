@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 IN_CSV = DATA / "sq2_dbb_operational.csv"
 FAILURES_CSV = DATA / "sq2_cross_check_failures.csv"
-COMBINED_CAL_CSV = DATA / "sq1bc_combined_calibration_confirmed.csv"
+COMBINED_CAL_CSV = DATA / "calibration" / "combined_calibration_confirmed.csv"
 OUT_MD = DATA / "sq2_summary_stats.md"
 
 AOI_ORDER = ["king_salman_park", "qiddiya_core", "diriyah_gate"]

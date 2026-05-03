@@ -10,7 +10,7 @@ This is the operational readout for piece B. SQ1B sized the threshold; SQ2 measu
 
 ## 1. What SQ2 does (and does not do)
 
-SQ2 takes the V4 confirmed Youden threshold (+0.034) and applies it to one Sentinel-2 scene per (AOI, month) over Jan 2020 – Apr 2026. Selection follows a manifest-locked priority: any (AOI, month) overlapping the SQ1B/SQ1D/SQ1C calibration set inherits the locked scene; remaining slots are picked by lowest `CLOUDY_PIXEL_PERCENTAGE` over the AOI bbox in that calendar month, with date ascending as tiebreaker. DBB compute is byte-identical to `sq1d_lolli_faithful.compute_dbb` (single image, single sum+count reducer, no `bestEffort`, native scale 20m), imported wholesale to guarantee math parity. References per AOI are unchanged from `sq1d_references.json`.
+SQ2 takes the V4 confirmed Youden threshold (+0.034) and applies it to one Sentinel-2 scene per (AOI, month) over Jan 2020 – Apr 2026. Selection follows a manifest-locked priority: any (AOI, month) overlapping the SQ1B/SQ1D/SQ1C calibration set inherits the locked scene; remaining slots are picked by lowest `CLOUDY_PIXEL_PERCENTAGE` over the AOI bbox in that calendar month, with date ascending as tiebreaker. DBB compute is byte-identical to `sq1d_lolli_faithful.compute_dbb` (single image, single sum+count reducer, no `bestEffort`, native scale 20m), imported wholesale to guarantee math parity. References per AOI are unchanged from `calibration/references_sq1d.json`.
 
 A self-reference unit test (KSP test scene = ref scene) ran at the start of the sweep and returned `DBB = 0.00e+00` exactly, confirming the formula has not drifted.
 
@@ -66,7 +66,7 @@ Calibration overlap rows (where `(aoi, year, month)` appears in `sq1bc_combined_
 | KSP | 2021-02 | `20210204T073111_..._T38RPN` | -0.0885 | -0.1050 | +0.0165 |
 | KSP | 2026-02 | `20260213T074301_..._T38RPN` | +0.0069 | +0.0108 | -0.0039 |
 
-**Both failures are GEE processing-baseline drift, not formula drift.** The system_indexes match the calibration manifest exactly; the underlying L1C/L2A pixel data has been backfilled with updated baselines since calibration was computed (the KSP 2021-02 scene was already documented as drift-prone in `sq1d_scene_manifest.csv`'s lock note — the manifest locks `system:index`, but GEE retains the right to update the pixel content of that index). Both deltas leave the V4 classification unchanged: cal and sq2 are both V4-negative on each row. **Classifications are stable; pixel values shifted by ≤1.6%.** That is the load-bearing read.
+**Both failures are GEE processing-baseline drift, not formula drift.** The system_indexes match the calibration manifest exactly; the underlying L1C/L2A pixel data has been backfilled with updated baselines since calibration was computed (the KSP 2021-02 scene was already documented as drift-prone in `calibration/manifest_sq1d.csv`'s lock note — the manifest locks `system:index`, but GEE retains the right to update the pixel content of that index). Both deltas leave the V4 classification unchanged: cal and sq2 are both V4-negative on each row. **Classifications are stable; pixel values shifted by ≤1.6%.** That is the load-bearing read.
 
 The self-reference unit test (DBB exactly 0 at test=ref) passing on the same run rules out formula or pairing bugs as the source. The drift exists in GEE, not in our code.
 

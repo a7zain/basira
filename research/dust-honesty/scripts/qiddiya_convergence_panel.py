@@ -63,17 +63,17 @@ HALT_PCT = 30.0
 
 def panel1_override_to_clean():
     out = {}
-    df = pd.read_csv(DATA / "sq1d_ksp_relabel.csv")
+    df = pd.read_csv(DATA / "calibration" / "relabel_ksp_sq1d.csv")
     n = len(df)
     k = int(((df["old_label"] != "clean") & (df["final_label"] == "clean")).sum())
     out["king_salman_park"] = (k / n * 100.0, k, n, "SQ1D old->final")
 
-    df = pd.read_csv(DATA / "sq1d_qiddiya_relabel.csv")
+    df = pd.read_csv(DATA / "calibration" / "relabel_qiddiya_sq1d.csv")
     n = len(df)
     k = int(((df["old_label"] != "clean") & (df["final_label"] == "clean")).sum())
     out["qiddiya_core"] = (k / n * 100.0, k, n, "SQ1D old->final")
 
-    df = pd.read_csv(DATA / "sq1c_diriyah_gate_relabel.csv")
+    df = pd.read_csv(DATA / "calibration" / "relabel_diriyah_sq1c.csv")
     n = len(df)
     k = int(((df["ai_prelabel"] != "clean") & (df["final_label"] == "clean")).sum())
     out["diriyah_gate"] = (k / n * 100.0, k, n, "SQ1C ai_pre->final")

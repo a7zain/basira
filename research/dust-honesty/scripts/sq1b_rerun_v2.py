@@ -38,7 +38,7 @@ from sq1b_rerun import (  # noqa: E402
     youden_threshold, bootstrap_thresholds,
 )
 
-INPUT_CSV = DATA / "sq1bc_combined_calibration.csv"
+INPUT_CSV = DATA / "calibration" / "_archive" / "combined_calibration_preliminary.csv"
 OUT_RESULTS_CSV = DATA / "sq1b_rerun_v2_threshold_results.csv"
 OUT_ROC_PNG = DATA / "sq1b_rerun_v2_roc_curves.png"
 OUT_BOOT_PNG = DATA / "sq1b_rerun_v2_bootstrap_thresholds.png"

@@ -59,12 +59,19 @@ LABEL_KEYS = {
 VALID_LABELS = set(LABEL_KEYS.values())
 
 
+AOI_ABBREV = {
+    "king_salman_park": "ksp",
+    "qiddiya_core": "qiddiya",
+    "diriyah_gate": "diriyah",
+}
+
+
 def relabel_path(aoi: str) -> Path:
-    return DATA / f"sq1c_{aoi}_relabel.csv"
+    return DATA / "calibration" / f"relabel_{AOI_ABBREV[aoi]}_sq1c.csv"
 
 
 def thumb_dir(aoi: str) -> Path:
-    return DATA / f"sq1c_{aoi}_test_thumbnails"
+    return DATA / "calibration" / "thumbnails" / f"{AOI_ABBREV[aoi]}_test_sq1c"
 
 
 def thumb_path(aoi: str, date: str) -> Path:

@@ -4,7 +4,7 @@ SQ1D Part A.5 — TROPOMI UVAI cross-check on reference candidates.
 For each candidate scene, fetch TROPOMI OFFL UVAI on the same date and
 reduce mean/max over the AOI bbox at 1113m scale (TROPOMI native).
 
-Output: research/dust-honesty/data/sq1d_reference_uvai.csv
+Output: research/dust-honesty/data/calibration/_archive/reference_uvai_sq1d.csv
 """
 import csv
 import math
@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-IN_CSV = ROOT / "research/dust-honesty/data/sq1d_reference_candidates.csv"
-OUT_CSV = ROOT / "research/dust-honesty/data/sq1d_reference_uvai.csv"
+IN_CSV = ROOT / "research/dust-honesty/data/calibration/_archive/reference_candidates_sq1d.csv"
+OUT_CSV = ROOT / "research/dust-honesty/data/calibration/_archive/reference_uvai_sq1d.csv"
 TROPOMI_SCALE = 1113
 
 

@@ -32,11 +32,11 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-LABELS_CSV = ROOT / "research/dust-honesty/data/sq1_manual_labels.csv"
-STRETCH_JSON = ROOT / "research/dust-honesty/data/sq1d_ksp_stretch.json"
-OUT_DIR = ROOT / "research/dust-honesty/data/sq1d_ksp_test_thumbnails"
-MONTAGE_PATH = ROOT / "research/dust-honesty/data/sq1d_ksp_test_montage.png"
-MANIFEST_CSV = ROOT / "research/dust-honesty/data/sq1d_scene_manifest.csv"
+LABELS_CSV = ROOT / "research/dust-honesty/data/calibration/manual_labels_sq1.csv"
+STRETCH_JSON = ROOT / "research/dust-honesty/data/calibration/stretch_ksp_sq1d.json"
+OUT_DIR = ROOT / "research/dust-honesty/data/calibration/thumbnails/ksp_test_sq1d"
+MONTAGE_PATH = ROOT / "research/dust-honesty/figures/calibration/montages/test_ksp_sq1d.png"
+MANIFEST_CSV = ROOT / "research/dust-honesty/data/calibration/manifest_sq1d.csv"
 AOI = "king_salman_park"
 
 

@@ -13,9 +13,9 @@ import csv
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-UVAI_CSV = ROOT / "research/dust-honesty/data/sq1d_ksp_uvai_all.csv"
-LABELS_CSV = ROOT / "research/dust-honesty/data/sq1_manual_labels.csv"
-OUT_CSV = ROOT / "research/dust-honesty/data/sq1d_ksp_reference_candidates.csv"
+UVAI_CSV = ROOT / "research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv"
+LABELS_CSV = ROOT / "research/dust-honesty/data/calibration/manual_labels_sq1.csv"
+OUT_CSV = ROOT / "research/dust-honesty/data/calibration/candidates_ref_ksp_sq1d.csv"
 AOI = "king_salman_park"
 RECENT_START = "2023-01-01"
 POOL_SIZE = 3

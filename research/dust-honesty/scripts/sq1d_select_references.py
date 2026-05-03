@@ -5,7 +5,7 @@ For each AOI, take all 'clean'-labeled months from sq1_manual_labels.csv,
 query GEE COPERNICUS/S2_HARMONIZED (L1C) for matching date×bbox, and rank
 the top 5 cleanest L1C scenes per AOI by CLOUDY_PIXEL_PERCENTAGE.
 
-Output: research/dust-honesty/data/sq1d_reference_candidates.csv
+Output: research/dust-honesty/data/calibration/_archive/reference_candidates_sq1d.csv
 """
 import csv
 import os
@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
-LABELS_CSV = ROOT / "research/dust-honesty/data/sq1_manual_labels.csv"
-OUT_CSV = ROOT / "research/dust-honesty/data/sq1d_reference_candidates.csv"
+LABELS_CSV = ROOT / "research/dust-honesty/data/calibration/manual_labels_sq1.csv"
+OUT_CSV = ROOT / "research/dust-honesty/data/calibration/_archive/reference_candidates_sq1d.csv"
 TOP_N = 5
 
 

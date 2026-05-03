@@ -40,9 +40,9 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-KSP_CSV = DATA / "sq1d_ksp_uvai_all.csv"
-OUT_CSV = DATA / "sq1d_uvai_source_check.csv"
-OUT_PNG = DATA / "sq1d_uvai_source_check.png"
+KSP_CSV = DATA / "calibration" / "uvai_ksp_sq1d.csv"
+OUT_CSV = DATA / "calibration" / "_archive" / "uvai_source_check_sq1d.csv"
+OUT_PNG = ROOT / "research/dust-honesty/figures/calibration/_archive/uvai_source_check_sq1d.png"
 
 AOI = "king_salman_park"
 TROPOMI_SCALE = 1113.2

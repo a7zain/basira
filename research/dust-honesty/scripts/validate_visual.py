@@ -156,21 +156,21 @@ def main():
     sample = sample_scenes(scenes)
     print(f"Sampled: {len(sample)} scenes (seed={SEED})")
 
-    write_sample_csv(sample, DATA / "sq1_sample.csv")
-    write_labels_template(sample, DATA / "sq1_manual_labels.csv")
-    make_thumbnail_grid(sample, FIGS / "sq1_thumbnails.png")
+    write_sample_csv(sample, DATA / "calibration" / "_archive" / "sample_sq1.csv")
+    write_labels_template(sample, DATA / "calibration" / "manual_labels_sq1.csv")
+    make_thumbnail_grid(sample, FIGS / "calibration" / "_archive" / "thumbnails_sq1.png")
 
-    rows = write_dbb_values(sample, DATA / "sq1_dbb_values.csv")
-    vals = histogram(rows, FIGS / "sq1_dbb_histogram.png")
+    rows = write_dbb_values(sample, DATA / "calibration" / "_archive" / "dbb_values_sq1.csv")
+    vals = histogram(rows, FIGS / "calibration" / "_archive" / "dbb_histogram_sq1.png")
     arr = np.array(vals)
     print(f"DBB mean across sample: {arr.mean():+.4f}  std: {arr.std():.4f}  range: {arr.min():+.4f}..{arr.max():+.4f}")
 
     print("\nWrote:")
-    print(f"  {DATA / 'sq1_sample.csv'}")
-    print(f"  {DATA / 'sq1_manual_labels.csv'}  (template, label column blank)")
-    print(f"  {DATA / 'sq1_dbb_values.csv'}")
-    print(f"  {FIGS / 'sq1_thumbnails.png'}")
-    print(f"  {FIGS / 'sq1_dbb_histogram.png'}")
+    print(f"  {DATA / 'calibration' / '_archive' / 'sample_sq1.csv'}")
+    print(f"  {DATA / 'calibration' / 'manual_labels_sq1.csv'}  (template, label column blank)")
+    print(f"  {DATA / 'calibration' / '_archive' / 'dbb_values_sq1.csv'}")
+    print(f"  {FIGS / 'calibration' / '_archive' / 'thumbnails_sq1.png'}")
+    print(f"  {FIGS / 'calibration' / '_archive' / 'dbb_histogram_sq1.png'}")
 
 
 if __name__ == "__main__":
