@@ -55,9 +55,9 @@ ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
 DBB_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
-NDVI_CSV = DATA / "sq3_ndvi_per_scene.csv"
-OUT_BIAS = DATA / "sq3_ndvi_bias.csv"
-OUT_AUDIT = DATA / "sq3_pairing_audit.csv"
+NDVI_CSV = DATA / "ndvi_bias" / "ndvi_per_scene_sq3.csv"
+OUT_BIAS = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+OUT_AUDIT = DATA / "ndvi_bias" / "pairing_audit_sq3.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 WINDOW_DAYS = 60

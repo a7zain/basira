@@ -19,9 +19,9 @@ ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 DOCS = ROOT / "research/dust-honesty/docs"
 
-BIAS_CSV = DATA / "sq3_ndvi_bias.csv"
-AUDIT_CSV = DATA / "sq3_pairing_audit.csv"
-OUT_STATS = DATA / "sq3_summary_stats.md"
+BIAS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+AUDIT_CSV = DATA / "ndvi_bias" / "pairing_audit_sq3.csv"
+OUT_STATS = DATA / "ndvi_bias" / "summary_stats_sq3.md"
 OUT_FINDINGS = DOCS / "sq3_findings.md"
 
 AOI_ORDER = ["king_salman_park", "qiddiya_core", "diriyah_gate"]

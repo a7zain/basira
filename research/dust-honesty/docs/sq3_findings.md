@@ -1,7 +1,7 @@
 # SQ3 findings — NDVI bias on V4-flagged vs unflagged scenes
 
 **Date:** 2026-05-02.
-**Inputs:** `operational/dbb_operational_sq2.csv` (228 rows; 226 usable), `sq3_ndvi_per_scene.csv` (NDVI mean per scene on the same manifest), `sq3_ndvi_bias.csv`, `sq3_pairing_audit.csv`.
+**Inputs:** `operational/dbb_operational_sq2.csv` (228 rows; 226 usable), `ndvi_bias/ndvi_per_scene_sq3.csv` (NDVI mean per scene on the same manifest), `ndvi_bias/paired_sen2cor_sq3.csv`, `ndvi_bias/pairing_audit_sq3.csv`.
 **Calibration anchor:** V4 = +0.034 (KSP+Diriyah scope, applied uniformly to all three AOIs).
 
 ## 1. Question

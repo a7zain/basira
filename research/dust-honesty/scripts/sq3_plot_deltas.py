@@ -23,10 +23,10 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-FIGDIR = ROOT / "research/dust-honesty/figures/sq3"
+FIGDIR = ROOT / "research/dust-honesty/figures/ndvi_bias"
 
-BIAS_CSV = DATA / "sq3_ndvi_bias.csv"
-AUDIT_CSV = DATA / "sq3_pairing_audit.csv"
+BIAS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+AUDIT_CSV = DATA / "ndvi_bias" / "pairing_audit_sq3.csv"
 
 AOI_ORDER = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_LABEL = {
@@ -97,7 +97,7 @@ def plot_aoi_hist(aoi, deltas, audit_row):
                  f"signal: {audit_row['signal_class']}")
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(True, alpha=0.3)
-    out = FIGDIR / f"sq3_delta_hist_{AOI_SHORT[aoi]}.png"
+    out = FIGDIR / f"delta_hist_{AOI_SHORT[aoi]}_sq3.png"
     fig.tight_layout()
     fig.savefig(out, dpi=150)
     plt.close(fig)
@@ -146,7 +146,7 @@ def plot_forest(audit):
     ax.set_title("SQ3 forest plot — paired-temporal-neighbor NDVI bias on "
                  "V4-fired scenes")
     ax.grid(True, alpha=0.3, axis="x")
-    out = FIGDIR / "sq3_forest_plot.png"
+    out = FIGDIR / "forest_plot_sq3.png"
     fig.tight_layout()
     fig.savefig(out, dpi=150)
     plt.close(fig)
@@ -174,7 +174,7 @@ def plot_retention(audit):
                  "neighbor (|Δt| ≤ 60 d)")
     ax.legend(loc="lower right")
     ax.grid(True, alpha=0.3, axis="y")
-    out = FIGDIR / "sq3_retention.png"
+    out = FIGDIR / "retention_sq3.png"
     fig.tight_layout()
     fig.savefig(out, dpi=150)
     plt.close(fig)

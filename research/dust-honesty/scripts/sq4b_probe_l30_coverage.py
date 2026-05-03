@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-PAIRS_CSV = DATA / "sq3_ndvi_bias.csv"
+PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
 OUT_CSV = DATA / "sq4b_l30_coverage_probe.csv"
 
 HLS_S30 = "NASA/HLS/HLSS30/v002"

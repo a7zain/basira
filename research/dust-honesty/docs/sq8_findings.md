@@ -31,7 +31,7 @@ Both sources well above the 80% coverage floor on the 228 SQ2 manifest dates.
 
 ### §2.3 R3 — EECU estimate vs actual
 
-Estimated <5 EECU for 228 dates × 2 sources × small-AOI reducers. Actual in-budget; no rerun cost incurred for SQ5 NDVI inputs (`sq3_ndvi_per_scene.csv` covers all SQ8 dates from prior commits).
+Estimated <5 EECU for 228 dates × 2 sources × small-AOI reducers. Actual in-budget; no rerun cost incurred for SQ5 NDVI inputs (`ndvi_bias/ndvi_per_scene_sq3.csv` covers all SQ8 dates from prior commits).
 
 ### §2.4 R4 — column compatibility
 

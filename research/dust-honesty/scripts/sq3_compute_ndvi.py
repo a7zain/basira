@@ -51,7 +51,7 @@ from sq1d_lolli_faithful import (  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
 MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
-OUT_CSV = DATA / "sq3_ndvi_per_scene.csv"
+OUT_CSV = DATA / "ndvi_bias" / "ndvi_per_scene_sq3.csv"
 
 
 # ---- I/O --------------------------------------------------------------------

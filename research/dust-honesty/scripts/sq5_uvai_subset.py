@@ -52,7 +52,7 @@ DATA = ROOT / "research/dust-honesty/data"
 
 MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
 DBB_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
-NDVI_CSV = DATA / "sq3_ndvi_per_scene.csv"
+NDVI_CSV = DATA / "ndvi_bias" / "ndvi_per_scene_sq3.csv"
 UVAI_FILES = {
     "king_salman_park": DATA / "calibration" / "uvai_ksp_sq1d.csv",
     "qiddiya_core":     DATA / "calibration" / "uvai_qiddiya_sq1d.csv",

@@ -118,7 +118,7 @@ def panel4_above_threshold():
 
 
 def panel5_retention():
-    df = pd.read_csv(DATA / "sq3_pairing_audit.csv")
+    df = pd.read_csv(DATA / "ndvi_bias" / "pairing_audit_sq3.csv")
     out = {}
     for aoi in AOI_ORDER:
         out[aoi] = float(df.loc[df["aoi"] == aoi, "retention_pct"].iloc[0])
