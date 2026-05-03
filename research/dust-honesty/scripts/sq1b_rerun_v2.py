@@ -11,10 +11,10 @@ Stop rule reused verbatim from sq1b_rerun.py (commit 3d3b511 lineage):
 ship a threshold IFF bootstrap 95% CI half-width < 0.020 AND AUC > 0.75.
 
 Outputs:
-  data/sq1b_rerun_v2_threshold_results.csv
-  data/sq1b_rerun_v2_threshold_spec.md
-  data/sq1b_rerun_v2_roc_curves.png
-  data/sq1b_rerun_v2_bootstrap_thresholds.png
+  data/threshold_fits/_archive/sq1b_rerun_v2_threshold_results.csv
+  data/threshold_fits/_archive/sq1b_rerun_v2_threshold_spec.md
+  data/threshold_fits/_archive/sq1b_rerun_v2_roc_curves.png
+  data/threshold_fits/_archive/sq1b_rerun_v2_bootstrap_thresholds.png
 """
 from __future__ import annotations
 
@@ -39,10 +39,10 @@ from sq1b_rerun import (  # noqa: E402
 )
 
 INPUT_CSV = DATA / "calibration" / "_archive" / "combined_calibration_preliminary.csv"
-OUT_RESULTS_CSV = DATA / "sq1b_rerun_v2_threshold_results.csv"
-OUT_ROC_PNG = DATA / "sq1b_rerun_v2_roc_curves.png"
-OUT_BOOT_PNG = DATA / "sq1b_rerun_v2_bootstrap_thresholds.png"
-OUT_SPEC_MD = DATA / "sq1b_rerun_v2_threshold_spec.md"
+OUT_RESULTS_CSV = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_threshold_results.csv"
+OUT_ROC_PNG = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_roc_curves.png"
+OUT_BOOT_PNG = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_bootstrap_thresholds.png"
+OUT_SPEC_MD = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_threshold_spec.md"
 
 
 def load_combined():

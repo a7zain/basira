@@ -1,8 +1,8 @@
 # SQ1B re-run on faithful Lolli DBB — threshold tuning spec & results
 
 **Inputs:** `research/dust-honesty/data/dbb_compute/dbb_calibration_sq1d.csv` (Part B primary, 30 rows) and `dbb_compute/dbb_calibration_alt_sq1d.csv` (Part B' alternate references, 24 rows).
-**Output table:** `sq1b_threshold_results.csv`.
-**Figures:** `sq1b_roc_curves.png`, `sq1b_bootstrap_thresholds.png`.
+**Output table:** `threshold_fits/_archive/sq1b_threshold_results.csv`.
+**Figures:** `threshold_fits/_archive/sq1b_roc_curves.png`, `threshold_fits/_archive/sq1b_bootstrap_thresholds.png`.
 **Companion:** `sq1d_lolli_formula.md` (formula spec). `SQ1B_RESULTS.md` (predecessor on inspired-not-faithful values, commit `3d3b511`).
 
 ---

@@ -22,9 +22,9 @@ Sensitivity check: re-run the largest variant that passes (or, if none,
 the highest-AUC variant) on sq1d_dbb_faithful_alt.csv.
 
 Outputs:
-  data/sq1b_threshold_results.csv
-  data/sq1b_roc_curves.png
-  data/sq1b_bootstrap_thresholds.png
+  data/threshold_fits/_archive/sq1b_threshold_results.csv
+  data/threshold_fits/_archive/sq1b_roc_curves.png
+  data/threshold_fits/_archive/sq1b_bootstrap_thresholds.png
 """
 from __future__ import annotations
 
@@ -41,9 +41,9 @@ DATA = REPO / "research" / "dust-honesty" / "data"
 PRIMARY_CSV = DATA / "dbb_compute" / "dbb_calibration_sq1d.csv"
 ALT_CSV = DATA / "dbb_compute" / "dbb_calibration_alt_sq1d.csv"
 
-OUT_RESULTS_CSV = DATA / "sq1b_threshold_results.csv"
-OUT_ROC_PNG = DATA / "sq1b_roc_curves.png"
-OUT_BOOT_PNG = DATA / "sq1b_bootstrap_thresholds.png"
+OUT_RESULTS_CSV = DATA / "threshold_fits" / "_archive" / "sq1b_threshold_results.csv"
+OUT_ROC_PNG = DATA / "threshold_fits" / "_archive" / "sq1b_roc_curves.png"
+OUT_BOOT_PNG = DATA / "threshold_fits" / "_archive" / "sq1b_bootstrap_thresholds.png"
 
 # Stop rule (commit 3d3b511 / SQ1B_RESULTS.md):
 CI_HALFWIDTH_TARGET = 0.02   # precision target on bootstrap 95% CI half-width

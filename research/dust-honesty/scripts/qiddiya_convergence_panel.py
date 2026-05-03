@@ -100,7 +100,7 @@ def panel2_spearman():
 
 
 def panel3_auc():
-    df = pd.read_csv(DATA / "sq1b_rerun_v2_confirmed_threshold_results.csv")
+    df = pd.read_csv(DATA / "threshold_fits" / "threshold_v4_confirmed_sq1b.csv")
     v2 = float(df.loc[df["variant"] == "V2", "auc"].iloc[0])
     v4 = float(df.loc[df["variant"] == "V4", "auc"].iloc[0])
     return {"with_qiddiya": v2, "without_qiddiya": v4}

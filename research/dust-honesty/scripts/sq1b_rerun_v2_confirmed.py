@@ -20,10 +20,10 @@ Usage:
 
 Outputs:
     data/sq1bc_combined_calibration_confirmed.csv
-    data/sq1b_rerun_v2_confirmed_threshold_results.csv
-    data/sq1b_rerun_v2_confirmed_threshold_spec.md
-    data/sq1b_rerun_v2_confirmed_roc_curves.png
-    data/sq1b_rerun_v2_confirmed_bootstrap_thresholds.png
+    data/threshold_fits/threshold_v4_confirmed_sq1b.csv
+    data/threshold_fits/threshold_v4_confirmed_spec_sq1b.md
+    data/threshold_fits/_archive/sq1b_rerun_v2_confirmed_roc_curves.png
+    data/threshold_fits/_archive/sq1b_rerun_v2_confirmed_bootstrap_thresholds.png
 """
 from __future__ import annotations
 
@@ -47,28 +47,28 @@ from sq1b_rerun import (  # noqa: E402
     youden_threshold, bootstrap_thresholds,
 )
 
-SQ1D_DBB = DATA / "sq1d_dbb_faithful.csv"
-SQ1C_DBB = DATA / "sq1c_dbb_faithful.csv"
+SQ1D_DBB = DATA / "dbb_compute" / "dbb_calibration_sq1d.csv"
+SQ1C_DBB = DATA / "dbb_compute" / "dbb_calibration_sq1c.csv"
 
 SQ1D_LABELS = {
-    "king_salman_park": (DATA / "sq1d_ksp_relabel.csv", "date", "final_label"),
-    "qiddiya_core":     (DATA / "sq1d_qiddiya_relabel.csv", "date", "final_label"),
-    "diriyah_gate":     (DATA / "sq1_manual_labels.csv", "date", "label"),
+    "king_salman_park": (DATA / "calibration" / "relabel_ksp_sq1d.csv", "date", "final_label"),
+    "qiddiya_core":     (DATA / "calibration" / "relabel_qiddiya_sq1d.csv", "date", "final_label"),
+    "diriyah_gate":     (DATA / "calibration" / "manual_labels_sq1.csv", "date", "label"),
 }
 
 SQ1C_RELABEL = {
-    "king_salman_park": DATA / "sq1c_king_salman_park_relabel.csv",
-    "qiddiya_core":     DATA / "sq1c_qiddiya_core_relabel.csv",
-    "diriyah_gate":     DATA / "sq1c_diriyah_gate_relabel.csv",
+    "king_salman_park": DATA / "calibration" / "relabel_ksp_sq1c.csv",
+    "qiddiya_core":     DATA / "calibration" / "relabel_qiddiya_sq1c.csv",
+    "diriyah_gate":     DATA / "calibration" / "relabel_diriyah_sq1c.csv",
 }
 
-OUT_COMBINED = DATA / "sq1bc_combined_calibration_confirmed.csv"
-OUT_RESULTS = DATA / "sq1b_rerun_v2_confirmed_threshold_results.csv"
-OUT_ROC = DATA / "sq1b_rerun_v2_confirmed_roc_curves.png"
-OUT_BOOT = DATA / "sq1b_rerun_v2_confirmed_bootstrap_thresholds.png"
-OUT_SPEC = DATA / "sq1b_rerun_v2_confirmed_threshold_spec.md"
+OUT_COMBINED = DATA / "calibration" / "combined_calibration_confirmed.csv"
+OUT_RESULTS = DATA / "threshold_fits" / "threshold_v4_confirmed_sq1b.csv"
+OUT_ROC = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_confirmed_roc_curves.png"
+OUT_BOOT = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_confirmed_bootstrap_thresholds.png"
+OUT_SPEC = DATA / "threshold_fits" / "threshold_v4_confirmed_spec_sq1b.md"
 
-PRELIM_RESULTS = DATA / "sq1b_rerun_v2_threshold_results.csv"
+PRELIM_RESULTS = DATA / "threshold_fits" / "_archive" / "sq1b_rerun_v2_threshold_results.csv"
 
 COMBINED_FIELDS = [
     "row_id", "source", "aoi", "date", "sub_aoi",

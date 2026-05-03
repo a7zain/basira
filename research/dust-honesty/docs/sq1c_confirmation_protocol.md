@@ -149,7 +149,7 @@ and any piece B writeup is updated as follows:
   AI pre-labels were overridden."
 - Replace "SQ1B re-re-run results derived from this set are PRELIMINARY
   pending researcher review" with the actual confirmed-vs-preliminary
-  delta from `sq1b_rerun_v2_confirmed_threshold_spec.md`.
+  delta from `threshold_fits/threshold_v4_confirmed_spec_sq1b.md`.
 - Retain the bias-exposed disclosure verbatim (the 6 rows remain
   flagged in the data even after cold-labeling; the cold protocol
   is the audit, not an erasure).

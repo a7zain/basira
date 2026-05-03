@@ -14,8 +14,8 @@ For each mapping:
 Outputs:
   figures/sq1b_roc_<mapping>.png
   figures/sq1b_confusion_<mapping>.png
-  figures/sq1b_threshold_bootstrap.png
-  data/sq1b_summary.json
+  figures/threshold_fits/threshold_bootstrap_sq1b.png
+  data/threshold_fits/_archive/sq1b_summary.json
 """
 
 from __future__ import annotations
@@ -237,11 +237,11 @@ def main():
     ax.set_title("Bootstrap distribution of best DBB threshold")
     ax.legend()
     fig.tight_layout()
-    fig.savefig(FIGS / "sq1b_threshold_bootstrap.png", dpi=120)
+    fig.savefig(FIGS / "threshold_fits" / "threshold_bootstrap_sq1b.png", dpi=120)
     plt.close(fig)
 
-    (DATA / "sq1b_summary.json").write_text(json.dumps(summary, indent=2))
-    print(f"Wrote summary -> {DATA / 'sq1b_summary.json'}")
+    (DATA / "threshold_fits" / "_archive" / "sq1b_summary.json").write_text(json.dumps(summary, indent=2))
+    print(f"Wrote summary -> {DATA / 'threshold_fits' / '_archive' / 'sq1b_summary.json'}")
     return summary
 
 

@@ -1,8 +1,8 @@
 # SQ1B confirmed-label findings — what the researcher pass actually changed
 
 **Date:** 2026-05-01.
-**Inputs:** `calibration/combined_calibration_confirmed.csv` (73 rows), `sq1b_rerun_v2_confirmed_threshold_spec.md`, `calibration/confirmation_audit_sq1c.csv`.
-**Reference baselines:** `sq1b_rerun_v2_threshold_spec.md` (preliminary, AI-only SQ1C labels).
+**Inputs:** `calibration/combined_calibration_confirmed.csv` (73 rows), `threshold_fits/threshold_v4_confirmed_spec_sq1b.md`, `calibration/confirmation_audit_sq1c.csv`.
+**Reference baselines:** `threshold_fits/_archive/sq1b_rerun_v2_threshold_spec.md` (preliminary, AI-only SQ1C labels).
 
 This note is the factual readout of the post-confirmation pass. It is the document we point at when asked "what did researcher confirmation actually find."
 

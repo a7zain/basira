@@ -1,0 +1,40 @@
+{
+  "conservative": {
+    "n_scenes": 30,
+    "n_positives": 2,
+    "n_negatives": 28,
+    "threshold": -0.22778543829917905,
+    "ci_low": -0.279776930809021,
+    "ci_high": -0.22778543829917905,
+    "ci_halfwidth": 0.025995746254920973,
+    "auc": 0.5535714285714286,
+    "tp": 1,
+    "tn": 26,
+    "fp": 2,
+    "fn": 1,
+    "sensitivity": 0.5,
+    "specificity": 0.9285714285714286,
+    "balanced_accuracy": 0.7142857142857143,
+    "f1": 0.4,
+    "precision": 0.3333333333333333
+  },
+  "aggressive": {
+    "n_scenes": 30,
+    "n_positives": 6,
+    "n_negatives": 24,
+    "threshold": -0.26614493131637573,
+    "ci_low": -0.279776930809021,
+    "ci_high": -0.22778543829917905,
+    "ci_halfwidth": 0.025995746254920973,
+    "auc": 0.5069444444444444,
+    "tp": 5,
+    "tn": 9,
+    "fp": 15,
+    "fn": 1,
+    "sensitivity": 0.8333333333333334,
+    "specificity": 0.375,
+    "balanced_accuracy": 0.6041666666666667,
+    "f1": 0.3846153846153846,
+    "precision": 0.25
+  }
+}
