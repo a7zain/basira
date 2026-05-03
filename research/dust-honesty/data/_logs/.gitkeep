@@ -1,0 +1,2 @@
+# Run logs from script executions live here.
+# Files matching *.log are gitignored; this .gitkeep materializes the directory in git.
