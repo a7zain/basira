@@ -1,7 +1,7 @@
 # SQ3 findings — NDVI bias on V4-flagged vs unflagged scenes
 
 **Date:** 2026-05-02.
-**Inputs:** `sq2_dbb_operational.csv` (228 rows; 226 usable), `sq3_ndvi_per_scene.csv` (NDVI mean per scene on the same manifest), `sq3_ndvi_bias.csv`, `sq3_pairing_audit.csv`.
+**Inputs:** `operational/dbb_operational_sq2.csv` (228 rows; 226 usable), `sq3_ndvi_per_scene.csv` (NDVI mean per scene on the same manifest), `sq3_ndvi_bias.csv`, `sq3_pairing_audit.csv`.
 **Calibration anchor:** V4 = +0.034 (KSP+Diriyah scope, applied uniformly to all three AOIs).
 
 ## 1. Question
@@ -10,7 +10,7 @@ On the 226-usable-scene operational set, do Sen2Cor-derived NDVIs differ between
 
 ## 2. Method
 
-**NDVI compute.** Per scene, NDVI = (B8 − B4) / (B8 + B4) from Sen2Cor L2A SR, masked to SCL ∈ {4, 5, 6, 7, 11} (veg / not-veg / water / unclassified / snow) AND B12 ≥ 0.01 (not water — same convention as the SQ1D faithful-Lolli mask). Spatial mean over the AOI bbox at 20 m native scale, single mean reducer + single sum+count valid-pixel reducer, no `bestEffort`. Manifest-locked to `sq2_scene_manifest.csv` so every NDVI scene matches the DBB scene byte-for-byte on `system:index`.
+**NDVI compute.** Per scene, NDVI = (B8 − B4) / (B8 + B4) from Sen2Cor L2A SR, masked to SCL ∈ {4, 5, 6, 7, 11} (veg / not-veg / water / unclassified / snow) AND B12 ≥ 0.01 (not water — same convention as the SQ1D faithful-Lolli mask). Spatial mean over the AOI bbox at 20 m native scale, single mean reducer + single sum+count valid-pixel reducer, no `bestEffort`. Manifest-locked to `operational/manifest_operational_sq2.csv` so every NDVI scene matches the DBB scene byte-for-byte on `system:index`.
 
 **Pairing.** For each V4-fired scene at (AOI, date) with valid NDVI, find the temporally-nearest scene in the same AOI with `flag_v4=False`, `cloud_flag_present=False`, `no_usable_scene=False`, NDVI present, and |Δt| ≤ 60 days. Tie-break on equidistant neighbors: earlier date wins (deterministic). Unflagged neighbors may be reused across pairings; the bootstrap resamples PAIRS (not scenes), so within-AOI dependence is handled at inference time.
 

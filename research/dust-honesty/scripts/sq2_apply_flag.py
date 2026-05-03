@@ -27,9 +27,9 @@ Manifest:
     the prior manifest. Mismatch → raise.
 
 Outputs:
-  data/sq2_scene_manifest.csv
-  data/sq2_dbb_operational.csv  (force-add per 442d7b0 precedent)
-  data/sq2_cross_check_failures.csv (only if any failure)
+  data/operational/manifest_operational_sq2.csv
+  data/operational/dbb_operational_sq2.csv  (force-add per 442d7b0 precedent)
+  data/operational/cross_check_failures_sq2.csv (only if any failure)
 
 Usage:
   python sq2_apply_flag.py
@@ -65,9 +65,9 @@ COMBINED_CAL_CSV = DATA / "calibration" / "combined_calibration_confirmed.csv"
 SQ1D_MANIFEST = DATA / "calibration" / "manifest_sq1d.csv"
 SQ1C_MANIFEST = DATA / "calibration" / "manifest_sq1c.csv"
 
-OUT_MANIFEST = DATA / "sq2_scene_manifest.csv"
-OUT_DBB = DATA / "sq2_dbb_operational.csv"
-OUT_FAILURES = DATA / "sq2_cross_check_failures.csv"
+OUT_MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
+OUT_DBB = DATA / "operational" / "dbb_operational_sq2.csv"
+OUT_FAILURES = DATA / "operational" / "cross_check_failures_sq2.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 YEAR_MIN = 2020

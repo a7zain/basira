@@ -31,14 +31,15 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-IN_CSV = DATA / "sq2_dbb_operational.csv"
+FIGS = ROOT / "research/dust-honesty/figures"
+IN_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
 
 OUT_PER_AOI = {
-    "king_salman_park": DATA / "sq2_dbb_timeseries_king_salman_park.png",
-    "qiddiya_core":     DATA / "sq2_dbb_timeseries_qiddiya_core.png",
-    "diriyah_gate":     DATA / "sq2_dbb_timeseries_diriyah_gate.png",
+    "king_salman_park": FIGS / "operational" / "dbb_timeseries_king_salman_park_sq2.png",
+    "qiddiya_core":     FIGS / "operational" / "dbb_timeseries_qiddiya_core_sq2.png",
+    "diriyah_gate":     FIGS / "operational" / "dbb_timeseries_diriyah_gate_sq2.png",
 }
-OUT_COMBINED = DATA / "sq2_dbb_timeseries_combined.png"
+OUT_COMBINED = FIGS / "operational" / "dbb_timeseries_combined_sq2.png"
 
 THRESH_V4 = 0.034
 THRESH_V3_KSP = 0.053

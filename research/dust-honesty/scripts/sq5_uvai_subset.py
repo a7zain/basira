@@ -2,8 +2,8 @@
 SQ5 — UVAI quartile labels + UVAI × V4 contingency table.
 
 Inputs:
-  research/dust-honesty/data/sq2_scene_manifest.csv (228 rows, AOI/date)
-  research/dust-honesty/data/sq2_dbb_operational.csv (V4 flag per row)
+  research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows, AOI/date)
+  research/dust-honesty/data/operational/dbb_operational_sq2.csv (V4 flag per row)
   research/dust-honesty/data/sq3_ndvi_per_scene.csv (NDVI per scene; for
     SQ5 candidate filter — must have NDVI to be a candidate)
   research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv      (KSP UVAI)
@@ -50,8 +50,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-MANIFEST = DATA / "sq2_scene_manifest.csv"
-DBB_CSV = DATA / "sq2_dbb_operational.csv"
+MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
+DBB_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
 NDVI_CSV = DATA / "sq3_ndvi_per_scene.csv"
 UVAI_FILES = {
     "king_salman_park": DATA / "calibration" / "uvai_ksp_sq1d.csv",

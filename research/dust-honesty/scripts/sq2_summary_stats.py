@@ -1,7 +1,7 @@
 """
 SQ2 — summary statistics over the operational DBB CSV.
 
-Reads sq2_dbb_operational.csv. Emits sq2_summary_stats.md with:
+Reads operational/dbb_operational_sq2.csv. Emits operational/summary_stats_sq2.md with:
   1. Headline numbers per AOI (months, usable, V4 fires %, V3 fires %, cloud %)
   2. Temporal pattern: peak DBB scene + top 5 + monthly histogram of V4 fires.
   3. Cross-check status (overlap rows / pass / fail).
@@ -20,10 +20,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-IN_CSV = DATA / "sq2_dbb_operational.csv"
-FAILURES_CSV = DATA / "sq2_cross_check_failures.csv"
+IN_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
+FAILURES_CSV = DATA / "operational" / "cross_check_failures_sq2.csv"
 COMBINED_CAL_CSV = DATA / "calibration" / "combined_calibration_confirmed.csv"
-OUT_MD = DATA / "sq2_summary_stats.md"
+OUT_MD = DATA / "operational" / "summary_stats_sq2.md"
 
 AOI_ORDER = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_TITLE = {

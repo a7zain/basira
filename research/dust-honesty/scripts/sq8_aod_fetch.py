@@ -8,7 +8,7 @@ reanalysis-AOD primary; KAUST Thuwal AERONET (~820km, coastal) becomes
 deferred SQ8B per CLAUDE.md commitment reconciliation.
 
 Inputs:
-  research/dust-honesty/data/sq2_scene_manifest.csv (228 rows)
+  research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows)
 
 Outputs:
   research/dust-honesty/data/sq8_aod_per_scene.csv
@@ -75,7 +75,7 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-MANIFEST = DATA / "sq2_scene_manifest.csv"
+MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
 OUT_CSV = DATA / "sq8_aod_per_scene.csv"
 
 MERRA2_ASSET = "NASA/GSFC/MERRA/aer/2"

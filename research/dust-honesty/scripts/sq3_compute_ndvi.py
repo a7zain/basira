@@ -2,7 +2,7 @@
 SQ3 — NDVI compute on the SQ2 manifest-locked operational scene set.
 
 Inputs:
-  research/dust-honesty/data/sq2_scene_manifest.csv (228 rows)
+  research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows)
   research/dust-honesty/data/sq1d_references.json (for self-reference test)
 
 Output:
@@ -50,7 +50,7 @@ from sq1d_lolli_faithful import (  # noqa: E402
 )
 
 DATA = ROOT / "research/dust-honesty/data"
-MANIFEST = DATA / "sq2_scene_manifest.csv"
+MANIFEST = DATA / "operational" / "manifest_operational_sq2.csv"
 OUT_CSV = DATA / "sq3_ndvi_per_scene.csv"
 
 

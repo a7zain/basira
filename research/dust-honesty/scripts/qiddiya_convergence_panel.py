@@ -107,7 +107,7 @@ def panel3_auc():
 
 
 def panel4_above_threshold():
-    df = pd.read_csv(DATA / "sq2_dbb_operational.csv")
+    df = pd.read_csv(DATA / "operational" / "dbb_operational_sq2.csv")
     df = df[(~df["no_usable_scene"]) & (df["dbb"].notna())]
     out = {}
     for aoi in AOI_ORDER:

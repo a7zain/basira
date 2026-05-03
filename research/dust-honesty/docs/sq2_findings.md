@@ -1,7 +1,7 @@
 # SQ2 findings — applying the confirmed DBB flag to 228 operational scenes
 
 **Date:** 2026-05-01.
-**Inputs:** `sq2_dbb_operational.csv` (228 rows = 3 AOIs × 76 months, 2020-01..2026-04), `sq2_summary_stats.md`, `sq2_cross_check_failures.csv`.
+**Inputs:** `operational/dbb_operational_sq2.csv` (228 rows = 3 AOIs × 76 months, 2020-01..2026-04), `operational/summary_stats_sq2.md`, `operational/cross_check_failures_sq2.csv`.
 **Calibration anchors:** V4 = +0.034, V3 (KSP only) = +0.053, both from `threshold_fits/threshold_v4_confirmed_spec_sq1b.md`.
 
 This is the operational readout for piece B. SQ1B sized the threshold; SQ2 measures how often that threshold fires across the full study period. No new modelling, no new fitting — application only.

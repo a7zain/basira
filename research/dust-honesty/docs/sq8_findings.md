@@ -35,7 +35,7 @@ Estimated <5 EECU for 228 dates × 2 sources × small-AOI reducers. Actual in-bu
 
 ### §2.4 R4 — column compatibility
 
-All upstream files confirmed: `sq3_ndvi_per_scene.csv`, `sq2_dbb_operational.csv`, `sq2_scene_manifest.csv`, `sq5_uvai_labels.csv`, `sq5_uvai_v4_contingency.csv`. Join keys `(aoi, acquisition_date)` consistent across SQ3/SQ5/SQ8.
+All upstream files confirmed: `sq3_ndvi_per_scene.csv`, `operational/dbb_operational_sq2.csv`, `operational/manifest_operational_sq2.csv`, `sq5_uvai_labels.csv`, `sq5_uvai_v4_contingency.csv`. Join keys `(aoi, acquisition_date)` consistent across SQ3/SQ5/SQ8.
 
 ### §2.5 R5 — climatology design diagnostic
 

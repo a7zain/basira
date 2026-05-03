@@ -54,7 +54,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-DBB_CSV = DATA / "sq2_dbb_operational.csv"
+DBB_CSV = DATA / "operational" / "dbb_operational_sq2.csv"
 NDVI_CSV = DATA / "sq3_ndvi_per_scene.csv"
 OUT_BIAS = DATA / "sq3_ndvi_bias.csv"
 OUT_AUDIT = DATA / "sq3_pairing_audit.csv"
