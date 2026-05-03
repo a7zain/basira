@@ -201,8 +201,8 @@ def main():
         fpr, tpr, _ = roc_curve(v, y)
         auc = trapz_auc(fpr, tpr)
 
-        plot_roc(fpr, tpr, name, auc, FIGS / f"sq1b_roc_{name}.png")
-        plot_confusion(m, name, FIGS / f"sq1b_confusion_{name}.png")
+        plot_roc(fpr, tpr, name, auc, FIGS / "threshold_fits" / "_archive" / f"roc_{name}_sq1b.png")
+        plot_confusion(m, name, FIGS / "threshold_fits" / "_archive" / f"confusion_{name}_sq1b.png")
 
         ci_halfwidth = (ci_hi - ci_lo) / 2.0
         print(f"  best threshold: {t_hat:+.4f}  bal_acc={ba:.3f}")
