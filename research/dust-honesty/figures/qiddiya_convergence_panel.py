@@ -3,8 +3,10 @@ piece B §4: Qiddiya construction-substrate convergence panel.
 
 Six independent lines of evidence that the satellite-detected "atmospheric"
 signal at Qiddiya is dominated by construction-substrate confusion rather
-than by atmosphere. Qiddiya is rendered in warm orange against KSP/Diriyah
-in grey tones — Qiddiya sits at the extreme position in all six panels.
+than by atmosphere. Qiddiya is rendered in warm orange against KSP teal
+and Diriyah dark-navy (the project AOI palette per sq8_summary.py) —
+Qiddiya sits at the extreme position in all six panels and the warm-vs-cool
+contrast carries the convergence story.
 
 Panels (2x3, horizontal bars):
   P1 SQ1D blind relabel    : % AI pre-labels overridden to "clean"
@@ -24,9 +26,6 @@ Notes on data:
   "Toward clean" is strict: heavy_dust -> light_haze does NOT count.
 - P2: sq1d_dbb_faithful_alt.csv excluded Diriyah by design (Part B was
   per-AOI on KSP+Qiddiya only). Diriyah cell renders as N/A.
-- Per-figure palette override: AOI colors normally use the sq8 palette
-  (KSP #2a9d8f, Qiddiya #e76f51, Diriyah #264653). Here KSP and Diriyah
-  are rendered in greys so Qiddiya pops as the convergence story.
 
 Output: research/dust-honesty/figures/qiddiya_convergence_panel.png (300 dpi)
 """
@@ -53,9 +52,9 @@ AOI_LABEL = {
     "diriyah_gate":     "Diriyah",
 }
 COLOR = {
-    "king_salman_park": "#999999",
+    "king_salman_park": "#2a9d8f",
     "qiddiya_core":     "#e76f51",
-    "diriyah_gate":     "#444444",
+    "diriyah_gate":     "#264653",
 }
 
 V4_THRESHOLD = 0.034
