@@ -92,8 +92,6 @@ Question: how does Sen2Cor's known underestimation of aerosols over deserts (Goy
 
 - **Naming rationalization** — `sq1d_*` / `sq1c_*` / `sq1b_rerun_v2_*` / `sq1b_rerun_v2_confirmed_*` / `sq2_*` / `sq3_*` / `sq4_*` / `sq4b_*` / `sq5_*` / `sq8_*` are process-of-discovery names; end-state taxonomy needed (suggested grouping: calibration-sets / DBB-compute / threshold-fits / operational / NDVI-bias / cross-correction / high-AOD-regression). Owed before piece B prose; can ride along inside any execution session, not a gate on piece B prose drafting.
 
-- **Operational-magnitude ladder figure rename** — currently filename `sq8_loading_regime_ladder.png` but the figure is a magnitude-vs-threshold check across measurement designs (SQ3/SQ4/SQ4B/SQ8 with SQ5 as footnote annotation). The §6 prose chain (SQ2–SQ8) is a separate artifact. Rename to `sq8_operational_magnitude_ladder.png` when the next session touches piece B prose. Three minutes of work.
-
 ### Open piece B prose decision (not a methodology decision)
 
 - **Qiddiya construction-substrate finding — own subsection vs threaded through SQ2 narrative?** The convergence is now **six independent lines** of evidence: (1) SQ1D Pass 5 visually-blind relabel direction; (2) SQ1D Part B' sensitivity ρ=0.92; (3) V2 prelim AUC drop; (4) V2 confirmed AUC drop; (5) SQ2 baseline DBB +0.091 well above threshold (75% V4 fire rate); (6) SQ5 R5 contingency Q4∧V4 = 16/18 = 89%. Plus SQ8's AOI fixed effects validating the AOI-baseline-difference reading at the regression level. Six-fold convergence is structurally novel for a satellite-only methodology piece; whether it warrants its own subsection or stays threaded through SQ2 depends on the piece B narrative arc. Decide when prose drafting is in flight.

@@ -20,7 +20,7 @@ Outputs (under research/dust-honesty/figures/sq8/):
   sq8_residual_vs_aod_primary.png        — piece B SQ8 headline figure
   sq8_diriyah_anchor.png
   sq8_merra2_vs_cams_scatter.png
-  sq8_loading_regime_ladder.png          — piece B loading-regime headline
+  sq8_operational_magnitude_ladder.png   — piece B operational-magnitude ladder
 
 Output: research/dust-honesty/data/sq8_summary_stats.md  — narrative table
 form ONLY. NO §4 prose; the dual-criterion observation rides as a
@@ -512,7 +512,7 @@ def fig_loading_regime_ladder():
     )
 
     fig.tight_layout(rect=[0, 0.06, 1, 0.95])
-    out = FIG / "sq8_loading_regime_ladder.png"
+    out = FIG / "sq8_operational_magnitude_ladder.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
