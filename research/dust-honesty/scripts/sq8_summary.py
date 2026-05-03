@@ -392,8 +392,8 @@ def fig_loading_regime_ladder():
     pivot to SQ8, not a comparable bias estimate.
     """
     sq3 = pd.read_csv(DATA / "ndvi_bias" / "pairing_audit_sq3.csv")
-    sq4 = pd.read_csv(DATA / "sq4_signal_class.csv")
-    sq4b = pd.read_csv(DATA / "sq4b_arm_a_signal_class.csv")
+    sq4 = pd.read_csv(DATA / "cross_correction" / "signal_class_sq4.csv")
+    sq4b = pd.read_csv(DATA / "cross_correction" / "arm_a_signal_class_sq4b.csv")
     prim_aod = load_primary_aod_coef()
 
     # Pooled MERRA-2 IQR for SQ8 column

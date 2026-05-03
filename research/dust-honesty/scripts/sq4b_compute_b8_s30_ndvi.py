@@ -65,9 +65,9 @@ sys.path.insert(0, str(ROOT))
 from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
-PAIRS_CSV = DATA / "sq3_ndvi_bias.csv"
-SQ4_NDVI_CSV = DATA / "sq4_hls_ndvi.csv"
-OUT_CSV = DATA / "sq4b_b8_s30_ndvi.csv"
+PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+SQ4_NDVI_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8a_sq4.csv"
+OUT_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8_sq4b.csv"
 
 HLS_S30 = "NASA/HLS/HLSS30/v002"
 SCALE_M = 30

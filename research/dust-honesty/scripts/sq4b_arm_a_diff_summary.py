@@ -48,20 +48,20 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-FIG = ROOT / "research/dust-honesty/figures/sq4b"
+FIG = ROOT / "research/dust-honesty/figures/cross_correction"
 FIG.mkdir(parents=True, exist_ok=True)
 
-PAIRS_CSV = DATA / "sq3_ndvi_bias.csv"
-B8_CSV = DATA / "sq4b_b8_s30_ndvi.csv"
-SQ4_DIFF_CSV = DATA / "sq4_diff_of_diffs.csv"     # SQ4 B8A per-pair
-SQ4_CLASS_CSV = DATA / "sq4_signal_class.csv"     # SQ4 B8A AOI summary
-SQ4_NDVI_CSV = DATA / "sq4_hls_ndvi.csv"          # SQ4 B8A per (aoi, date)
-SQ3_AUDIT_CSV = DATA / "sq3_pairing_audit.csv"    # SQ3 Sen2Cor B8 AOI summary
+PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+B8_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8_sq4b.csv"
+SQ4_DIFF_CSV = DATA / "cross_correction" / "diff_of_diffs_lasrc_sq4.csv"     # SQ4 B8A per-pair
+SQ4_CLASS_CSV = DATA / "cross_correction" / "signal_class_sq4.csv"           # SQ4 B8A AOI summary
+SQ4_NDVI_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8a_sq4.csv"        # SQ4 B8A per (aoi, date)
+SQ3_AUDIT_CSV = DATA / "ndvi_bias" / "pairing_audit_sq3.csv"                 # SQ3 Sen2Cor B8 AOI summary
 
-OUT_PAIRS = DATA / "sq4b_arm_a_b8_sensitivity.csv"
-OUT_CLASS = DATA / "sq4b_arm_a_signal_class.csv"
-OUT_2X2 = DATA / "sq4b_two_by_two_summary.csv"
-OUT_MD = DATA / "sq4b_summary_stats.md"
+OUT_PAIRS = DATA / "cross_correction" / "arm_a_b8_sensitivity_sq4b.csv"
+OUT_CLASS = DATA / "cross_correction" / "arm_a_signal_class_sq4b.csv"
+OUT_2X2 = DATA / "cross_correction" / "two_by_two_summary_sq4b.csv"
+OUT_MD = DATA / "cross_correction" / "summary_stats_sq4b.md"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_LABELS = {
@@ -378,7 +378,7 @@ def fig_arm_a_forest(arm_a):
     ax.invert_yaxis()
     ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
-    out = FIG / "sq4b_arm_a_forest.png"
+    out = FIG / "arm_a_forest_sq4b.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -423,7 +423,7 @@ def fig_two_by_two_forest(two_by_two):
     fig.suptitle("SQ4B — two-by-two: correction chain × NIR band\n"
                  "(per-AOI mean Δ NDVI ± bootstrap CI halfwidth)")
     fig.tight_layout()
-    out = FIG / "sq4b_two_by_two_forest.png"
+    out = FIG / "two_by_two_forest_sq4b.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -463,7 +463,7 @@ def fig_b8_vs_b8a_scatter():
         ax.grid(alpha=0.3)
     fig.suptitle("SQ4B — broad vs narrow NIR on HLS S30 (per-scene NDVI)")
     fig.tight_layout()
-    out = FIG / "sq4b_b8_vs_b8a_scatter.png"
+    out = FIG / "b8_vs_b8a_scatter_sq4b.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")

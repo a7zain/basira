@@ -60,7 +60,7 @@ from src.phase1_aois import get_bbox  # noqa: E402
 
 DATA = ROOT / "research/dust-honesty/data"
 PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
-OUT_CSV = DATA / "sq4_hls_ndvi.csv"
+OUT_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8a_sq4.csv"
 
 HLS_S30 = "NASA/HLS/HLSS30/v002"
 SCALE_M = 30

@@ -43,10 +43,10 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
 
-PAIRS_CSV = DATA / "sq3_ndvi_bias.csv"
-HLS_CSV = DATA / "sq4_hls_ndvi.csv"
-OUT_DIFF = DATA / "sq4_diff_of_diffs.csv"
-OUT_CLASS = DATA / "sq4_signal_class.csv"
+PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+HLS_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8a_sq4.csv"
+OUT_DIFF = DATA / "cross_correction" / "diff_of_diffs_lasrc_sq4.csv"
+OUT_CLASS = DATA / "cross_correction" / "signal_class_sq4.csv"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 N_BOOT = 1000

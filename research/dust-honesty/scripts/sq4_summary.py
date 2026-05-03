@@ -18,15 +18,15 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "research/dust-honesty/data"
-FIG = ROOT / "research/dust-honesty/figures/sq4"
+FIG = ROOT / "research/dust-honesty/figures/cross_correction"
 FIG.mkdir(parents=True, exist_ok=True)
 
-DIFF_CSV = DATA / "sq4_diff_of_diffs.csv"
-CLASS_CSV = DATA / "sq4_signal_class.csv"
-COVERAGE_CSV = DATA / "sq4_coverage_probe.csv"
-HLS_CSV = DATA / "sq4_hls_ndvi.csv"
-PAIRS_CSV = DATA / "sq3_ndvi_bias.csv"
-OUT_MD = DATA / "sq4_summary_stats.md"
+DIFF_CSV = DATA / "cross_correction" / "diff_of_diffs_lasrc_sq4.csv"
+CLASS_CSV = DATA / "cross_correction" / "signal_class_sq4.csv"
+COVERAGE_CSV = DATA / "cross_correction" / "coverage_probe_sq4.csv"
+HLS_CSV = DATA / "cross_correction" / "ndvi_hls_s30_b8a_sq4.csv"
+PAIRS_CSV = DATA / "ndvi_bias" / "paired_sen2cor_sq3.csv"
+OUT_MD = DATA / "cross_correction" / "summary_stats_sq4.md"
 
 AOIS = ["king_salman_park", "qiddiya_core", "diriyah_gate"]
 AOI_LABELS = {
@@ -89,7 +89,7 @@ def forest_plot(class_rows):
     ax.invert_yaxis()
     ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
-    out = FIG / "sq4_forest_diff_of_diffs.png"
+    out = FIG / "forest_diff_of_diffs_sq4.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -119,7 +119,7 @@ def scatter_plot(diff_rows, aoi):
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    out = FIG / f"sq4_scatter_{aoi}.png"
+    out = FIG / f"scatter_{aoi}_sq4.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
@@ -153,7 +153,7 @@ def coverage_chart(class_rows):
     ax.legend(loc="upper right", fontsize=9)
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
-    out = FIG / "sq4_coverage_chart.png"
+    out = FIG / "coverage_chart_sq4.png"
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print(f"  Wrote {out}")
