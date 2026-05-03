@@ -491,7 +491,7 @@ def fig_loading_regime_ladder():
               fontsize=8.5, frameon=True, framealpha=0.95)
 
     # Title + subtitle
-    fig.suptitle("Loading-regime ladder: NDVI bias estimates across four "
+    fig.suptitle("Operational-magnitude ladder: NDVI bias estimates across four "
                  "measurement designs at Riyadh",
                  fontsize=12, y=0.985)
     ax.set_title(
