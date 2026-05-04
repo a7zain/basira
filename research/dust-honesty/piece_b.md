@@ -4,9 +4,11 @@
 
 We tested whether Sen2Cor's known underestimation of aerosols over bright deserts actually corrupts NDVI for change monitoring at Riyadh. It doesn't — not at any magnitude that matters operationally. Across five designs at three Vision 2030 AOIs over 76 months, the strongest detectable signal was −0.002 NDVI per IQR of dust optical depth, 95% CI lower bound −0.003.
 
-The question came from Goyens 2024: Sen2Cor systematically underestimates aerosol over bright deserts, so what does that do to NDVI at Qiddiya, King Salman Park, and Diriyah Gate? We built a faithful port of the Lolli 2024 DBB index to flag dusty scenes and ran the question five ways — paired Sen2Cor, paired LaSRC, broad-versus-narrow NIR, a halt-with-receipt at the Q4 dust quartile (paired designs can't probe the highest loadings at this site), and a per-scene regression against reanalysis AOD. Four pre-registered stop rules fired during execution. Each produced a deferred sub-question rather than a mid-run design switch — the discipline held all four times.
+Four pre-registered stop rules fired during execution. Each produced a deferred sub-question rather than a mid-run design switch — the discipline held all four times.
 
-The same chain turned up something the dust question wasn't asking about: six independent lines of evidence that Qiddiya is contaminated bidirectionally by construction substrate, not aerosol. For anyone monitoring change at that specific site, that side-finding matters more operationally than the dust answer does.
+The question came from Goyens 2024: Sen2Cor systematically underestimates aerosol over bright deserts, so what does that do to NDVI at Qiddiya, King Salman Park, and Diriyah Gate? We built a faithful port of the Lolli 2024 DBB index to flag dusty scenes and ran the question five ways — paired Sen2Cor, paired LaSRC, broad-versus-narrow NIR, a halt-with-receipt at the Q4 dust quartile (paired designs can't probe the highest loadings at this site), and a per-scene regression against reanalysis AOD.
+
+The same chain turned up something the dust question wasn't asking about: six independent lines of evidence that Qiddiya is contaminated bidirectionally by construction substrate, not aerosol. For anyone monitoring change at that specific site, that side-finding matters more operationally than the dust answer.
 
 For change monitoring at Riyadh, the operational read is simple. NDVI's Red/NIR ratio cancels aerosol perturbations cleanly enough that correction-chain choice doesn't gate deployment.
 
@@ -14,13 +16,15 @@ For change monitoring at Riyadh, the operational read is simple. NDVI's Red/NIR 
 
 Sentinel-2 is the workhorse of public-data change monitoring — 10m resolution, free, global, 5-day revisit. To make it usable, Copernicus ships a standard atmospheric correction called Sen2Cor that strips scattering and absorption from the air column and returns surface reflectance. For most users that's the entry point, and the assumption baked into every downstream pipeline is that Sen2Cor has done its job.
 
-Goyens et al. 2024 looked at how well that assumption holds over bright desert surfaces. It doesn't, fully. Sen2Cor systematically underestimates aerosol optical depth over bright deserts at high loadings. The mechanism is well-described — bright surfaces confuse the dark-target retrieval Sen2Cor uses, the correction under-removes the aerosol signal, residual perturbation rides in the surface reflectance.
+Goyens et al. 2024 looked at how well that assumption holds over bright desert surfaces. It doesn't fully. Sen2Cor systematically underestimates aerosol optical depth over bright deserts at high loadings. The mechanism is well-described — bright surfaces confuse the dark-target retrieval Sen2Cor uses, the correction under-removes the aerosol signal, residual perturbation rides in the surface reflectance.
 
 What we cared about isn't whether the underestimation exists — Goyens already established that — but whether it propagates into the metric people actually use. NDVI is the workhorse for vegetation and surface-disturbance monitoring. If Sen2Cor leaves residual aerosol in the bands, and that residual perturbs Red and NIR differently, NDVI gets corrupted on dusty scenes. A pipeline running on those scenes flags dust events as surface change, or misses real changes hiding under dust. Either way it breaks.
 
 Riyadh is the place this question matters most. The surfaces around it sit at the bright end of the Sentinel-2 catalogue — exactly Goyens's failure regime. The atmosphere over it is dust-loaded for months at a time; the shamal season alone delivers Q4-quartile aerosol events on a regular cadence. The three AOIs we monitor — Qiddiya, King Salman Park, and Diriyah Gate — are megaprojects under active construction. Real change is happening on the ground while aerosol is potentially corrupting the measurement of it. If Sen2Cor has a Riyadh-shaped hole, this is where it shows up.
 
-So the umbrella question, tightly: how does Sen2Cor's known aerosol underestimation translate into NDVI bias at Riyadh, and how often does it matter operationally? A "yes, often" answer would push us toward LaSRC, native L30, or a custom correction. A "no" answer means the operational pipeline can keep using Sen2Cor and treat the aerosol question as second-order.
+So the umbrella question, tightly: how does Sen2Cor's known aerosol underestimation translate into NDVI bias at Riyadh, and how often does it matter operationally?
+
+A "yes, often" answer would push us toward LaSRC, native L30, or a custom correction. A "no" answer means the operational pipeline can keep using Sen2Cor and treat the aerosol question as second-order.
 
 ## §2 — Method
 
@@ -40,7 +44,7 @@ A second pattern emerged: the diagnosis is often the finding. SQ3's Qiddiya rete
 
 ## §3 — The five-design answer chain
 
-The umbrella question got hit five different ways. The first three subsections cover the clean part of the chain — V4's fire rates, the Sen2Cor paired test, the LaSRC cross-check. The next three cover the more interesting structural calls: the NIR-band sensitivity, the halt-with-receipt at high loadings, and the power-confirmed null at the high-AOD regime where the original Goyens claim is sharpest.
+The umbrella question got hit five ways across the next six subsections. §3.1 sets up V4's fire rates — the calibration result that shapes everything downstream. §3.2 through §3.6 are the five designs: the Sen2Cor paired test, the LaSRC cross-check, the NIR-band sensitivity, the halt-with-receipt at high loadings, and the power-confirmed null at the high-AOD regime where the original Goyens claim is sharpest.
 
 ### §3.1 — SQ2: V4 fire rates and what they mean
 
@@ -62,7 +66,7 @@ Three signal classifications came back:
 
 The Qiddiya caveat: pair retention landed at 28.1% against a pre-registered 30% floor. Halt rule fired. We accepted the result with the caveat documented because the diagnosis was the §3.1 finding — when 75% of operational scenes are flagged, you can't build many V4-vs-non-V4 pairs in the same temporal window. The cause was structural, not statistical.
 
-Diriyah's wide-inconclusive isn't a halt — it's an artifact of V4's design at the cleanest atmospheric site. The smallest paired set (n=8) sits at the AOI with the lowest V4 fire rate; fewer dusty scenes means fewer pairs. The AOI most worth measuring is the AOI we can measure least precisely from satellite-only paired designs. SQ8 carries that test forward; SQ8B will eventually anchor it against ground truth.
+Diriyah's wide-inconclusive isn't a halt — it's an artifact of V4's design at the cleanest atmospheric site. The smallest paired set (n=8) sits at the AOI with the lowest V4 fire rate; fewer dusty scenes means fewer pairs. The AOI most worth measuring is the one we can measure least precisely from satellite-only paired designs. SQ8 carries that test forward; SQ8B will eventually anchor it against ground truth.
 
 At face value, SQ3 is a conditional null: no detectable aerosol-driven NDVI bias on Sen2Cor at moderate Riyadh-region loadings, on this design, given the Qiddiya retention caveat. The natural follow-up: is the null Sen2Cor-specific?
 
@@ -137,7 +141,9 @@ Both pre-registered classifiers fired. They disagreed (Figure 2).
 
 The disagreement is itself a finding. At pooled n=226 with R²=0.028, a regression has enough statistical power to detect very small effects that lack operational meaning. The significance criterion catches the small effect. The magnitude criterion correctly says the effect is too small to matter for change monitoring. Pre-registering both surfaces the disagreement explicitly rather than letting whichever-criterion-fires-first define the result. Documenting the disagreement, rather than overriding one criterion with the other, is the load-bearing methodology move.
 
-The framing decision: read SQ8 as power-confirmation of the SQ3/SQ4/SQ4B operational null, not as Goyens transfer. The Bayesian inverse holds — the test had the power to detect operationally relevant magnitudes at high loadings, and the magnitude it detected is sub-operational. A statistically significant effect 25× below the change-detection threshold is not evidence of bias; it's evidence the test would have caught bias if it existed. Operational magnitude is the load-bearing criterion because the umbrella question is operational.
+The framing decision: read SQ8 as power-confirmation of the SQ3/SQ4/SQ4B operational null, not as Goyens transfer. The test had the power to detect operationally relevant magnitudes at high loadings, and the magnitude it detected is sub-operational. A statistically significant effect 25× below the change-detection threshold is not evidence of bias; it's evidence the test would have caught bias if it existed. Operational magnitude is the load-bearing criterion because the umbrella question is operational.
+
+One regression-level finding from SQ8 belongs in this section before the §3 close. The AOI fixed effects in the per-scene regression came in significantly different across the three sites, with Qiddiya's intercept distinct from KSP's and Diriyah's at confidence levels the regression structure should not produce from atmospheric variation alone. The per-scene method, completely independent of the paired DBB chain, sees the same site-level asymmetry the V4 fire rates surfaced at §3.1 — and §4 develops the substrate finding that explains it.
 
 What ships from §3 as a whole: across two correction chains (Sen2Cor + LaSRC), two NIR bands (B8A narrow + B8 broad), paired and per-scene regression designs, and reanalysis AOD up to Q4 dust loadings, AOD-dependent NDVI bias does not exist at operationally meaningful magnitude at Riyadh. The largest detectable effect is −0.002 NDVI per IQR of dust optical depth, 95% CI lower bound −0.003 — sub-operational across the loading regime (Figure 3). The five-design convergence is the answer; no single design carries it alone.
 
@@ -159,8 +165,6 @@ Six lines, six different parts of the analysis, none of them the dust question:
 6. SQ5 R5 contingency. The UVAI × V4 contingency table produced the cleanest line in the chain. Of 18 Q4 (highest UVAI quartile) scenes at Qiddiya, V4 fired on 16 — 89%. TROPOMI UVAI is an independent atmospheric instrument with no shared optical path with Sentinel-2's Red and NIR bands. Two independent dust signals agreeing 89% at high loadings would be expected behavior. But the 89% here isn't dust agreement: V4 fires whenever UVAI says it's high-aerosol, and V4 fires plenty of times when UVAI says aerosol is low. The asymmetry is the construction-substrate signal.
 
 Figure 4 stacks the six lines into a single panel.
-
-A seventh line landed at SQ8: the AOI fixed effects in the per-scene regression came in significantly different across the three sites, with Qiddiya's intercept distinct from KSP's and Diriyah's at confidence levels the regression structure should not produce from atmospheric variation alone. This validates the per-AOI baseline-difference reading at the regression level — the per-scene method, completely independent of the paired DBB index, sees the same site-level structural difference at Qiddiya.
 
 What this means operationally: change monitoring at Qiddiya cannot use a dust mask alone. A workflow built on V4-style atmospheric flags will mis-classify construction-substrate variability as aerosol roughly 75% of the time, generating both false positives (construction phases flagged as dust events) and false negatives (real surface change hidden under "this is just dust again"). The fix isn't a better dust flag. The fix is a substrate-aware change detection layer that knows Qiddiya is under active earthworks and treats the site differently from KSP or Diriyah. SQ4C, when it eventually runs, may be able to distinguish the two via the L30 cadence; piece A is where this question lives in detail.
 
