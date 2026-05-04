@@ -6,7 +6,7 @@ We tested whether Sen2Cor's known underestimation of aerosols over bright desert
 
 Four pre-registered stop rules fired during execution. Each produced a deferred sub-question rather than a mid-run design switch — the discipline held all four times.
 
-The question came from Goyens 2024: Sen2Cor systematically underestimates aerosol over bright deserts, so what does that do to NDVI at Qiddiya, King Salman Park, and Diriyah Gate? We built a faithful port of the Lolli 2024 DBB index to flag dusty scenes and ran the question five ways — paired Sen2Cor, paired LaSRC, broad-versus-narrow NIR, a halt-with-receipt at the Q4 dust quartile (paired designs can't probe the highest loadings at this site), and a per-scene regression against reanalysis AOD.
+The question came from Goyens 2024: Sen2Cor systematically underestimates aerosol over bright deserts, so what does that do to NDVI at Qiddiya, King Salman Park, and Diriyah Gate?
 
 The same chain turned up something the dust question wasn't asking about: six independent lines of evidence that Qiddiya is contaminated bidirectionally by construction substrate, not aerosol. For anyone monitoring change at that specific site, that side-finding matters more operationally than the dust answer.
 
@@ -36,15 +36,13 @@ The research engine. Once V4 was calibrated, the umbrella question became tracta
 
 Five designs, one umbrella question, intentional redundancy. Any single design has gaps; the convergence across five tightens the answer until the gaps close.
 
-Stop-rule discipline. Every sub-question entered execution with a pre-registered halt condition. Four of them fired. SQ3's Qiddiya retention came in at 28.1% against a 30% threshold — halted, surfaced, accepted with caveat because the cause was a structural consequence of the 75% V4 fire rate (itself a finding), not noise. SQ4B's Arm B (HLS L30 cross-correction) hit a 43% pre-registered coverage floor failure across two AOIs — halted, deferred to SQ4C, the L30 coverage probe shipped as receipt. SQ5's retention failed in all three AOIs because Riyadh's UVAI seasonality clusters Q1 in winter and Q4 in spring/summer; the quartiles don't temporally interleave at the ±60-day window paired designs need — halted, two methodology findings rode out as receipts, the high-loading question deferred to SQ8. SQ8's first attempt aimed at AERONET ground truth and found no operational station within 500 km of Riyadh during the SQ2 window — halted, retargeted to MERRA-2 reanalysis primary with CAMS NRT cross-check.
-
-The pattern that held across all four: when a stop rule fires, the cheapest possible scope review is the one happening mid-run. The temptation in each case was to switch to a different design that bypassed the constraint — a temptation that conflates "this measurement got borderline retention" with "we should answer a different question." Pre-registration catches that. New questions become new sub-questions; the original ships or halts on its own terms.
+Four pre-registered halts fired: SQ3's Qiddiya retention at 28.1% (against 30%; structural consequence of the 75% V4 fire rate, itself a finding); SQ4B's Arm B at 43% L30 coverage (against 50%; deferred to SQ4C); SQ5's retention in all three AOIs (Riyadh's UVAI seasonality won't interleave Q1 and Q4 at ±60 days; two methodology findings rode out, the high-loading question deferred to SQ8); SQ8's AERONET halt (no operational station within 500 km, retargeted to MERRA-2 primary with CAMS NRT cross-check). When a stop rule fires, the cheapest scope review is the one happening mid-run; the temptation was to switch designs in a way that conflates "borderline retention" with "a different question worth answering." Pre-registration catches that — new questions become new sub-questions, the original ships or halts on its own terms.
 
 A second pattern emerged: the diagnosis is often the finding. SQ3's Qiddiya retention failure is a downstream consequence of SQ2's construction-substrate finding. SQ4B's Arm B coverage failure is a structural Sentinel-2 vs Landsat cadence mismatch. SQ5's retention failure is Riyadh's UVAI seasonality. SQ8's AERONET halt is the absence of long-running ground stations in the eastern Saudi interior. Each halt diagnosis carries forward as either a finding or load-bearing methodology context for the next sub-question. The receipts aren't appendix material; they're piece B substance.
 
 ## §3 — The five-design answer chain
 
-The umbrella question got hit five ways across the next six subsections. §3.1 sets up V4's fire rates — the calibration result that shapes everything downstream. §3.2 through §3.6 are the five designs: the Sen2Cor paired test, the LaSRC cross-check, the NIR-band sensitivity, the halt-with-receipt at high loadings, and the power-confirmed null at the high-AOD regime where the original Goyens claim is sharpest.
+§3.1 establishes V4's fire rates — the calibration result that shapes everything downstream. §3.2 through §3.6 are the five designs.
 
 ### §3.1 — SQ2: V4 fire rates and what they mean
 
@@ -151,7 +149,7 @@ The mechanism that survives, by elimination: NDVI's Red/NIR ratio cancels aeroso
 
 ## §4 — What the methodology surfaced beyond the umbrella question
 
-Piece B's umbrella question is about aerosol. Qiddiya kept showing up in the data with patterns no aerosol mechanism could explain. By the time the dust analysis closed, six independent lines of evidence had converged on a different finding entirely — one the research engine surfaced as a side effect, and one that matters more for anyone monitoring change at this specific site than the aerosol answer does.
+Piece B's umbrella question is about aerosol. Qiddiya kept showing up in the data with patterns no aerosol mechanism could explain. By the time the dust analysis closed, six independent lines of evidence had converged on a different finding entirely — one the research engine surfaced as a side effect, and one that matters more for a change-detection workflow at Qiddiya than the aerosol answer does.
 
 The finding: Qiddiya's Sentinel-2 signal is contaminated bidirectionally by construction substrate, not aerosol. Active earthworks at the site produce optical signatures that look like dust to a dust flag, look like greenup or browndown to a vegetation index depending on the week, and create both false positives and false negatives in change-detection workflows that don't account for them.
 
@@ -180,7 +178,10 @@ Generalization across surface and coastal-vs-inland regimes. Piece B's answer is
 
 Construction-substrate contamination at sites the dust question wasn't asked at. §4's six-line convergence at Qiddiya has a generalization claim attached: any active-construction Vision 2030 site is vulnerable to the same pattern. Piece B doesn't measure that claim; it asserts it on mechanism. NEOM, Red Sea Project, the active-build portions of Diriyah Gate, King Salman Park's expansion zones — each of these would produce a different six-line signature depending on substrate composition and construction phase, and each requires its own diagnostic protocol pass. The methodology to surface the contamination at any site is established; the contamination-by-site catalog is its own piece of work. That work is piece A's natural backbone.
 
-What does not belong in this section: a recapitulation of the §3 chain, a softening of §0's locked headline, or any version of "more research is needed" that doesn't name a specific design. The umbrella question is answered. The discussion is about what the engine sees next.
+What does not belong in this section: a recapitulation of the §3 chain, a softening of §0's locked headline, or any version of "more research is needed" that doesn't name a specific design. The umbrella question is answered.
+
+
+The discussion is about what the engine sees next.
 
 ## §6 — Limitations
 
@@ -196,6 +197,8 @@ What doesn't appear in this section: the Qiddiya retention caveat (already chara
 
 ## §7 — Methodology appendix
 
-Full per-sub-question methodology, pre-registration documents, intermediate findings notes, and the calibration-set scene manifests live in `research/dust-honesty/docs/`. Data and figures organize by function under `research/dust-honesty/data/` (calibration, dbb_compute, threshold_fits, operational, ndvi_bias, cross_correction, high_aod_regression, halts) and the parallel `research/dust-honesty/figures/`. The repository at github.com/a7zain/basira ships every script that produced every number in this piece, every CSV the scripts emit, every figure-generation pipeline, and the session logs documenting each design decision and stop-rule firing. The piece B headline rides on six findings notes — `sq2_findings.md` through `sq8_findings.md` — that contain the technical detail this prose summarizes. The open methodology questions for piece A live at the bottom of `2026-05-02.md`.
+Full per-sub-question methodology, pre-registration documents, intermediate findings notes, and the calibration-set scene manifests live in `research/dust-honesty/docs/`. Data and figures organize by function under `research/dust-honesty/data/` (calibration, dbb_compute, threshold_fits, operational, ndvi_bias, cross_correction, high_aod_regression, halts) and the parallel `research/dust-honesty/figures/`. The repository at github.com/a7zain/basira ships every script that produced every number in this piece, every CSV the scripts emit, every figure-generation pipeline, and the session logs documenting each design decision and stop-rule firing.
+
+The piece B headline rides on six findings notes — `sq2_findings.md` through `sq8_findings.md` — that contain the technical detail this prose summarizes. The open methodology questions for piece A live at the bottom of `2026-05-02.md`.
 
 Figure captions are at `research/dust-honesty/docs/figure_captions.md`.
