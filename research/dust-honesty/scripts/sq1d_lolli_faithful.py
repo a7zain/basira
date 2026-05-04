@@ -11,7 +11,7 @@ Per-scene scalar = spatial mean of DBB over (valid_test ∩ valid_ref ∩ not_wa
 
 Test side  : COPERNICUS/S2_HARMONIZED (L1C TOA), lowest-cloud scene per
              (calendar-month, sub_aoi). SCL mask from matching L2A.
-Reference  : per-AOI date from sq1d_references.json (primary or
+Reference  : per-AOI date from references_sq1d.json (primary or
              sensitivity alternate, controlled by --ref-mode). Both L1C
              (numerator) and L2A (denominator + SCL + water mask).
 
@@ -24,7 +24,7 @@ Output:
     --ref-mode alternate → research/dust-honesty/data/dbb_compute/dbb_calibration_alt_sq1d.csv
 
 In alternate mode, AOIs whose `sensitivity_alternate` field is null in
-sq1d_references.json (currently diriyah_gate) are skipped with a log line.
+references_sq1d.json (currently diriyah_gate) are skipped with a log line.
 """
 import argparse
 import csv

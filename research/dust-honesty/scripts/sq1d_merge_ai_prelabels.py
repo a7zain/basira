@@ -1,6 +1,6 @@
 """
 SQ1D — merge AI pre-labels into KSP and Qiddiya relabel CSVs, write
-canonical sq1d_references.json, and cross-check the JSON UVAI values
+canonical references_sq1d.json, and cross-check the JSON UVAI values
 against the committed all-months CSVs.
 
 Researcher reviewed both test montages at full resolution on 2026-04-29

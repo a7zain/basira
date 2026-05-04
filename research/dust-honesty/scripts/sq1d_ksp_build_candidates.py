@@ -4,10 +4,10 @@ SQ1D — build stratified KSP reference candidate pool on tightened bbox.
 Pool A: top-3 cleanest UVAI across full window (2020-01..2026-04).
 Pool B: top-3 cleanest UVAI from 2023-01 onward (recent, surface-state
         representative for late-stack test scenes).
-Test months (sq1_manual_labels.csv where AOI=king_salman_park) are
+Test months (manual_labels_sq1.csv where AOI=king_salman_park) are
 excluded so candidates don't leak into the calibration set.
 
-Output: research/dust-honesty/data/sq1d_ksp_reference_candidates.csv
+Output: research/dust-honesty/data/calibration/candidates_ref_ksp_sq1d.csv
 """
 import csv
 from pathlib import Path

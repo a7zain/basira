@@ -2,13 +2,13 @@
 SQ3 — figures.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv
-  research/dust-honesty/data/sq3_pairing_audit.csv
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv
+  research/dust-honesty/data/ndvi_bias/pairing_audit_sq3.csv
 
-Outputs (under research/dust-honesty/figures/sq3/):
+Outputs (under research/dust-honesty/figures/ndvi_bias/):
   sq3_delta_hist_<aoi>.png         (3 PNGs, one per AOI)
-  sq3_forest_plot.png              (combined forest plot)
-  sq3_retention.png                (per-AOI pairing retention bar chart)
+  forest_plot_sq3.png              (combined forest plot)
+  retention_sq3.png                (per-AOI pairing retention bar chart)
 """
 from __future__ import annotations
 

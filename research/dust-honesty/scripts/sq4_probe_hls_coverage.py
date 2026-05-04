@@ -7,7 +7,7 @@ R4: confirm Fmask QA band presence on a sample image.
 HARD HALT (exit code 2) if any AOI < 50% coverage.
 
 Output:
-  research/dust-honesty/data/sq4_coverage_probe.csv
+  research/dust-honesty/data/cross_correction/coverage_probe_sq4.csv
 
 No NDVI compute here — just an existence check on
 NASA/HLS/HLSS30/v002 filtered to AOI bbox + date ±1 day window.

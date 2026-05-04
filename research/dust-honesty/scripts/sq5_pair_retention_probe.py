@@ -2,13 +2,13 @@
 SQ5 — pair retention probe (HALT RECEIPT).
 
 Inputs:
-  research/dust-honesty/data/sq5_uvai_labels.csv
+  research/dust-honesty/data/halts/uvai_sq5/uvai_labels.csv
 
 Outputs:
-  research/dust-honesty/data/sq5_pair_retention_probe.csv
+  research/dust-honesty/data/halts/uvai_sq5/pair_retention_probe.csv
     columns: aoi, n_q4_total, n_q4_with_pair, retention_pct,
              floor_pct, halt_status
-  research/dust-honesty/data/sq5_seasonal_stratification.csv
+  research/dust-honesty/data/halts/uvai_sq5/seasonal_stratification.csv
     columns: aoi, calendar_month, n_q1_scenes, n_q4_scenes
     (12 rows × 3 AOIs = 36 rows)
 

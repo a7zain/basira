@@ -6,12 +6,12 @@ step that must receive only visual evidence.
 Per-month scene pick: query GEE COPERNICUS/S2_HARMONIZED with cloud<5,
 pick lowest CLOUDY_PIXEL_PERCENTAGE (leastCC, matches phase1).
 
-Stretch loaded from sq1d_ksp_stretch.json (committed a5ea00a, derived
+Stretch loaded from stretch_ksp_sq1d.json (committed a5ea00a, derived
 on tightened 16.6 km^2 bbox). Not recomputed.
 
 Outputs:
-  research/dust-honesty/data/sq1d_ksp_test_thumbnails/<YYYY-MM>.png  (overwrites)
-  research/dust-honesty/data/sq1d_ksp_test_montage.png  (overwrites)
+  research/dust-honesty/data/calibration/thumbnails/ksp_test_sq1d/<YYYY-MM>.png  (overwrites)
+  research/dust-honesty/figures/calibration/montages/test_ksp_sq1d.png  (overwrites)
 """
 import csv
 import io
@@ -42,7 +42,7 @@ AOI = "king_salman_park"
 
 def load_manifest_lookup():
     """Return {(aoi, month_slot): (system_index, acquisition_date)} from
-    sq1d_scene_manifest.csv, or {} if the manifest doesn't exist yet."""
+    manifest_sq1d.csv, or {} if the manifest doesn't exist yet."""
     if not MANIFEST_CSV.exists():
         return {}
     out = {}

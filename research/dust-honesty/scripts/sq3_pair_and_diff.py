@@ -4,8 +4,8 @@ compute Δ NDVI = NDVI(fired) − NDVI(neighbor), bootstrap mean and 95%
 CI per AOI.
 
 Inputs:
-  research/dust-honesty/data/sq2_dbb_operational.csv (228 rows)
-  research/dust-honesty/data/sq3_ndvi_per_scene.csv  (228 rows)
+  research/dust-honesty/data/operational/dbb_operational_sq2.csv (228 rows)
+  research/dust-honesty/data/ndvi_bias/ndvi_per_scene_sq3.csv  (228 rows)
 
 Pairing rules:
   For each V4-fired scene at (AOI, date) with valid NDVI:
@@ -39,8 +39,8 @@ this script — sensitivity goes in the findings note (S3), not the
 headline pairing.
 
 Outputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv    (one row per pair)
-  research/dust-honesty/data/sq3_pairing_audit.csv (one row per AOI)
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv    (one row per pair)
+  research/dust-honesty/data/ndvi_bias/pairing_audit_sq3.csv (one row per AOI)
 """
 from __future__ import annotations
 

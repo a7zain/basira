@@ -1,19 +1,19 @@
 """
-SQ1D — re-thumbnail the KSP test scenes from sq1_manual_labels.csv on
+SQ1D — re-thumbnail the KSP test scenes from manual_labels_sq1.csv on
 the tightened bbox.
 
 For each labeled month, picks the lowest cloud_pct scene from
-sq1d_ksp_uvai_all.csv (matches the original phase1 leastCC convention),
+uvai_ksp_sq1d.csv (matches the original phase1 leastCC convention),
 fetches L1C TOA RGB via GEE, and renders with the SAME per-AOI 2/98
-stretch derived from the candidate pool (sq1d_ksp_stretch.json).
+stretch derived from the candidate pool (stretch_ksp_sq1d.json).
 Writes captioned PNGs, a montage, and the relabel CSV.
 
 If a labeled month has no eligible UVAI row, STOP and report.
 
 Outputs:
-  research/dust-honesty/data/sq1d_ksp_test_thumbnails/<date>.png
-  research/dust-honesty/data/sq1d_ksp_test_montage.png
-  research/dust-honesty/data/sq1d_ksp_relabel.csv
+  research/dust-honesty/data/calibration/thumbnails/ksp_test_sq1d/<date>.png
+  research/dust-honesty/figures/calibration/montages/test_ksp_sq1d.png
+  research/dust-honesty/data/calibration/relabel_ksp_sq1d.csv
 """
 import csv
 import io

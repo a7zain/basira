@@ -3,28 +3,28 @@ SQ8 — per-scene NDVI residual regressed on reanalysis AOD with AOI fixed
 effects. HC3 robust standard errors.
 
 Inputs:
-  research/dust-honesty/data/sq8_ndvi_residuals.csv (226 rows)
-  research/dust-honesty/data/sq8_aod_per_scene.csv  (228 rows)
-  research/dust-honesty/data/sq5_uvai_labels.csv    (UVAI quartile + V4)
+  research/dust-honesty/data/high_aod_regression/ndvi_residuals_sq8.csv (226 rows)
+  research/dust-honesty/data/high_aod_regression/aod_per_scene_sq8.csv  (228 rows)
+  research/dust-honesty/data/halts/uvai_sq5/uvai_labels.csv    (UVAI quartile + V4)
 
 Outputs:
-  research/dust-honesty/data/sq8_regression_primary.csv
+  research/dust-honesty/data/high_aod_regression/regression_primary_sq8.csv
     one row per coefficient (Intercept, AOD, AOI fixed effects):
     coefficient, beta, se, t, p, ci_lo_95, ci_hi_95, robust_method, n, r2
-  research/dust-honesty/data/sq8_regression_crosscheck.csv  (CAMS variant)
-  research/dust-honesty/data/sq8_regression_sensitivity.csv
+  research/dust-honesty/data/high_aod_regression/regression_crosscheck_sq8.csv  (CAMS variant)
+  research/dust-honesty/data/high_aod_regression/regression_sensitivity_sq8.csv
     rows: (variant, aoi, beta, se, p, ci_lo_95, ci_hi_95, n)
     variants:
       'climatology_stable'  → drop sensitivity_flag=True rows
                               (all rows pass at this site; reported for
                               parity)
       'aoi_stratified_<aoi>' → per-AOI separate OLS, HC3, no fixed effects
-  research/dust-honesty/data/sq8_predicted_residuals.csv
+  research/dust-honesty/data/high_aod_regression/predicted_residuals_sq8.csv
     rows: (aoi, prediction_point, aod_value, predicted_residual,
            ci_lo_95_pred, ci_hi_95_pred)
     points: 'aoi_mean_aod', 'q1_aod', 'q4_aod',
             'diriyah_q4_not_v4_anchor' (Diriyah only)
-  research/dust-honesty/data/sq8_signal_class.csv
+  research/dust-honesty/data/high_aod_regression/signal_class_sq8.csv
     one row: signal_class derived from PRIMARY regression's AOD coefficient.
 
 Signal classification (from prompt):

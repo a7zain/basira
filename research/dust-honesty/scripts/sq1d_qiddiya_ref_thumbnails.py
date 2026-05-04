@@ -7,8 +7,8 @@ derived fresh from the 4-scene set (same convention as
 regen_thumbnails.py).
 
 Outputs:
-  research/dust-honesty/data/sq1d_qiddiya_ref_thumbnails/<date>.png
-  research/dust-honesty/data/sq1d_qiddiya_ref_montage.png
+  research/dust-honesty/data/calibration/thumbnails/qiddiya_ref_sq1d/<date>.png
+  research/dust-honesty/figures/calibration/montages/ref_qiddiya_sq1d.png
 """
 import io
 import os

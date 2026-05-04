@@ -4,16 +4,16 @@ SQ5 — UVAI quartile labels + UVAI × V4 contingency table.
 Inputs:
   research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows, AOI/date)
   research/dust-honesty/data/operational/dbb_operational_sq2.csv (V4 flag per row)
-  research/dust-honesty/data/sq3_ndvi_per_scene.csv (NDVI per scene; for
+  research/dust-honesty/data/ndvi_bias/ndvi_per_scene_sq3.csv (NDVI per scene; for
     SQ5 candidate filter — must have NDVI to be a candidate)
   research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv      (KSP UVAI)
   research/dust-honesty/data/calibration/uvai_qiddiya_sq1d.csv  (Qiddiya UVAI)
   research/dust-honesty/data/calibration/uvai_diriyah_sq1d.csv  (Diriyah UVAI)
 
 Outputs:
-  research/dust-honesty/data/sq5_uvai_labels.csv
+  research/dust-honesty/data/halts/uvai_sq5/uvai_labels.csv
     columns: aoi, acquisition_date, uvai_mean, uvai_quartile, v4_flag
-  research/dust-honesty/data/sq5_uvai_v4_contingency.csv
+  research/dust-honesty/data/halts/uvai_sq5/uvai_v4_contingency.csv
     columns: aoi, in_q4, v4_fired, n
 
 Schema asymmetry note (also surfaced in §2 of sq5_findings.md):
@@ -38,7 +38,7 @@ Sanity test:
 
 Note: this script does NOT proceed to pair-and-diff — the SQ5 paired
 Q4-vs-Q1 design halted on R2 retention floor. See sq5_findings.md and
-sq5_pair_retention_probe.csv for the halt receipt.
+pair_retention_probe.csv for the halt receipt.
 """
 from __future__ import annotations
 

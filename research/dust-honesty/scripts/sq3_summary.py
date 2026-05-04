@@ -2,11 +2,11 @@
 SQ3 — summary stats + findings note.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv
-  research/dust-honesty/data/sq3_pairing_audit.csv
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv
+  research/dust-honesty/data/ndvi_bias/pairing_audit_sq3.csv
 
 Outputs:
-  research/dust-honesty/data/sq3_summary_stats.md
+  research/dust-honesty/data/ndvi_bias/summary_stats_sq3.md
   research/dust-honesty/docs/sq3_findings.md
 """
 from __future__ import annotations
@@ -104,7 +104,7 @@ def write_summary_stats(audit, bias):
     lines = []
     lines.append("# SQ3 summary stats")
     lines.append("")
-    lines.append("Inputs: `sq3_ndvi_bias.csv`, `sq3_pairing_audit.csv`. "
+    lines.append("Inputs: `paired_sen2cor_sq3.csv`, `pairing_audit_sq3.csv`. "
                  "All bootstrap CIs use 1000 resamples of pairs with "
                  "replacement, seed=42.")
     lines.append("")
@@ -181,10 +181,10 @@ def write_findings(audit, bias):
                  "scenes")
     lines.append("")
     lines.append("**Date:** 2026-05-02.")
-    lines.append("**Inputs:** `sq2_dbb_operational.csv` (228 rows; 226 "
-                 "usable), `sq3_ndvi_per_scene.csv` (NDVI mean per scene "
-                 "on the same manifest), `sq3_ndvi_bias.csv`, "
-                 "`sq3_pairing_audit.csv`.")
+    lines.append("**Inputs:** `dbb_operational_sq2.csv` (228 rows; 226 "
+                 "usable), `ndvi_per_scene_sq3.csv` (NDVI mean per scene "
+                 "on the same manifest), `paired_sen2cor_sq3.csv`, "
+                 "`pairing_audit_sq3.csv`.")
     lines.append("**Calibration anchor:** V4 = +0.034 (KSP+Diriyah scope, "
                  "applied uniformly to all three AOIs).")
     lines.append("")
@@ -211,7 +211,7 @@ def write_findings(audit, bias):
                  "faithful-Lolli mask). Spatial mean over the AOI bbox at "
                  "20 m native scale, single mean reducer + single sum+count "
                  "valid-pixel reducer, no `bestEffort`. Manifest-locked to "
-                 "`sq2_scene_manifest.csv` so every NDVI scene matches the "
+                 "`manifest_operational_sq2.csv` so every NDVI scene matches the "
                  "DBB scene byte-for-byte on `system:index`.")
     lines.append("")
     lines.append("**Pairing.** For each V4-fired scene at (AOI, date) with "

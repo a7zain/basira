@@ -1,11 +1,11 @@
 """
 SQ2 — DBB time-series plots over the operational 228-scene set.
 
-Reads sq2_dbb_operational.csv. Emits:
-  - data/sq2_dbb_timeseries_king_salman_park.png
-  - data/sq2_dbb_timeseries_qiddiya_core.png
-  - data/sq2_dbb_timeseries_diriyah_gate.png
-  - data/sq2_dbb_timeseries_combined.png  (3 stacked subplots)
+Reads dbb_operational_sq2.csv. Emits:
+  - figures/operational/dbb_timeseries_king_salman_park_sq2.png
+  - figures/operational/dbb_timeseries_qiddiya_core_sq2.png
+  - figures/operational/dbb_timeseries_diriyah_gate_sq2.png
+  - figures/operational/dbb_timeseries_combined_sq2.png  (3 stacked subplots)
 
 Marker convention:
   filled circle = flag_v4 = True

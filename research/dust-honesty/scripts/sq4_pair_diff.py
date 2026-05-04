@@ -2,12 +2,12 @@
 SQ4 — pair difference-of-differences + bootstrap.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv (38 SQ3 pairs)
-  research/dust-honesty/data/sq4_hls_ndvi.csv  (65 (aoi, date) NDVI rows)
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv (38 SQ3 pairs)
+  research/dust-honesty/data/cross_correction/ndvi_hls_s30_b8a_sq4.csv  (65 (aoi, date) NDVI rows)
 
 Outputs:
-  research/dust-honesty/data/sq4_diff_of_diffs.csv   (one row per kept pair)
-  research/dust-honesty/data/sq4_signal_class.csv    (one row per AOI)
+  research/dust-honesty/data/cross_correction/diff_of_diffs_lasrc_sq4.csv   (one row per kept pair)
+  research/dust-honesty/data/cross_correction/signal_class_sq4.csv    (one row per AOI)
 
 Math:
   delta_hls = hls_ndvi(fired) - hls_ndvi(neighbor)
@@ -25,7 +25,7 @@ Signal classification:
   else                      -> 'wide_inconclusive'
 
 A pair is kept iff both fired_date AND neighbor_date have a non-empty
-hls_ndvi in sq4_hls_ndvi.csv. Pairs where either side is missing
+hls_ndvi in ndvi_hls_s30_b8a_sq4.csv. Pairs where either side is missing
 (Fmask wipeout) are dropped and counted in the AOI summary.
 
 Note: SQ3 column is `delta_ndvi`. We alias it as delta_sen2cor in

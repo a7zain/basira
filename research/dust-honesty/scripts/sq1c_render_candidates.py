@@ -5,7 +5,7 @@ Per AOI:
   1. Read sq1c_<aoi>_positive_candidates.csv, filter match_status=='matched'.
   2. For each row, fetch the S2 L1C scene by acquisition_date (date-based
      mosaic + clip path, byte-identical to the SQ1D test renderer's
-     manifest path — see sq1d_<aoi>_test_blind.py / sq1d_scene_manifest.csv).
+     manifest path — see sq1d_<aoi>_test_blind.py / manifest_sq1d.csv).
   3. assert_manifest_match: confirm s2_system_index from the candidate
      CSV is present in the catalog on s2_acquisition_date.
   4. Stretch with the AOI's existing 2/98 JSON, caption with the
@@ -14,7 +14,7 @@ Per AOI:
      continue (matches the SQ1C protocol Unit 1 silent-failure-guard
      pattern).
   6. Save to sq1c_<aoi>_test_thumbnails/<YYYY-MM-DD>.png.
-  7. Append a row to sq1c_scene_manifest.csv with source='locked_at_selection'.
+  7. Append a row to manifest_sq1c.csv with source='locked_at_selection'.
 
 Then build per-AOI montages (sq1c_<aoi>_test_montage.png), 4×4 grid,
 date-only caption per cell, vacant cells left blank.

@@ -4,7 +4,7 @@ SQ1D Part A.7 — qiddiya_core UVAI all-months search + windowed re-rank.
 Mirrors Part A.6 (KSP) for qiddiya_core, then prints the windowed
 re-rank inline.
 
-Output: research/dust-honesty/data/sq1d_qiddiya_uvai_all.csv
+Output: research/dust-honesty/data/calibration/uvai_qiddiya_sq1d.csv
 """
 import csv
 import os

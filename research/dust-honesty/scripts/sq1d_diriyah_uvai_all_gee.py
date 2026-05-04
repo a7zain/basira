@@ -20,10 +20,10 @@ is server-side hard-limited at 5 k elements). The S2-conditioned
 pattern lands on ~300-400 rows for a small inland AOI, matching KSP
 (320) and Qiddiya (302).
 
-Schema mirrors sq1d_ksp_uvai_all.csv with one extra column:
+Schema mirrors uvai_ksp_sq1d.csv with one extra column:
   data_source = "GEE_OFFL_L3"
 
-Output: research/dust-honesty/data/sq1d_diriyah_uvai_all.csv
+Output: research/dust-honesty/data/calibration/uvai_diriyah_sq1d.csv
 """
 from __future__ import annotations
 

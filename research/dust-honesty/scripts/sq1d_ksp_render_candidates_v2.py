@@ -1,7 +1,7 @@
 """
 SQ1D — render KSP reference candidate thumbnails on tightened bbox.
 
-Reads sq1d_ksp_reference_candidates.csv. Fetches L1C TOA RGB (B4/B3/B2)
+Reads candidates_ref_ksp_sq1d.csv. Fetches L1C TOA RGB (B4/B3/B2)
 for each candidate via GEE, computes per-AOI 2/98 percentile stretch
 across the candidate pool, renders captioned PNGs and a montage.
 
@@ -18,9 +18,9 @@ Silent-failure guard (hardened 2026-04-30):
   with a caption painted on top.
 
 Outputs:
-  research/dust-honesty/data/sq1d_ksp_ref_thumbnails/<date>.png
-  research/dust-honesty/data/sq1d_ksp_ref_montage.png
-  research/dust-honesty/data/sq1d_ksp_stretch.json
+  research/dust-honesty/data/calibration/thumbnails/ksp_ref_sq1d/<date>.png
+  research/dust-honesty/figures/calibration/montages/ref_ksp_sq1d.png
+  research/dust-honesty/data/calibration/stretch_ksp_sq1d.json
 """
 import csv
 import io

@@ -3,7 +3,7 @@
 fill_sq1_labels.py
 
 Writes the reviewed SQ1 manual labels into
-research/dust-honesty/data/sq1_manual_labels.csv.
+research/dust-honesty/data/calibration/manual_labels_sq1.csv.
 
 Labels were produced by AI pre-labeling against a written rubric, then
 reviewed and finalized by the researcher (Ahmed) on 2026-04-27 against

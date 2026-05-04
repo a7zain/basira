@@ -11,7 +11,7 @@ Inputs:
   research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows)
 
 Outputs:
-  research/dust-honesty/data/sq8_aod_per_scene.csv
+  research/dust-honesty/data/high_aod_regression/aod_per_scene_sq8.csv
   columns: aoi, acquisition_date, merra2_duexttau_550, cams_total_aod_550,
            merra2_n_images_used, cams_n_images_used,
            merra2_window_min_utc, merra2_window_max_utc,

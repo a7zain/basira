@@ -1,7 +1,7 @@
 """
 SQ1D Part A — select reference scene candidates per AOI.
 
-For each AOI, take all 'clean'-labeled months from sq1_manual_labels.csv,
+For each AOI, take all 'clean'-labeled months from manual_labels_sq1.csv,
 query GEE COPERNICUS/S2_HARMONIZED (L1C) for matching date×bbox, and rank
 the top 5 cleanest L1C scenes per AOI by CLOUDY_PIXEL_PERCENTAGE.
 

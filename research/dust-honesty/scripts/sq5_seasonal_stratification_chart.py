@@ -2,10 +2,10 @@
 SQ5 — seasonal stratification chart (load-bearing visual halt receipt).
 
 Input:
-  research/dust-honesty/data/sq5_seasonal_stratification.csv
+  research/dust-honesty/data/halts/uvai_sq5/seasonal_stratification.csv
 
 Output:
-  research/dust-honesty/figures/sq5/sq5_seasonal_stratification.png
+  research/dust-honesty/figures/halts/uvai_sq5/seasonal_stratification.png
 
 Per-AOI side-by-side calendar-month bars: Q1 (low UVAI, cool color)
 vs Q4 (high UVAI, warm color). Visual proof of the halt cause —

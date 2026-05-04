@@ -15,7 +15,7 @@ pass (sq1c_label_review.py). Reports:
       * flags: confirmed='clean' with UVAI > +2.0, or
                confirmed='heavy_dust' with UVAI < +1.0.
 
-Output: stdout summary + sq1c_confirmation_audit.csv with one row per scene.
+Output: stdout summary + confirmation_audit_sq1c.csv with one row per scene.
 
 UVAI is first surfaced HERE, never at labeling time. (Locked 2026-04-30.)
 

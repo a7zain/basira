@@ -2,12 +2,12 @@
 SQ4B Arm A — HLS S30 NDVI compute on SQ3 pair dates, BROAD NIR (B8).
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv (38 pairs → 65 unique tuples)
-  research/dust-honesty/data/sq4_hls_ndvi.csv  (SQ4's B8A NDVI cache, for
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv (38 pairs → 65 unique tuples)
+  research/dust-honesty/data/cross_correction/ndvi_hls_s30_b8a_sq4.csv  (SQ4's B8A NDVI cache, for
                                                 Spearman cross-check only)
 
 Output:
-  research/dust-honesty/data/sq4b_b8_s30_ndvi.csv
+  research/dust-honesty/data/cross_correction/ndvi_hls_s30_b8_sq4b.csv
   columns: aoi, date, hls_system_index, b8_s30_ndvi, n_valid_pixels,
            n_total_pixels, qa_flag
 
@@ -40,7 +40,7 @@ Self-reference test at run start:
   assert exact equality. Walks pair dates if first attempt is empty.
 
 Spearman cross-check (post-compute, diagnostic only):
-  Loads SQ4's sq4_hls_ndvi.csv, computes Spearman ρ between B8 and B8A
+  Loads SQ4's ndvi_hls_s30_b8a_sq4.csv, computes Spearman ρ between B8 and B8A
   on (aoi, date) rows where both are non-NaN. Reported for the §3
   diagnostic line in findings note. Not a stop rule; flag if ρ < 0.95
   in the runtime log.

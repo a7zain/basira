@@ -1,12 +1,12 @@
 """
 SQ4 — summary tables + figures.
 
-Outputs (under research/dust-honesty/figures/sq4/):
-  sq4_forest_diff_of_diffs.png  — per-AOI mean ± 95% CI on diff_of_diffs
+Outputs (under research/dust-honesty/figures/cross_correction/):
+  forest_diff_of_diffs_sq4.png  — per-AOI mean ± 95% CI on diff_of_diffs
   sq4_scatter_<aoi>.png × 3     — Δ Sen2Cor (x) vs Δ HLS (y), 1:1 line
-  sq4_coverage_chart.png        — HLS coverage % per AOI vs SQ3 pair count
+  coverage_chart_sq4.png        — HLS coverage % per AOI vs SQ3 pair count
 
-Also writes research/dust-honesty/data/sq4_summary_stats.md (1-page table)
+Also writes research/dust-honesty/data/cross_correction/summary_stats_sq4.md (1-page table)
 """
 from __future__ import annotations
 
@@ -160,7 +160,7 @@ def coverage_chart(class_rows):
 
 
 def write_md(class_rows):
-    """Per-AOI 1-page table to sq4_summary_stats.md."""
+    """Per-AOI 1-page table to summary_stats_sq4.md."""
     lines = [
         "# SQ4 — HLS vs Sen2Cor Δ NDVI: per-AOI summary",
         "",

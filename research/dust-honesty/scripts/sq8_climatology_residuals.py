@@ -2,10 +2,10 @@
 SQ8 — per-AOI per-calendar-month NDVI climatology + per-scene residuals.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_per_scene.csv  (228 rows, 226 with NDVI)
+  research/dust-honesty/data/ndvi_bias/ndvi_per_scene_sq3.csv  (228 rows, 226 with NDVI)
 
 Outputs:
-  research/dust-honesty/data/sq8_ndvi_residuals.csv
+  research/dust-honesty/data/high_aod_regression/ndvi_residuals_sq8.csv
   columns: aoi, acquisition_date, ndvi, ndvi_climatology,
            ndvi_residual, n_climatology_support, sensitivity_flag
 
@@ -37,7 +37,7 @@ SENSITIVITY_FLOOR = 3
 
 
 def load_ndvi():
-    """Yield dict rows from sq3_ndvi_per_scene.csv with NDVI present."""
+    """Yield dict rows from ndvi_per_scene_sq3.csv with NDVI present."""
     with open(NDVI_CSV) as f:
         for r in csv.DictReader(f):
             v = r["ndvi_aoi_mean"]

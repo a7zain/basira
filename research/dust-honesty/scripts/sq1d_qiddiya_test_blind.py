@@ -7,14 +7,14 @@ Per-month scene pick: query GEE COPERNICUS/S2_HARMONIZED with cloud<5,
 pick lowest CLOUDY_PIXEL_PERCENTAGE (leastCC, matches phase1).
 
 Stretch: hardcoded from CLAUDE.md (SQ1 originals on the unchanged
-Qiddiya bbox), persisted to sq1d_qiddiya_stretch.json. After the FIRST
+Qiddiya bbox), persisted to stretch_qiddiya_sq1d.json. After the FIRST
 scene renders, prints stretched RGB min/max as a sanity check; aborts
 if results look anomalous (all-clipped or empty).
 
 Outputs:
-  research/dust-honesty/data/sq1d_qiddiya_stretch.json
-  research/dust-honesty/data/sq1d_qiddiya_test_thumbnails/<YYYY-MM>.png
-  research/dust-honesty/data/sq1d_qiddiya_test_montage.png
+  research/dust-honesty/data/calibration/stretch_qiddiya_sq1d.json
+  research/dust-honesty/data/calibration/thumbnails/qiddiya_test_sq1d/<YYYY-MM>.png
+  research/dust-honesty/figures/calibration/montages/test_qiddiya_sq1d.png
 """
 import csv
 import io
@@ -45,7 +45,7 @@ AOI = "qiddiya_core"
 
 def load_manifest_lookup():
     """Return {(aoi, month_slot): (system_index, acquisition_date)} from
-    sq1d_scene_manifest.csv, or {} if the manifest doesn't exist yet."""
+    manifest_sq1d.csv, or {} if the manifest doesn't exist yet."""
     if not MANIFEST_CSV.exists():
         return {}
     out = {}

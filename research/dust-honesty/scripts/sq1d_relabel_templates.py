@@ -4,13 +4,13 @@ SQ1D — write blank relabel templates for KSP and Qiddiya.
 Schema: date, sub_aoi, old_label, ai_prelabel, ai_confidence,
 ai_reasoning, final_label.
 
-Reads sq1_manual_labels.csv. Populates date, sub_aoi (from AOI),
+Reads manual_labels_sq1.csv. Populates date, sub_aoi (from AOI),
 old_label (from label). Leaves ai_* and final_label blank for the
 post-render AI pre-label step + researcher review.
 
 Outputs:
-  research/dust-honesty/data/sq1d_ksp_relabel.csv      (overwrites a5ea00a)
-  research/dust-honesty/data/sq1d_qiddiya_relabel.csv  (new)
+  research/dust-honesty/data/calibration/relabel_ksp_sq1d.csv      (overwrites a5ea00a)
+  research/dust-honesty/data/calibration/relabel_qiddiya_sq1d.csv  (new)
 """
 import csv
 from collections import Counter

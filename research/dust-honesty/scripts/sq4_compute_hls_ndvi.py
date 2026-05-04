@@ -2,10 +2,10 @@
 SQ4 — HLS NDVI compute on SQ3 pair dates.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv (38 pairs → 65 unique tuples)
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv (38 pairs → 65 unique tuples)
 
 Output:
-  research/dust-honesty/data/sq4_hls_ndvi.csv
+  research/dust-honesty/data/cross_correction/ndvi_hls_s30_b8a_sq4.csv
   columns: aoi, date, hls_system_index, hls_ndvi, n_valid_pixels,
            n_total_pixels, qa_flag
 
@@ -38,7 +38,7 @@ Self-reference test at run start:
 
 Manifest pattern: HLS coverage was 100% in the R1 probe so we do not
 write a separate scene manifest CSV — the (aoi, date, system_index)
-triple is recorded in sq4_hls_ndvi.csv itself.
+triple is recorded in ndvi_hls_s30_b8a_sq4.csv itself.
 """
 from __future__ import annotations
 

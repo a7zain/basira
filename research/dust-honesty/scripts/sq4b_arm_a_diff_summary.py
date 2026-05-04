@@ -2,23 +2,23 @@
 SQ4B Arm A — pair difference-of-differences + two-by-two summary + figures.
 
 Inputs:
-  research/dust-honesty/data/sq3_ndvi_bias.csv       (38 SQ3 pairs)
-  research/dust-honesty/data/sq4b_b8_s30_ndvi.csv    (65 (aoi, date) NDVI)
-  research/dust-honesty/data/sq4_diff_of_diffs.csv   (SQ4 B8A pair results)
-  research/dust-honesty/data/sq4_signal_class.csv    (SQ4 B8A AOI summary)
+  research/dust-honesty/data/ndvi_bias/paired_sen2cor_sq3.csv       (38 SQ3 pairs)
+  research/dust-honesty/data/cross_correction/ndvi_hls_s30_b8_sq4b.csv    (65 (aoi, date) NDVI)
+  research/dust-honesty/data/cross_correction/diff_of_diffs_lasrc_sq4.csv   (SQ4 B8A pair results)
+  research/dust-honesty/data/cross_correction/signal_class_sq4.csv    (SQ4 B8A AOI summary)
 
 Outputs:
-  research/dust-honesty/data/sq4b_arm_a_b8_sensitivity.csv   (per kept pair)
-  research/dust-honesty/data/sq4b_arm_a_signal_class.csv     (per AOI)
-  research/dust-honesty/data/sq4b_two_by_two_summary.csv     (per AOI x cell)
-  research/dust-honesty/data/sq4b_summary_stats.md           (1-page table)
+  research/dust-honesty/data/cross_correction/arm_a_b8_sensitivity_sq4b.csv   (per kept pair)
+  research/dust-honesty/data/cross_correction/arm_a_signal_class_sq4b.csv     (per AOI)
+  research/dust-honesty/data/cross_correction/two_by_two_summary_sq4b.csv     (per AOI x cell)
+  research/dust-honesty/data/cross_correction/summary_stats_sq4b.md           (1-page table)
 
-Figures (research/dust-honesty/figures/sq4b/):
-  sq4b_arm_a_forest.png            — per-AOI mean ± 95% CI on arm_a_diff
-  sq4b_two_by_two_forest.png       — per-AOI: Sen2Cor B8 (SQ3 mean Δ),
+Figures (research/dust-honesty/figures/cross_correction/):
+  arm_a_forest_sq4b.png            — per-AOI mean ± 95% CI on arm_a_diff
+  two_by_two_forest_sq4b.png       — per-AOI: Sen2Cor B8 (SQ3 mean Δ),
                                      LaSRC B8 (this run mean Δ),
                                      LaSRC B8A (SQ4 mean Δ)  with 95% CIs
-  sq4b_b8_vs_b8a_scatter.png       — per-AOI scatter of B8 NDVI (x) vs
+  b8_vs_b8a_scatter_sq4b.png       — per-AOI scatter of B8 NDVI (x) vs
                                      B8A NDVI (y), 1:1 line
 
 Math:
@@ -32,9 +32,9 @@ Signal classification:
   CI includes zero, hw<0.01 -> 'tight_null'
   else                      -> 'wide_inconclusive'
 
-Note: this script is read-only on SQ4 outputs (sq4_diff_of_diffs.csv,
-sq4_signal_class.csv, sq4_hls_ndvi.csv) and SQ3 outputs (sq3_ndvi_bias.csv,
-sq3_pairing_audit.csv). It writes only sq4b_* artifacts.
+Note: this script is read-only on SQ4 outputs (diff_of_diffs_lasrc_sq4.csv,
+signal_class_sq4.csv, ndvi_hls_s30_b8a_sq4.csv) and SQ3 outputs (paired_sen2cor_sq3.csv,
+pairing_audit_sq3.csv). It writes only sq4b_* artifacts.
 """
 from __future__ import annotations
 
@@ -136,13 +136,13 @@ def load_sq3_audit():
 def load_sq4_class():
     """Per-AOI LaSRC B8A summary (mean Δ HLS, CI, halfwidth) — wait, sq4_signal_class
     holds DIFF-OF-DIFFS not raw delta_hls. We need raw delta_hls per AOI for
-    the two-by-two table. Compute from sq4_diff_of_diffs.csv directly."""
+    the two-by-two table. Compute from diff_of_diffs_lasrc_sq4.csv directly."""
     raise NotImplementedError("use compute_sq4_b8a_summary instead")
 
 
 def compute_sq4_b8a_summary():
     """Per-AOI mean Δ NDVI under HLS LaSRC B8A (SQ4), bootstrapped from
-    sq4_diff_of_diffs.csv columns delta_hls."""
+    diff_of_diffs_lasrc_sq4.csv columns delta_hls."""
     per_aoi = defaultdict(list)
     with open(SQ4_DIFF_CSV) as f:
         for r in csv.DictReader(f):

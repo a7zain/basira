@@ -9,7 +9,7 @@ This script does two things:
 
 2. `make_thumbnail_grid` — 6×5 grid of RGB thumbnails of the sampled
    scenes, each labeled with date and AOI. Ahmed opens the resulting
-   PNG and fills in `sq1_manual_labels.csv` row by row.
+   PNG and fills in `manual_labels_sq1.csv` row by row.
 
 Run as a script to produce all SQ1 artifacts at once:
 

@@ -2,10 +2,10 @@
 SQ1B re-re-run — build combined 73-scene calibration dataset.
 
 Joins:
-  - SQ1D 30-scene faithful DBB (sq1d_dbb_faithful.csv) with
-    sq1d_<aoi>_relabel.csv (KSP, Qiddiya) and sq1_manual_labels.csv
+  - SQ1D 30-scene faithful DBB (dbb_calibration_sq1d.csv) with
+    sq1d_<aoi>_relabel.csv (KSP, Qiddiya) and manual_labels_sq1.csv
     (Diriyah) for final_label.
-  - SQ1C 43-scene faithful DBB (sq1c_dbb_faithful.csv) with the three
+  - SQ1C 43-scene faithful DBB (dbb_calibration_sq1c.csv) with the three
     sq1c_<aoi>_relabel.csv files for final_label, ai_confidence,
     bias_exposed_during_ai_labeling.
 

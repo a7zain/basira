@@ -9,7 +9,7 @@ in SQ1D Pass 5).
 This script is the post-confirmation entrypoint after the researcher has
 walked all 43 SQ1C scenes through `sq1c_label_review.py`. Outputs go to a
 parallel set of files prefixed `sq1b_rerun_v2_confirmed_*` and
-`sq1bc_combined_calibration_confirmed.csv` so the preliminary results from
+`combined_calibration_confirmed.csv` so the preliminary results from
 2026-04-30 session 3 stay untouched on disk for audit.
 
 Stop rule (unchanged): CI half-width < 0.020 AND AUC > 0.75.
@@ -19,7 +19,7 @@ Usage:
     python sq1b_rerun_v2_confirmed.py --allow-unconfirmed   # debug only
 
 Outputs:
-    data/sq1bc_combined_calibration_confirmed.csv
+    data/calibration/combined_calibration_confirmed.csv
     data/threshold_fits/threshold_v4_confirmed_sq1b.csv
     data/threshold_fits/threshold_v4_confirmed_spec_sq1b.md
     data/threshold_fits/_archive/sq1b_rerun_v2_confirmed_roc_curves.png

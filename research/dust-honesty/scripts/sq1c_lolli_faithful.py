@@ -3,11 +3,11 @@ SQ1C — faithful Lolli DBB on the 43-scene UVAI-anchored expansion set.
 
 Mirrors sq1d_lolli_faithful.py but reads SQ1C calibration rows from the
 three sq1c_<aoi>_relabel.csv files (date is YYYY-MM-DD specific, not a
-month slot), uses primary references from sq1d_references.json, and
+month slot), uses primary references from references_sq1d.json, and
 applies the same bug-fixed reducer (single image, sum + count, no
 bestEffort, identical native scale).
 
-Output: research/dust-honesty/data/sq1c_dbb_faithful.csv
+Output: research/dust-honesty/data/dbb_compute/dbb_calibration_sq1c.csv
 """
 from __future__ import annotations
 

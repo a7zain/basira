@@ -3,10 +3,10 @@ SQ3 — NDVI compute on the SQ2 manifest-locked operational scene set.
 
 Inputs:
   research/dust-honesty/data/operational/manifest_operational_sq2.csv (228 rows)
-  research/dust-honesty/data/sq1d_references.json (for self-reference test)
+  research/dust-honesty/data/calibration/references_sq1d.json (for self-reference test)
 
 Output:
-  research/dust-honesty/data/sq3_ndvi_per_scene.csv
+  research/dust-honesty/data/ndvi_bias/ndvi_per_scene_sq3.csv
 
 Math:
   NDVI = (B8 - B4) / (B8 + B4) per pixel on Sen2Cor L2A SR

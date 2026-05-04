@@ -1,8 +1,8 @@
 """
 SQ1D — build authoritative scene manifest for the 30-scene calibration set.
 
-For each (aoi, month_slot) row in sq1d_ksp_relabel.csv +
-sq1d_qiddiya_relabel.csv + sq1_manual_labels.csv (Diriyah rows):
+For each (aoi, month_slot) row in relabel_ksp_sq1d.csv +
+relabel_qiddiya_sq1d.csv + manual_labels_sq1.csv (Diriyah rows):
 
   1. Run today's deterministic-pick query (cloud<5, sort asc, first)
      and capture (system_index, acquisition_date, cloudy_pixel_pct,
@@ -20,7 +20,7 @@ sq1d_qiddiya_relabel.csv + sq1_manual_labels.csv (Diriyah rows):
      PNG to compare against → record today's deterministic pick as
      'validated' with a note documenting the lack of prior render.
 
-Output: research/dust-honesty/data/sq1d_scene_manifest.csv
+Output: research/dust-honesty/data/calibration/manifest_sq1d.csv
         Schema: aoi, month_slot, acquisition_date, system_index,
                 cloudy_pixel_pct, processing_baseline, source, notes
 """

@@ -3,7 +3,7 @@ SQ2 — apply confirmed DBB thresholds to the operational 228-scene set.
 
 Inputs:
   - 3 AOIs × 76 months (2020-01 .. 2026-04) = 228 (aoi, year, month) pairs.
-  - Per-AOI reference scenes locked in sq1d_references.json.
+  - Per-AOI reference scenes locked in references_sq1d.json.
   - Calibration thresholds (post-confirmation) from sq1b_rerun_v2_confirmed:
       flag_v4         : dbb > 0.034 (KSP + Diriyah scope, applied all AOIs)
       flag_v3_ksp_only: dbb > 0.053 (KSP only)
@@ -12,18 +12,18 @@ Math: identical to sq1d_lolli_faithful.compute_dbb (single-image,
 single sum+count reducer, no bestEffort, native scale 20m).
 
 Scene selection priority:
-  (a) If (aoi, year, month) appears in sq1bc_combined_calibration_confirmed.csv
+  (a) If (aoi, year, month) appears in combined_calibration_confirmed.csv
       use the manifest-locked system_index from sq1d/sq1c manifests.
   (b) Else, GEE deterministic pick: lowest CLOUDY_PIXEL_PERCENTAGE in the
       year-month window over the AOI bbox; date asc as tiebreaker.
   (c) Best-pick CLOUDY_PIXEL_PERCENTAGE > 60 → no_usable_scene=True, dbb=NaN.
 
 Manifest:
-  - On first run: write sq2_scene_manifest.csv at the start of the sweep.
+  - On first run: write manifest_operational_sq2.csv at the start of the sweep.
   - On subsequent runs: read the manifest first; deterministic-pick is
     fallback only with WARNING.
   - Cross-check: SQ2's chosen system_index for any (aoi, year, month) that
-    overlaps sq1c_scene_manifest.csv or sq1d_scene_manifest.csv MUST match
+    overlaps manifest_sq1c.csv or manifest_sq1d.csv MUST match
     the prior manifest. Mismatch → raise.
 
 Outputs:
@@ -99,7 +99,7 @@ def ym_str(year, month):
 # ---- calibration index ------------------------------------------------------
 
 def load_combined_calibration():
-    """Return list of dicts from sq1bc_combined_calibration_confirmed.csv."""
+    """Return list of dicts from combined_calibration_confirmed.csv."""
     rows = []
     with open(COMBINED_CAL_CSV) as f:
         for r in csv.DictReader(f):
@@ -660,11 +660,11 @@ def main():
 
     existing = read_manifest()
     if existing:
-        print(f"Reading existing sq2_scene_manifest.csv "
+        print(f"Reading existing manifest_operational_sq2.csv "
               f"({len(existing)} rows). New picks WARN-logged.")
         manifest_lookup = {(s.aoi, s.year, s.month): s for s in existing}
     else:
-        print("No existing sq2_scene_manifest.csv — building fresh.")
+        print("No existing manifest_operational_sq2.csv — building fresh.")
         manifest_lookup = {}
 
     selections = []
@@ -755,7 +755,7 @@ def main():
     n_overlap, n_pass, failures = cross_check(results, cal_dbb_index)
     write_cross_check_failures(failures)
     print()
-    print(f"Cross-check vs sq1bc_combined_calibration_confirmed.csv:")
+    print(f"Cross-check vs combined_calibration_confirmed.csv:")
     print(f"  overlap rows: {n_overlap}")
     print(f"  passes      : {n_pass}")
     print(f"  failures    : {len(failures)}")

@@ -1,7 +1,7 @@
 """
 SQ1B re-run on faithful Lolli DBB output.
 
-Four binary task variants on sq1d_dbb_faithful.csv:
+Four binary task variants on dbb_calibration_sq1d.csv:
   V1 — heavy_dust vs clean, all AOIs (1 vs 23).
   V2 — any-non-clean (light_haze + heavy_dust) vs clean, all AOIs.
   V3 — KSP-only any-non-clean vs clean.
@@ -19,7 +19,7 @@ For each variant:
   - 2000 bootstrap iterations (seed 42) → 95% CI on Youden threshold.
 
 Sensitivity check: re-run the largest variant that passes (or, if none,
-the highest-AUC variant) on sq1d_dbb_faithful_alt.csv.
+the highest-AUC variant) on dbb_calibration_alt_sq1d.csv.
 
 Outputs:
   data/threshold_fits/_archive/sq1b_threshold_results.csv

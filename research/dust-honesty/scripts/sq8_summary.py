@@ -2,27 +2,27 @@
 SQ8 — figures + summary stats markdown (NO findings prose).
 
 Inputs:
-  research/dust-honesty/data/sq8_aod_per_scene.csv
-  research/dust-honesty/data/sq8_ndvi_residuals.csv
-  research/dust-honesty/data/sq8_regression_primary.csv
-  research/dust-honesty/data/sq8_regression_crosscheck.csv
-  research/dust-honesty/data/sq8_regression_sensitivity.csv
-  research/dust-honesty/data/sq8_predicted_residuals.csv
-  research/dust-honesty/data/sq8_signal_class.csv
-  research/dust-honesty/data/sq5_uvai_labels.csv
-  research/dust-honesty/data/sq3_pairing_audit.csv (loading-ladder)
-  research/dust-honesty/data/sq4_signal_class.csv (loading-ladder)
-  research/dust-honesty/data/sq4b_arm_a_signal_class.csv (loading-ladder)
-  research/dust-honesty/data/sq5_pair_retention_probe.csv (loading-ladder)
+  research/dust-honesty/data/high_aod_regression/aod_per_scene_sq8.csv
+  research/dust-honesty/data/high_aod_regression/ndvi_residuals_sq8.csv
+  research/dust-honesty/data/high_aod_regression/regression_primary_sq8.csv
+  research/dust-honesty/data/high_aod_regression/regression_crosscheck_sq8.csv
+  research/dust-honesty/data/high_aod_regression/regression_sensitivity_sq8.csv
+  research/dust-honesty/data/high_aod_regression/predicted_residuals_sq8.csv
+  research/dust-honesty/data/high_aod_regression/signal_class_sq8.csv
+  research/dust-honesty/data/halts/uvai_sq5/uvai_labels.csv
+  research/dust-honesty/data/ndvi_bias/pairing_audit_sq3.csv (loading-ladder)
+  research/dust-honesty/data/cross_correction/signal_class_sq4.csv (loading-ladder)
+  research/dust-honesty/data/cross_correction/arm_a_signal_class_sq4b.csv (loading-ladder)
+  research/dust-honesty/data/halts/uvai_sq5/pair_retention_probe.csv (loading-ladder)
 
-Outputs (under research/dust-honesty/figures/sq8/):
-  sq8_aod_distribution.png
-  sq8_residual_vs_aod_primary.png        — piece B SQ8 headline figure
-  sq8_diriyah_anchor.png
-  sq8_merra2_vs_cams_scatter.png
-  sq8_operational_magnitude_ladder.png   — piece B operational-magnitude ladder
+Outputs (under research/dust-honesty/figures/high_aod_regression/):
+  aod_distribution_sq8.png
+  residual_vs_aod_primary_sq8.png        — piece B SQ8 headline figure
+  diriyah_anchor_sq8.png
+  merra2_vs_cams_scatter_sq8.png
+  operational_magnitude_ladder_sq8.png   — piece B operational-magnitude ladder
 
-Output: research/dust-honesty/data/sq8_summary_stats.md  — narrative table
+Output: research/dust-honesty/data/high_aod_regression/summary_stats_sq8.md  — narrative table
 form ONLY. NO §4 prose; the dual-criterion observation rides as a
 footnote so the receipt is in git history before chat-side §4 draft.
 
@@ -110,7 +110,7 @@ def load_predicted():
 
 def load_primary_aod_coef():
     """Return dict with beta, se, p, ci_lo, ci_hi, n, r2 for the AOD
-    coefficient row in sq8_regression_primary.csv."""
+    coefficient row in regression_primary_sq8.csv."""
     with open(PRIM_CSV) as f:
         for r in csv.DictReader(f):
             if r["coefficient"] == "aod":
@@ -663,7 +663,7 @@ def write_summary_md(df, prim, cross, sens_rows, q1_aod, q4_aod, rho_mc):
         f"&#124;{delta:+.4f}&#124; = {abs(delta):.4f} < 0.005 | "
         f"`tight_null` |",
         "",
-        "Classifier sq8_signal_class.csv preserves the canonical pre-"
+        "Classifier signal_class_sq8.csv preserves the canonical pre-"
         "registered classifier output: "
         f"`{cls['signal_class']}`. The dual-criterion observation is the "
         "headline of the figures and this summary table; framing prose is "

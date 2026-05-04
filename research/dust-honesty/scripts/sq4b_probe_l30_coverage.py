@@ -9,7 +9,7 @@ Uses coll.mosaic() pattern (parity with SQ4's locked pattern).
 HARD HALT (exit code 2) if any AOI < 50% L30 coverage.
 
 Output:
-  research/dust-honesty/data/sq4b_l30_coverage_probe.csv
+  research/dust-honesty/data/cross_correction/l30_coverage_probe_sq4b.csv
 """
 from __future__ import annotations
 

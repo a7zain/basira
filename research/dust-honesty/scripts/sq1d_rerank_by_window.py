@@ -1,13 +1,13 @@
 """
 SQ1D Part A.6.1 — re-rank KSP UVAI candidates by date window.
 
-Read-only analysis on sq1d_ksp_uvai_all.csv. No GEE calls.
+Read-only analysis on uvai_ksp_sq1d.csv. No GEE calls.
 """
 import csv
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-IN_CSV = ROOT / "research/dust-honesty/data/sq1d_ksp_uvai_all.csv"
+IN_CSV = ROOT / "research/dust-honesty/data/calibration/uvai_ksp_sq1d.csv"
 
 WINDOWS = [
     ("Window 1: full range (2020-01 to 2026-04)", "2020-01-01", "2026-04-30"),

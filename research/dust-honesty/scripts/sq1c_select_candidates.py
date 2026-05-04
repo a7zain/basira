@@ -3,7 +3,7 @@ SQ1C — per-AOI positive-candidate selection.
 
 For each AOI:
   1. Load the negative-class scenes (from sq1d_<aoi>_relabel.csv where
-     final_label='clean'; for Diriyah, sq1_manual_labels.csv where
+     final_label='clean'; for Diriyah, manual_labels_sq1.csv where
      AOI='diriyah_gate' AND label='clean').
   2. Compute allowed_months = set of calendar months (1..12) that have
      ≥1 scene in the negative class. This is the SZA-aware seasonal-
@@ -15,7 +15,7 @@ For each AOI:
   6. Take top top_n=15 (50% over the n_pos≥10 floor for attrition).
 
 Outputs (per AOI):
-  research/dust-honesty/data/sq1c_<aoi>_positive_candidates.csv
+  research/dust-honesty/data/calibration/candidates_<aoi>_sq1c.csv
 
 Stdout: per-AOI summary table.
 """

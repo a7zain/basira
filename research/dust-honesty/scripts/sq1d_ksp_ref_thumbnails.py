@@ -3,11 +3,11 @@ SQ1D — render quicklook RGB thumbnails for king_salman_park reference
 candidates (L1C TOA, B4/B3/B2). Per-AOI 2/98 stretch derived fresh.
 
 Window 4/5 best candidates resolved at runtime from
-sq1d_ksp_uvai_all.csv.
+uvai_ksp_sq1d.csv.
 
 Outputs:
-  research/dust-honesty/data/sq1d_ksp_ref_thumbnails/<date>.png
-  research/dust-honesty/data/sq1d_ksp_ref_montage.png
+  research/dust-honesty/data/calibration/thumbnails/ksp_ref_sq1d/<date>.png
+  research/dust-honesty/figures/calibration/montages/ref_ksp_sq1d.png
 """
 import csv
 import io

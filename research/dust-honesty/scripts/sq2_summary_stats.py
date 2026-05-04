@@ -149,7 +149,7 @@ def section_temporal(rows_by_aoi):
 
 
 def section_cross_check(rows):
-    lines = ["## 3. Cross-check vs sq1bc_combined_calibration_confirmed.csv", ""]
+    lines = ["## 3. Cross-check vs combined_calibration_confirmed.csv", ""]
     overlap_rows = [r for r in rows if r["calibration_subset_match"]]
     n_overlap = len(overlap_rows)
     n_fail = 0

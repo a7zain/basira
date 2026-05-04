@@ -3,7 +3,7 @@ SQ1D UVAI source check — STOP-GATE for SQ1C source-mixing decision.
 
 Re-fetches GEE COPERNICUS/S5P/OFFL/L3_AER_AI UVAI mean over the KSP
 tightened bbox for a 30-date sample (seed=42) drawn from the existing
-sq1d_ksp_uvai_all.csv, and compares against the value already on file.
+uvai_ksp_sq1d.csv, and compares against the value already on file.
 
 Note on data provenance discovered during this check (2026-04-30):
 The existing KSP UVAI CSV was produced by sq1d_ksp_uvai_search.py which

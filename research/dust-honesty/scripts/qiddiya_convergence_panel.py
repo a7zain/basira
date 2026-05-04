@@ -20,11 +20,11 @@ Notes on data:
 - P1: SQ1D omitted Diriyah by design. KSP and Qiddiya use sq1d_*_relabel.csv
   and the metric is `old_label != "clean" AND final_label == "clean"`
   (the AI prior label is the SQ1B label that SQ1D's visually-blind pass
-  overrode). Diriyah uses sq1c_diriyah_gate_relabel.csv with the
+  overrode). Diriyah uses relabel_diriyah_sq1c.csv with the
   analogous `ai_prelabel != "clean" AND final_label == "clean"`
   (SQ1C's relabel structure has ai_prelabel as the prior AI label).
   "Toward clean" is strict: heavy_dust -> light_haze does NOT count.
-- P2: sq1d_dbb_faithful_alt.csv excluded Diriyah by design (Part B was
+- P2: dbb_calibration_alt_sq1d.csv excluded Diriyah by design (Part B was
   per-AOI on KSP+Qiddiya only). Diriyah cell renders as N/A.
 
 Output: research/dust-honesty/figures/qiddiya_convergence_panel.png (300 dpi)
