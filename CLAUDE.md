@@ -2,118 +2,86 @@
 
 ## Purpose
 
-This file is the working context for all Claude sessions on the Basira project. It lives in the repo root and is not shipped to readers; it's the session-to-session calibration artifact. Read it at the start of any session. Update it at the end with the current state and the next active work.
+Working context for all Claude sessions on Basira. Lives in repo root, not shipped to readers. Read at session start, update at session end.
 
 ## Current State (as of 2026-05-04 end-of-session)
 
-**Project:** Basira (بصيرة) — Saudi satellite change monitoring. Phase 1 deliverable is a portfolio-with-research-engine: cinematic homepage as table of contents (three Vision 2030 megaproject chapters — Qiddiya hero, King Salman Park, Diriyah Gate), each linking to a real research deep-dive that answers one umbrella question with rigor. Live at https://a7zain.github.io/basira/. Repo: `a7zain/basira`. Shaped for a specific Saudi space-sector opportunity (TPM-track read) — execution story over methodological novelty. Specifics in `.private/context.md` (gitignored).
+**Project:** Basira (بصيرة) — Saudi satellite change monitoring. Phase 1 deliverable is a portfolio-with-research-engine: cinematic homepage as table of contents (Qiddiya hero, KSP, Diriyah Gate), each linking to a real research deep-dive that answers one umbrella question with rigor. Live at https://a7zain.github.io/basira/. Repo: `a7zain/basira`. Shaped for a specific Saudi space-sector opportunity (TPM-track read). Specifics in `.private/context.md` (gitignored).
 
-**Piece B (dust-honesty) status:** V1 prose shipped 2026-05-04 at commit `e49df27`. Structural-review pass complete (5 flags applied, 175 docstring/comment cosmetic fixes, captions verified consistent). The piece is now publicly shippable at the research-engine level: four supporting figures (Figure 1–4), eight sections (§0–§7), 4956 words, full pre-registration + findings chain, methodology appendix complete.
+**Piece B (dust-honesty):** SHIPPED. V1 prose at commit `8c83854` (structural-review pass complete, 6 edits applied, 4760 words, 8 sections). Headline: NDVI bias from Sen2Cor aerosol underestimation is sub-operational at Riyadh (−0.002 NDVI per IQR AOD, 95% CI lower bound −0.003). Side-finding: six independent lines of evidence that Qiddiya is contaminated by construction substrate, not aerosol.
 
-**Active work post-piece-B:** Piece A (construction-substrate-by-site) scoped and ready to execute. The dust question answered piece B — "does aerosol corrupt NDVI at Riyadh?" No, not operationally. But piece B also surfaced six independent lines of evidence that Qiddiya is contaminated by construction substrate, not aerosol. Piece A is where that finding lives in detail: substrate-aware change detection at three Vision 2030 sites, substrate-phase-specific fingerprints, and a diagnostic protocol that generalizes to any active-construction site on Vision 2030. The umbrella question for piece A is: "Can a L30+S30 fusion detect substrate-induced contamination and isolate real surface change underneath?" Piece A will ship with a technical methods memo as the primary artifact for SARsatX read — the research site will be the supporting asset.
+**Piece A (construction-substrate-by-site):** Pre-registration LOCKED at commit `afcf80c`. Six sub-questions (SA1–SA6) with halt conditions, dual criterion at SA3, pre-scoped fallbacks (SA4C, SA5B). Path: `research/construction-substrate-by-site/docs/pre_registration.md`.
+
+**Active work:** SA1 dispatched to Claude Code. Goal: per-AOI BSI baseline from cloud-free bare-epoch S30+L30 scenes for Qiddiya, KSP, Diriyah. Locked: B8A NIR for S30 (cross-sensor overlap with L30 OLI Band 5), Fmask cloud_fraction < 0.1 for SA1 (stricter than SA3's < 0.3, label-quality protection). Halt rule pre-registered: < 5 bare-epoch scenes per AOI/sensor → fall back to full DBB-operational window as proxy bare-epoch.
 
 **Multi-city expansion** parked on `wip/phase5-multicity`. Not active; deferred post-piece-A.
 
+## Piece A Umbrella Question (Locked)
+
+Does substrate-aware L30+S30 fusion reduce false-positive change detections at active-construction Vision 2030 sites relative to S30-alone?
+
+Audience: TPM-track Saudi space-sector hire. Primary deliverable: technical methods memo (3–5 pages, SARsatX read). Three site-level research pieces (Qiddiya hero, KSP, Diriyah) as supporting assets. Time budget: 6–10 weeks SA1–SA6 + 4 weeks prose. Hard cap, halt and re-scope if blown.
+
+Scope conditional pre-registered: piece A has no external ground-truth label set. SA5 uses piece B V4-fire + high-BSI as contamination labels. Answer is conditional on that framing — claim "pipeline flags differently," not "this is real change."
+
 ## Key Decisions (Locked, Not to Be Relitigated)
 
-- Cinematic over dashboard: homepage is single-page scroll, not multi-view selector
-- Hero timelapse is Qiddiya (strongest story + construction-substrate finding)
-- KSP at full polygon footprint, Diriyah at full polygon footprint
-- AI-generated imagery explicitly prohibited (every pixel must be real satellite data)
-- Phase 4 analytics hidden not deleted (parked in repo under non-public path for potential future activation)
-- No toggles on main scroll; feature toggles redirected to methodology chapter multi-mode figure
-- Scroll-linked video scrubbing parked as methodology-future decision
+- Cinematic over dashboard; single-page scroll; Qiddiya hero
+- AI-generated imagery prohibited (every pixel real satellite data)
+- No toggles on main scroll; methodology chapter multi-mode figure carries that weight
+- Phase 4 analytics hidden not deleted
+- B8A locked for S30 NIR in BSI (cross-sensor matching)
+- Stop-rule philosophy carries from piece B: halts ride into prose as findings, not appendix
+- Fallback sub-questions (SA4C, SA5B) pre-scoped but require own pre-registration before execution
+- Out of scope for piece A: SQ8B (KAUST coastal), SAR-optical fusion, substrate composition by mineralogy, multi-city
 
 ## How I Work (Session Protocol)
 
-**Division of labor:** This chat (Claude) handles strategy, architecture, spec-enforcement, and exact Claude Code prompts. Claude Code (the executor) handles all implementation end-to-end.
+**Division of labor:** This chat = strategy, scoping, pushback, exact Claude Code prompts. Claude Code = all execution.
 
 **Claude Code prompt rules (mandatory):**
-1. Every prompt opens with: *"Work directly on the main working tree. Do NOT create a git worktree under `.claude/worktrees/`. If you think you need one, stop and ask."*
-2. Skip "show me each diff" / "wait for approval" gates. Autonomous end-to-end execution. Only stop for destructive/irreversible cases (force push, mass delete, credential exposure, history rewrite).
-3. Phrase as: full sequence → verify with `git log`/`git status` at end → report results. Single review point at end.
+1. Open with: *"Work directly on the main working tree. Do NOT create a git worktree under `.claude/worktrees/`. If you think you need one, stop and ask."*
+2. No "show me each diff" gates. Autonomous end-to-end. Stop only for destructive/irreversible cases.
+3. Verify with `git status` + `git log --oneline -10` at end. Single review point.
 
-**Basira end-of-session ritual (mandatory, every session):**
-Produce complete drop-in file replacements (not section edits) for:
-- `CLAUDE.md` (this file, full file)
-- `docs/sessions/YYYY-MM-DD.md` (dated session log, full file)
+**Pacing:** Default is continue. Keep prompts compact, less back-and-forth. Flag genuine concerns (time cap, scope risk, real fork) but do not pause-and-check at natural junctures.
 
-Ahmed overwrites local files, commits, pushes, then clicks "Sync now" in Claude Project (Projects don't auto-sync from GitHub). Ahmed prefers overwriting complete files, not editing sections.
+**End-of-session ritual:** Full file replacements for `CLAUDE.md` + dated `docs/sessions/YYYY-MM-DD.md`. Ahmed overwrites local, commits, pushes, clicks "Sync now" in Project.
 
-**Pacing:** Do not suggest stopping, pausing, or taking breaks between sections or at natural junctures. Default is continue until Ahmed says stop. Genuine concerns (time cap blown, scope risk, real fork in the road) can still be flagged — but default is keep going, not pause-and-check.
-
-**Commits:** Atomic commits with accurate messages. Use `git mv` for file moves to preserve rename history. Run `git status` after every Claude Code step before trusting "done."
-
-**Scope management:** Ahmed proposes scope expansions frequently. Claude pushes back directly, citing `site_spec.md`. Ahmed has consistently agreed when pushback is specific and grounded.
-
-**Diagnostic discipline:** Three wrong hypotheses explored before ground-truth pixel stats revealed actual mask-alignment cause. Don't fix before diagnosing. Approach: check and verify, don't assume and trust.
+**Push state note:** HTTPS pushes from Claude Code session blocked on credentials. Ahmed runs `git push origin main` from his shell after Claude Code commits land locally.
 
 ## Worktree Hygiene Warning
 
-Worktree drift is a silent killer. Claude Code has silently created git worktrees in the past (April 8: `relaxed-villani`/`determined-buck`, April 13: `heuristic-borg`, `epic-kalam`) and reported "committed and pushed" while edits landed off-main. The guardrail is in place (every Claude Code prompt leads with the worktree check). But the risk is real: **every Claude Code dispatch must verify working state with `git status` and `git log --oneline -5` before trusting any "committed" report.**
-
-Post-commit verification pattern: After any Claude Code "N insertions" report, verify with `find . -name <file> -not -path '*/.git/*'` (expect one path) and `git status` (expect file modified, then committed) before trusting the edit landed.
+Claude Code has historically created silent worktrees and reported success while editing off-main. Guardrail in every prompt. Post-commit verification: `git status`, `git log --oneline -10`, `find . -name <file> -not -path '*/.git/*'` before trusting any "committed" report.
 
 ## Tools & Resources
 
 **Satellite data:**
-- Sentinel Hub (Copernicus Dataspace): `ahmadxgpx@gmail.com`, OAuth credentials in `.env`
+- Sentinel Hub (Copernicus Dataspace): `ahmadxgpx@gmail.com`, OAuth in `.env`
 - Google Earth Engine: project `basira-494617` (HLS S30/L30, MERRA-2, CAMS, TROPOMI)
 
 **Processing:**
 - Python, rasterio, `sarsat` conda environment (`/opt/anaconda3/envs/sarsat/bin/python`)
-- Key scripts: `src/phase1_download.py`, `src/phase1_backdrops.py`, `src/change_detect.py`, `src/preprocess.py`
-- Research engine lives under `research/dust-honesty/scripts/` (61 .py files, fully documented with pre-registration + findings)
+- Piece B engine: `research/dust-honesty/scripts/` (61 .py files, full pre-reg + findings chain)
+- Piece A engine: `research/construction-substrate-by-site/` (initialized; SA1 in progress)
 
 **Site & deployment:**
 - Static HTML/CSS/JS, Leaflet.js, Chart.js 4.4.1
-- Live at `a7zain.github.io/basira`
-- GitHub Pages auto-deploys from main on any push
+- Live at `a7zain.github.io/basira` (GitHub Pages auto-deploy from main)
 
 **Key repo files:**
 - `CLAUDE.md` (this file)
-- `basira_master_plan.md` (project arc, timelines, credential notes)
-- `site_spec.md` (locked design decisions, scoping pushback anchor)
-- `docs/sessions/YYYY-MM-DD.md` (dated session logs, full history)
-- `docs/phase4_notes.md` (parked analytics, decision notes)
-- `.private/context.md` (SARsatX-specific strategic context, gitignored)
+- `basira_master_plan.md`
+- `site_spec.md`
+- `research/dust-honesty/piece_b.md` (V1 shipped)
+- `research/construction-substrate-by-site/docs/pre_registration.md` (locked)
+- `docs/sessions/YYYY-MM-DD.md`
+- `.private/context.md` (gitignored)
 
-**Hardware & identity:**
-- MacBook Pro (primary): native shell, direct repo access, `ahmadxgpx@gmail.com` git identity
-- Galaxy-A14 (secondary): Termux, requires `git config --global user.email/user.name` before commits
-- Primary device is macOS; secondary is Android
+## Recent Commit Trail
 
-**Learning track:**
-- Coursera "Mathematics for Machine Learning and Data Science" specialization (registered, concurrent)
-- Andrew Ng ML Specialization Course 1 (concurrent, given Ahmed's university math background)
-- Book in use: *Why Machines Learn*
-- All Notion updates Claude handles automatically; Ahmed does not read/edit Notion directly
-
-## Notion Integration
-
-Claude handles all Notion updates automatically. Main plan page ID: `316a819e-5d31-8125-9eba-d9e1a4d2e9c9`. Updates page ID: `316a819e-5d31-801c-9090-faef1e205537`. Log entries are short, first-person, written as if Ahmed is writing them. Insertion method: `insert_content_after` with `selection_with_ellipsis` targeting a unique string near end of content — reliable for appending log entries.
-
-## Credential Hygiene
-
-Sentinel Hub OAuth credentials have required multiple rotations due to exposure. Credentials live in `.env` only; **never commit `.env`** and **never paste credentials in chat**. `.env` is opened via `open -a TextEdit .env` (nano's Ctrl keys are intercepted by Terminal.app on macOS). Galaxy-A14 secondary device can access `.env` via termux but should never push credential-containing commits.
-
-## Session Workflow Patterns
-
-**Energy/state check-in:** At session start, explicit check-in on energy level and directions. Default is action-over-deliberation unless a genuine blocker surfaces.
-
-**Session logs drafted by Claude:** Not by hand. Pasted from Claude at end-of-session, committed as full-file replacement via the ritual.
-
-**Master plan updates:** Reserved for direction changes, not progress updates. Session logs are the granular record; master plan gets updated if scope, timeline, or strategic framing shifts.
-
-**Cleanup passes:** Only at objective boundaries (after piece ships, after a phase closes, before a new major direction). Not between subsections. Default is momentum.
-
-## How to Read This File
-
-1. **At session start:** Read "Current State" first. That tells you where the work landed and what's active.
-2. **Before sending Claude Code:** Refresh on "Claude Code prompt rules" — it's the checklist.
-3. **For disagreement resolution:** "Spec is the pushback anchor" — if Ahmed proposes something that contradicts `site_spec.md`, cite the spec verbatim.
-4. **For session planning:** "Pacing" section sets the default rhythm. "Session workflow patterns" surfaces what actually happens across sessions.
-
----
-
-Last updated: 2026-05-04 end-of-session (piece B V1 prose ships, piece A scoped).
+- `afcf80c` piece A: pre-registration locked (SA1–SA6)
+- `8c83854` piece B: structural-review pass (6 edits, V1 ships)
+- `e49df27` piece B: cosmetic docstring/comment sweep
+- `560f8c3` piece B: V1 prose ships (post-structural-review) [superseded by 8c83854]
+- `66af2f1` piece B: V1 prose draft (post-polish)
