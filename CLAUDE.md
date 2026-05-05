@@ -4,7 +4,7 @@
 
 Working context for all Claude sessions on Basira. Lives in repo root, not shipped to readers. Read at session start, update at session end.
 
-## Current State (as of 2026-05-04 end-of-session)
+## Current State (as of 2026-05-05 mid-session)
 
 **Project:** Basira (بصيرة) — Saudi satellite change monitoring. Phase 1 deliverable is a portfolio-with-research-engine: cinematic homepage as table of contents (Qiddiya hero, KSP, Diriyah Gate), each linking to a real research deep-dive that answers one umbrella question with rigor. Live at https://a7zain.github.io/basira/. Repo: `a7zain/basira`. Shaped for a specific Saudi space-sector opportunity (TPM-track read). Specifics in `.private/context.md` (gitignored).
 
@@ -12,7 +12,14 @@ Working context for all Claude sessions on Basira. Lives in repo root, not shipp
 
 **Piece A (construction-substrate-by-site):** Pre-registration LOCKED at commit `afcf80c`. Six sub-questions (SA1–SA6) with halt conditions, dual criterion at SA3, pre-scoped fallbacks (SA4C, SA5B). Path: `research/construction-substrate-by-site/docs/pre_registration.md`.
 
-**Active work:** SA1 dispatched to Claude Code. Goal: per-AOI BSI baseline from cloud-free bare-epoch S30+L30 scenes for Qiddiya, KSP, Diriyah. Locked: B8A NIR for S30 (cross-sensor overlap with L30 OLI Band 5), Fmask cloud_fraction < 0.1 for SA1 (stricter than SA3's < 0.3, label-quality protection). Halt rule pre-registered: < 5 bare-epoch scenes per AOI/sensor → fall back to full DBB-operational window as proxy bare-epoch.
+**Active work:** SA1 parked. Compute script committed at `26c7cdd` (`research/construction-substrate-by-site/scripts/sa1_compute_bsi.py`), 1-month batches with timeouts and retries, 456 batches total, ETA ~3.5h at full speed. Earth Engine soft-throttle hit during execution; resume requires waiting for the sliding 24h quota window to reset. Resume command in `research/construction-substrate-by-site/scripts/sa1_run_log.md`. Outputs (per-AOI CSVs, SA1_summary.md) will be produced by the resume run.
+
+**SA1 execution findings (locked, surface in piece A methods prose):**
+- All three AOIs (Qiddiya, KSP, Diriyah) sit in MGRS tile 38RPN. Single-tile coverage means cross-AOI scene cadence is identical by construction.
+- HLS `filterBounds` is broken on Earth Engine for the HLS catalog. Workaround: filter by `ee.Filter.stringContains('system:index', '38RPN')`. Methods note for any future HLS-on-GEE work.
+- B8A locked as S30 NIR (855–875nm) for cross-sensor overlap with L30 OLI Band 5 (845–885nm). Documented in script docstring + SA1_summary.md when the resume run lands.
+
+**SA3 implementation spec:** Locked at `research/construction-substrate-by-site/docs/sa3_implementation.md`. Reuses piece B NDVI residuals + AOD tables directly. S30-only. Pooled-with-FE headline + per-AOI heterogeneity check, both pre-registered.
 
 **Multi-city expansion** parked on `wip/phase5-multicity`. Not active; deferred post-piece-A.
 
@@ -80,6 +87,7 @@ Claude Code has historically created silent worktrees and reported success while
 
 ## Recent Commit Trail
 
+- `26c7cdd` piece A SA1: compute script committed, EE quota throttle parked execution
 - `afcf80c` piece A: pre-registration locked (SA1–SA6)
 - `8c83854` piece B: structural-review pass (6 edits, V1 ships)
 - `e49df27` piece B: cosmetic docstring/comment sweep
