@@ -88,11 +88,32 @@ defensible because S30 B8A and L30 B5 are spectrally matched (NIR
 Outputs
 -------
 data/sa1_bsi_baseline/
-  qiddiya_bsi_per_scene.csv
-  ksp_bsi_per_scene.csv
-  diriyah_bsi_per_scene.csv
-  SA1_summary.md
+  qiddiya_s30_bsi_per_scene.csv     (per-(AOI, sensor); 6 files total)
+  qiddiya_l30_bsi_per_scene.csv
+  ksp_s30_bsi_per_scene.csv
+  ksp_l30_bsi_per_scene.csv
+  diriyah_s30_bsi_per_scene.csv
+  diriyah_l30_bsi_per_scene.csv
+  {stem}_{sensor}_meta.json         (sidecar: pre-dedup year counts;
+                                     used by summary year-table on resume)
+  SA1_summary.md                    (only when all 6 CSVs are present)
 data/halts/sa1_coverage/   (only if halt fires)
+
+Crash-safety + resumability
+---------------------------
+Each (AOI, sensor) CSV is written atomically (tmp + rename) immediately
+after dedup_by_date completes for that pair. On re-run, any (AOI, sensor)
+whose CSV already exists on disk is skipped and the previously-written
+rows are read back into memory for the final threshold/halt/fallback
+pass. SA1_summary.md is only generated when all six CSVs are present.
+Partial runs print "summary deferred — N of 6 CSVs present" and exit
+clean (return 0) so re-running picks up where the last run left off.
+
+bare_epoch_flag handling: intermediate writes (at dedup time) set the
+flag to False as a placeholder, since the AOI 75th-percentile threshold
+requires both sensors for that AOI. When the final pass runs (all 6
+present), it loads all rows, computes thresholds + halts + applies
+fallback, then rewrites all 6 CSVs with the finalized flag.
 
 Run
 ---
@@ -102,6 +123,7 @@ $ /opt/anaconda3/envs/sarsat/bin/python \
 from __future__ import annotations
 
 import csv
+import json
 import os
 import sys
 import time
@@ -408,13 +430,31 @@ def dedup_by_date(rows):
 
 # --- I/O --------------------------------------------------------------------
 
+def csv_path_for(stem, sensor):
+    """Per-(AOI, sensor) CSV path. Six files total (3 AOIs × 2 sensors)."""
+    return OUT_DIR / f"{stem}_{sensor.lower()}_bsi_per_scene.csv"
+
+
+def meta_path_for(stem, sensor):
+    """Sidecar JSON storing pre-dedup year counts for the year-table on resume."""
+    return OUT_DIR / f"{stem}_{sensor.lower()}_meta.json"
+
+
 def write_per_aoi_csv(path, rows):
+    """Atomic write (tmp + rename) so a mid-write crash never leaves a partial
+    CSV that the resume logic would mistake for a completed pair.
+
+    `bare_epoch_flag` defaults to False if absent on a row — relevant for the
+    intermediate write at dedup time, before the AOI 75th-percentile threshold
+    is computed. The final pass rewrites the file with the finalized flag.
+    """
     fields = [
         "scene_date", "sensor", "bsi", "cloud_fraction", "bare_epoch_flag",
         "hls_system_index", "n_valid_pixels", "n_total_pixels",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", newline="") as f:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
         for r in rows:
@@ -426,11 +466,52 @@ def write_per_aoi_csv(path, rows):
                     "" if r["cloud_fraction"] is None
                     else f"{r['cloud_fraction']:.4f}"
                 ),
-                "bare_epoch_flag": "True" if r["bare_epoch_flag"] else "False",
+                "bare_epoch_flag": "True" if r.get("bare_epoch_flag") else "False",
                 "hls_system_index": r["hls_system_index"],
                 "n_valid_pixels": r["n_valid_pixels"],
                 "n_total_pixels": r["n_total_pixels"],
             })
+    os.replace(tmp, path)
+
+
+def read_existing_csv(path):
+    """Inverse of write_per_aoi_csv. Used at resume to populate aoi_to_rows
+    from a previously-written CSV without re-fetching from EE."""
+    rows = []
+    with open(path, "r", newline="") as f:
+        rdr = csv.DictReader(f)
+        for r in rdr:
+            bsi = r["bsi"]
+            cf = r["cloud_fraction"]
+            be = r["bare_epoch_flag"]
+            rows.append({
+                "scene_date": r["scene_date"],
+                "sensor": r["sensor"],
+                "bsi": float(bsi) if bsi else None,
+                "cloud_fraction": float(cf) if cf else None,
+                "bare_epoch_flag": (be == "True") if be else False,
+                "hls_system_index": r["hls_system_index"],
+                "n_valid_pixels": int(r["n_valid_pixels"]),
+                "n_total_pixels": int(r["n_total_pixels"]),
+            })
+    return rows
+
+
+def write_meta_sidecar(path, year_counts):
+    """Atomic JSON write of pre-dedup year counts for one (AOI, sensor)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w") as f:
+        json.dump({"year_counts": {str(y): n for y, n in year_counts.items()}},
+                  f, indent=2)
+    os.replace(tmp, path)
+
+
+def read_meta_sidecar(path):
+    if not path.exists():
+        return {}
+    with open(path, "r") as f:
+        return json.load(f)
 
 
 def write_halt_receipt(aoi_meta, s30_n, l30_n, counts, threshold,
@@ -673,9 +754,14 @@ def write_summary(aoi_to_thresh, counts, halts, aoi_to_rows, n_per_year):
         "",
         "## Outputs",
         "",
-        "- `data/sa1_bsi_baseline/qiddiya_bsi_per_scene.csv`",
-        "- `data/sa1_bsi_baseline/ksp_bsi_per_scene.csv`",
-        "- `data/sa1_bsi_baseline/diriyah_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/qiddiya_s30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/qiddiya_l30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/ksp_s30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/ksp_l30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/diriyah_s30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/diriyah_l30_bsi_per_scene.csv`",
+        "- `data/sa1_bsi_baseline/{stem}_{sensor}_meta.json` "
+        "(sidecar: pre-dedup year counts; six files)",
         "- `data/sa1_bsi_baseline/SA1_summary.md` (this file)",
     ]
     if halts:
@@ -738,7 +824,28 @@ def main():
     for aoi_meta in AOI_MAP:
         aoi_key = aoi_meta["key"]
         for sensor in ("S30", "L30"):
+            out_path = csv_path_for(aoi_meta["stem"], sensor)
+            meta_path = meta_path_for(aoi_meta["stem"], sensor)
+
+            # Resume: skip pairs whose CSV is already on disk. Load rows back
+            # into aoi_to_rows so the final threshold/halt/fallback pass has
+            # full visibility, and load the meta sidecar so the per-year
+            # summary table reflects the pre-dedup tally accurately.
+            if out_path.exists():
+                existing_rows = read_existing_csv(out_path)
+                aoi_to_rows[aoi_key].extend(existing_rows)
+                meta = read_meta_sidecar(meta_path)
+                for y_str, c in meta.get("year_counts", {}).items():
+                    n_per_year[(aoi_key, sensor, int(y_str))] = c
+                n_done += len(BATCHES)
+                pct = 100.0 * n_done / n_total_batches
+                print(f"  skip {aoi_meta['name']} {sensor}: already on disk at "
+                      f"{out_path} ({len(existing_rows)} rows; "
+                      f"{n_done}/{n_total_batches}={pct:4.1f}%)", flush=True)
+                continue
+
             sensor_pertile = []
+            local_year_counts = {}
             for (label, bstart, bend) in BATCHES:
                 t0 = time.time()
                 br_rows = fetch_aoi_sensor_year(aoi_key, sensor, bstart, bend)
@@ -746,6 +853,9 @@ def main():
                 year = int(bstart[:4])
                 n_per_year[(aoi_key, sensor, year)] = (
                     n_per_year.get((aoi_key, sensor, year), 0) + len(br_rows)
+                )
+                local_year_counts[year] = (
+                    local_year_counts.get(year, 0) + len(br_rows)
                 )
                 n_done += 1
                 pct = 100.0 * n_done / n_total_batches
@@ -756,11 +866,32 @@ def main():
                       flush=True)
                 time.sleep(INTER_BATCH_PAUSE_S)
             sensor_dedup = dedup_by_date(sensor_pertile)
+            # Tentative bare_epoch_flag — finalized when all 6 CSVs are present
+            # and the threshold + halt + fallback pass runs at end of script.
+            for r in sensor_dedup:
+                r["bare_epoch_flag"] = False
             aoi_to_rows[aoi_key].extend(sensor_dedup)
+            # Persist immediately for crash-safe resume. The "dedup-by-date"
+            # log line below now also records the on-disk landing path.
+            write_per_aoi_csv(out_path, sensor_dedup)
+            write_meta_sidecar(meta_path, local_year_counts)
             print(f"  {aoi_meta['name']:<18s} {sensor} dedup-by-date: "
                   f"{len(sensor_dedup)} rows (from {len(sensor_pertile)} "
-                  f"per-tile rows)", flush=True)
+                  f"per-tile rows) → wrote {out_path}", flush=True)
     print()
+
+    # Coverage gate: only the threshold/halt/fallback/summary stages depend on
+    # the full six-CSV set being present. If a (AOI, sensor) pair is missing
+    # (retry exhaustion, hard exit), exit clean so a re-run can resume from
+    # the existing CSVs without losing progress.
+    n_present = sum(
+        1 for a in AOI_MAP for s in ("S30", "L30")
+        if csv_path_for(a["stem"], s).exists()
+    )
+    if n_present < 6:
+        print(f"=== summary deferred — {n_present} of 6 CSVs present ===")
+        print("  re-run the script; existing CSVs will be skipped.")
+        return 0
 
     # 2. Per AOI: 75th percentile on cloud-filtered BSI (S30 ∪ L30).
     aoi_to_thresh = {}
@@ -841,17 +972,23 @@ def main():
     else:
         print("=== NO HALTS — all AOIs cleared the floor ===\n")
 
-    # 6. Write per-AOI CSVs.
-    print("=== Writing per-AOI CSVs ===")
+    # 6. Rewrite per-(AOI, sensor) CSVs with finalized bare_epoch_flag.
+    # The intermediate writes at dedup-time stored the flag as a placeholder
+    # (False); now that thresholds + halts + fallback have run, rewrite each
+    # CSV in place with the finalized flag. Atomic via tmp + rename.
+    print("=== Rewriting per-(AOI, sensor) CSVs with finalized bare_epoch_flag ===")
     for aoi_meta in AOI_MAP:
         aoi_key = aoi_meta["key"]
-        rows = sorted(
-            aoi_to_rows[aoi_key],
-            key=lambda r: (r["scene_date"], r["sensor"]),
-        )
-        out_path = OUT_DIR / f"{aoi_meta['stem']}_bsi_per_scene.csv"
-        write_per_aoi_csv(out_path, rows)
-        print(f"  wrote {out_path} ({len(rows)} rows)")
+        for sensor in ("S30", "L30"):
+            rows = sorted(
+                (r for r in aoi_to_rows[aoi_key] if r["sensor"] == sensor),
+                key=lambda r: r["scene_date"],
+            )
+            out_path = csv_path_for(aoi_meta["stem"], sensor)
+            write_per_aoi_csv(out_path, rows)
+            n_flagged = sum(1 for r in rows if r["bare_epoch_flag"])
+            print(f"  wrote {out_path} ({len(rows)} rows; "
+                  f"{n_flagged} bare_epoch_flag=True)")
 
     # 7. Write SA1 summary.
     write_summary(aoi_to_thresh, counts, halts, aoi_to_rows, n_per_year)
