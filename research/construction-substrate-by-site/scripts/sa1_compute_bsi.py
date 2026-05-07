@@ -115,6 +115,31 @@ requires both sensors for that AOI. When the final pass runs (all 6
 present), it loads all rows, computes thresholds + halts + applies
 fallback, then rewrites all 6 CSVs with the finalized flag.
 
+Per-batch retry exhaustion (crash-2 fix)
+----------------------------------------
+EE getInfo can hang or fail under soft-throttle. Each 1-month batch is
+retried up to MAX_RETRIES (5) times beyond the initial attempt with a
+backoff sequence of 10/20/40/80/160s and a per-attempt hard timeout of
+HARD_TIMEOUT_S (300s). When a batch exhausts retries the script does
+NOT raise — it logs SKIP, appends a record to
+`data/sa1_bsi_baseline/_failed_batches.json`, and continues to the next
+batch. Per-(AOI, sensor) failed-batch counts gate the end-of-block CSV
+write:
+  failed_count == 0   → write CSV (clean)
+  1..7                → write CSV with what we have, log WARN
+  >= 8 (~10% of 76)   → do NOT write CSV, log HALT, continue to next pair
+
+Manual rerun workflow
+---------------------
+Re-running the script always picks up where the last run left off:
+existing per-(AOI, sensor) CSVs are skipped (see "Crash-safety"). To
+retry only failed batches from a previous run, delete the relevant CSV
+from `data/sa1_bsi_baseline/` (forces a full block rerun for that
+(AOI, sensor)) and optionally trim `_failed_batches.json` to remove
+historical records that no longer apply. There is no CLI flag for
+selective retry; the workflow is "delete the file you want
+re-attempted, re-run the script."
+
 Run
 ---
 $ /opt/anaconda3/envs/sarsat/bin/python \
@@ -129,6 +154,7 @@ import sys
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 
 import ee
@@ -196,6 +222,28 @@ AOI_MAP = [
 CLOUD_FILTER_SA1 = 0.10
 BARE_EPOCH_PERCENTILE = 75
 HALT_FLOOR = 5
+
+# --- Retry / backoff (per-batch EE getInfo) ---------------------------------
+# Bumped from patch-1 (180s timeout, 4 attempts, capped backoff) after crash 2:
+# retry exhaustion mid-block on EE soft-throttle dropped ~50 batches of
+# in-flight work. The longer per-attempt timeout absorbs slow-queue spikes,
+# and the longer total retry budget (310s of cumulative backoff) gives EE
+# more room to clear a transient throttle before we declare a batch dropped.
+HARD_TIMEOUT_S = 300            # per-attempt hard timeout (was 180)
+MAX_RETRIES = 5                 # retries beyond initial attempt → 6 total
+RETRY_BACKOFFS_S = [10, 20, 40, 80, 160]  # one entry per retry; len == MAX_RETRIES
+
+# Per-(AOI, sensor) block failure policy. After the inner batch loop:
+#   failed_count == 0   → write CSV (clean block)
+#   1..7                → write CSV with what we have, log WARN (≤~10% of 76)
+#   8+                  → do NOT write CSV, log HALT, continue to next pair
+# 8 ≈ 10.5% of 76 batches. Above that threshold the block is too lossy for
+# downstream threshold/halt analysis and should be rerun in full (delete the
+# CSV — which won't exist yet — and re-execute; sidecar n_per_year never
+# landed either).
+BLOCK_FAILURE_HALT_AT = 8
+
+FAILED_BATCH_LOG = OUT_DIR / "_failed_batches.json"
 
 # Process the window in 1-month batches. Earlier attempts at year-batches
 # timed out on EE (5-min computation limit) and 3-month batches were
@@ -314,9 +362,8 @@ def _getInfo_with_timeout(fc, timeout_sec):
     return result[0]
 
 
-def fetch_aoi_sensor_year(aoi_key, sensor, ystart, yend,
-                          max_retries=4, hard_timeout=180):
-    """Return list of per-image dicts for one (aoi, sensor, batch).
+def fetch_aoi_sensor_year(aoi_key, sensor, ystart, yend, label):
+    """Return (rows, exhausted) for one (aoi, sensor, batch).
 
     Filter chain: stringContains(system:index, '38RPN') → filterDate.
     See module docstring "Spatial filter" for why we don't use the
@@ -327,10 +374,19 @@ def fetch_aoi_sensor_year(aoi_key, sensor, ystart, yend,
     collapses any same-date duplicates to per-(date, sensor) downstream.
 
     Retries on transient EE errors (timeout, deadline) AND on
-    client-side hard timeout (hard_timeout sec). The hard timeout
-    catches EE soft-throttle hangs where the server holds the
-    connection without responding; without it, a single hung call
-    can stall the whole job. Backoff is exponential.
+    client-side hard timeout. Backoff sequence is RETRY_BACKOFFS_S
+    (10/20/40/80/160s; total 310s if all hit). After MAX_RETRIES
+    retries are exhausted the batch is declared dropped: this function
+    logs SKIP, appends a record to _failed_batches.json, and returns
+    ([], True). The main loop tallies these per (AOI, sensor) and
+    decides at end-of-block whether to write the CSV (WARN) or refuse
+    to write it (HALT) — see BLOCK_FAILURE_HALT_AT.
+
+    Returning rather than raising is the crash-2 fix: an exception out
+    of this function killed the entire script mid-block and discarded
+    all in-flight per-tile rows for that (AOI, sensor) pair. A graceful
+    return lets the block continue, write a partial CSV if the failure
+    rate is low, and surface the failures explicitly.
     """
     geom = ee.Geometry.Rectangle(list(get_bbox(aoi_key)))
     sensor_cfg = SENSOR_CONFIG[sensor]
@@ -344,16 +400,27 @@ def fetch_aoi_sensor_year(aoi_key, sensor, ystart, yend,
         coll.map(lambda img: add_metrics_feature(img, sensor_cfg, geom))
     )
     info = None
-    for attempt in range(1, max_retries + 1):
+    total_attempts = MAX_RETRIES + 1
+    last_exc = None
+    for attempt in range(1, total_attempts + 1):
         try:
-            info = _getInfo_with_timeout(fc, hard_timeout)
+            info = _getInfo_with_timeout(fc, HARD_TIMEOUT_S)
             break
         except (TimeoutError, ee.ee_exception.EEException) as exc:
+            last_exc = exc
             msg = str(exc)
-            if attempt == max_retries:
-                raise
-            backoff = min(60, 10 * (2 ** (attempt - 1)))
-            print(f"    retry {attempt}/{max_retries - 1} after error: "
+            if attempt > MAX_RETRIES:
+                # Exhausted — graceful skip (do NOT raise).
+                print(f"  SKIP {aoi_key} {sensor} {label}: exhausted "
+                      f"{MAX_RETRIES} retries, batch dropped "
+                      f"(last error: {msg[:80]})", flush=True)
+                append_failed_batch(
+                    aoi_key, sensor, label,
+                    f"retry_exhausted_after_{MAX_RETRIES}_attempts",
+                )
+                return [], True
+            backoff = RETRY_BACKOFFS_S[attempt - 1]
+            print(f"    retry {attempt}/{MAX_RETRIES} after error: "
                   f"{msg[:80]}  (sleeping {backoff}s)", flush=True)
             time.sleep(backoff)
 
@@ -370,7 +437,7 @@ def fetch_aoi_sensor_year(aoi_key, sensor, ystart, yend,
             "n_valid": int(nv) if nv is not None else 0,
             "n_total": int(nt) if nt is not None else 0,
         })
-    return rows
+    return rows, False
 
 
 def dedup_by_date(rows):
@@ -512,6 +579,40 @@ def read_meta_sidecar(path):
         return {}
     with open(path, "r") as f:
         return json.load(f)
+
+
+def append_failed_batch(aoi_key, sensor, year_month, reason):
+    """Append a failed-batch record to _failed_batches.json (atomic).
+
+    File schema is a JSON list of {timestamp, aoi, sensor, year_month,
+    reason} dicts. Read-modify-write under a tmp + os.replace so the
+    log is never partially-written. Tolerates absent or malformed
+    existing file (resets to empty list on JSON decode error).
+    """
+    FAILED_BATCH_LOG.parent.mkdir(parents=True, exist_ok=True)
+    existing = []
+    if FAILED_BATCH_LOG.exists():
+        try:
+            with open(FAILED_BATCH_LOG, "r") as f:
+                loaded = json.load(f)
+            if isinstance(loaded, list):
+                existing = loaded
+        except (json.JSONDecodeError, OSError):
+            existing = []
+
+    record = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "aoi": aoi_key,
+        "sensor": sensor,
+        "year_month": year_month,
+        "reason": reason,
+    }
+    existing.append(record)
+
+    tmp = FAILED_BATCH_LOG.with_suffix(FAILED_BATCH_LOG.suffix + ".tmp")
+    with open(tmp, "w") as f:
+        json.dump(existing, f, indent=2)
+    os.replace(tmp, FAILED_BATCH_LOG)
 
 
 def write_halt_receipt(aoi_meta, s30_n, l30_n, counts, threshold,
@@ -846,10 +947,15 @@ def main():
 
             sensor_pertile = []
             local_year_counts = {}
+            failed_count = 0
             for (label, bstart, bend) in BATCHES:
                 t0 = time.time()
-                br_rows = fetch_aoi_sensor_year(aoi_key, sensor, bstart, bend)
+                br_rows, exhausted = fetch_aoi_sensor_year(
+                    aoi_key, sensor, bstart, bend, label
+                )
                 sensor_pertile.extend(br_rows)
+                if exhausted:
+                    failed_count += 1
                 year = int(bstart[:4])
                 n_per_year[(aoi_key, sensor, year)] = (
                     n_per_year.get((aoi_key, sensor, year), 0) + len(br_rows)
@@ -865,6 +971,19 @@ def main():
                       f"(elapsed {(time.time()-overall_t0)/60:5.1f}m)",
                       flush=True)
                 time.sleep(INTER_BATCH_PAUSE_S)
+
+            # Block-level outcome: write CSV unless too many batches dropped.
+            # HALT path skips the write so a re-run re-attempts the whole block
+            # (skip-if-exists won't fire without a CSV on disk). WARN path
+            # writes what we have; downstream threshold pass treats the
+            # surviving rows as the block's bare-epoch sample.
+            if failed_count >= BLOCK_FAILURE_HALT_AT:
+                print(f"  HALT {aoi_meta['name']} {sensor}: "
+                      f"{failed_count}/{len(BATCHES)} batches dropped, "
+                      f"block declared incomplete — review "
+                      f"_failed_batches.json before retry", flush=True)
+                continue
+
             sensor_dedup = dedup_by_date(sensor_pertile)
             # Tentative bare_epoch_flag — finalized when all 6 CSVs are present
             # and the threshold + halt + fallback pass runs at end of script.
@@ -875,6 +994,10 @@ def main():
             # log line below now also records the on-disk landing path.
             write_per_aoi_csv(out_path, sensor_dedup)
             write_meta_sidecar(meta_path, local_year_counts)
+            if failed_count > 0:
+                print(f"  WARN {aoi_meta['name']} {sensor}: completed with "
+                      f"{failed_count}/{len(BATCHES)} batches dropped — "
+                      f"see _failed_batches.json", flush=True)
             print(f"  {aoi_meta['name']:<18s} {sensor} dedup-by-date: "
                   f"{len(sensor_dedup)} rows (from {len(sensor_pertile)} "
                   f"per-tile rows) → wrote {out_path}", flush=True)
