@@ -49,3 +49,6 @@ experiments/aerosol_spike/data/
 # ── Dust-honesty research data ────────────────
 research/dust-honesty/data/
 research/dust-honesty/references/
+
+# ── Construction-substrate-by-site research data ─────
+research/construction-substrate-by-site/data/
