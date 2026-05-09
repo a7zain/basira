@@ -121,3 +121,7 @@ Hard cap: 10 weeks for SA1 through SA6 execution + 4 weeks for prose draft + str
 - Multi-city expansion remains parked on `wip/phase5-multicity`. Not a piece A sub-question.
 
 ## Locked. Execute SA1 first.
+
+## Amendments
+
+- Amendment 01 (locked 2026-05-09): SA2 halt substitution. SA4/SA5 redirect "Q4 from SA2" to "bare_epoch_flag from SA1". See `amendment_01_sa2_halt_substitution.md`.
