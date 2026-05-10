@@ -101,6 +101,8 @@ Piece A has no external ground-truth label set for "real surface change" at Qidd
 
 **Output deliverable:** `data/sa6_generalization/{ksp,diriyah}_bsi_ndvi.csv` + figure `figures/sa6_three_aoi_comparison.png`.
 
+**Closure (locked 2026-05-10):** SA6 discharged by SA3's per-AOI heterogeneity arm. KSP halt and Diriyah inconclusive both originate as SA3 outputs and are relabeled as SA6 deliverables under the closure. See `docs/sa6_closure.md`.
+
 ## Stop-rule philosophy (carried from piece B)
 
 When a stop rule fires, the cheapest possible scope review is the one happening mid-run. The temptation in each case will be to switch to a different design that bypasses the constraint — a temptation that conflates "this measurement got borderline retention" with "we should answer a different question." Pre-registration catches that. New questions become new sub-questions (SA4C, SA5B); the original ships or halts on its own terms.
